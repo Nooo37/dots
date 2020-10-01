@@ -1,5 +1,3 @@
--- TODO implement notification replacement
-
 local awful = require("awful")
 local naughty = require("naughty")
 
@@ -22,7 +20,7 @@ local script = [[bash -c '
   echo $info"##"$cover"##"
 ']]
 
-local old_notification
+local old_notification = {id=13752}
 
 local function update_notify()
   awful.spawn.easy_async(script,
@@ -36,7 +34,7 @@ local function update_notify()
       status = string.gsub(status, '^%s*(.-)%s*$', '%1')
 
       if status ~= "paused" then
-          old_notification = naughty.notify({title=title, text=artist, icon=cover_path})
+          old_notification = naughty.notify({title=title, text=artist, icon=cover_path, replaces_id=old_notification.id})
       end
 
     end

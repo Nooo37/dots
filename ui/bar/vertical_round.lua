@@ -10,13 +10,14 @@ local beautiful = require("beautiful")
 
 local helpers = require("ui.helpers")
 
-local statusbar_font = "Hack Bold 9"
+local statusbar_font = "Hack Bold"
+local statusbar_bg = beautiful.xbg
 local highlight_width = 5
 
 --{{{ Clock
 
 local clocktextbox = wibox.widget.textclock("%R\n%d.%m") -- old:  %a, %d %b %R
-clocktextbox.font = statusbar_font
+clocktextbox.font = statusbar_font .. " 8.5"
 
 local temp_wid = wibox.widget {
           wibox.widget.textbox(""),
@@ -26,7 +27,7 @@ local temp_wid = wibox.widget {
 }
 
 local clockbox = wibox.widget {
-  helpers.horizontal_pad(4),
+  helpers.horizontal_pad(3),
   {
       clocktextbox,
       top   = 5,
@@ -42,7 +43,7 @@ local clockbox = wibox.widget {
 --{{{ Volume
 
 local volumetextbox = wibox.widget.textbox("?%")
-volumetextbox.font = statusbar_font
+volumetextbox.font = statusbar_font .. " 9"
 
 awesome.connect_signal("evil::volume", function(volume_int, muted)
   if muted then --🕨
@@ -106,6 +107,24 @@ local systraybox = wibox.widget {
 
 --}}}
 
+-- Define taglist_buttons
+local taglist_buttons = gears.table.join(
+                    awful.button({ }, 1, function(t) t:view_only() end),
+                    awful.button({ modkey }, 1, function(t)
+                                              if client.focus then
+                                                  client.focus:move_to_tag(t)
+                                              end
+                                          end),
+                    awful.button({ }, 3, awful.tag.viewtoggle),
+                    awful.button({ modkey }, 3, function(t)
+                                              if client.focus then
+                                                  client.focus:toggle_tag(t)
+                                              end
+                                          end),
+                    awful.button({ }, 4, function(t) awful.tag.viewprev(t.screen) end),
+                    awful.button({ }, 5, function(t) awful.tag.viewnext(t.screen) end)
+                )
+
 awful.screen.connect_for_each_screen(function(s)
 
    -- Create a custom taglist widget
@@ -113,8 +132,8 @@ awful.screen.connect_for_each_screen(function(s)
        screen  = s,
        filter  = awful.widget.taglist.filter.all,
        style   = {
-           shape = gears.shape.rectangle,
-           font  = statusbar_font
+           -- shape = helpers.rrect(5),
+           font  = statusbar_font .. " 9"
        },
        layout   = {
            spacing = 0,
@@ -124,6 +143,27 @@ awful.screen.connect_for_each_screen(function(s)
            },
            layout  = wibox.layout.fixed.vertical
        },
+       -- widget_template = {
+       --                helpers.horizontal_pad(5),
+       --                {
+       --                   {
+       --                     {
+       --                       id     = 'text_role',
+       --                       align = "center",
+       --                       valign = "center",
+       --                       widget = wibox.widget.textbox,
+       --                     },
+       --                     top   = 5,
+       --                     bottom = 5,
+       --                     right = 5,
+       --                     left = 5,
+       --                     widget = wibox.container.margin
+       --                   },
+       --                   id = 'background_role',
+       --                   widget  = wibox.container.background,
+       --                 },
+       --                layout = wibox.layout.align.horizontal,
+       -- },
        widget_template = {
                       helpers.horizontal_pad(5),
                       {
@@ -133,8 +173,7 @@ awful.screen.connect_for_each_screen(function(s)
                          },
                          top   = 5,
                          bottom = 5,
-                         left  = 5,
-                         right = 5,
+                         left  = 3,
                          widget = wibox.container.margin
                        },
                        {
@@ -148,17 +187,18 @@ awful.screen.connect_for_each_screen(function(s)
                       },
                       layout = wibox.layout.align.horizontal,
        },
-       buttons = awful.util.taglist_buttons
+       buttons = taglist_buttons
+       -- Create a taglist widget
    }
 
-   local statusbar_width = 62
+   local statusbar_width = 55
    -- Create the wibar
-   s.mywibox = awful.wibar({ position = "left", screen = s, width = statusbar_width, bg="#00000000", opacity=0, ontop=false, visible=true })
+   s.mywibar = awful.wibar({ position = "left", screen = s, width = statusbar_width, bg="#00000000", opacity=0, ontop=false, visible=true })
    -- Create the wibox
-   s.mybar = wibox {
+   s.mywibox = wibox {
       x = 2*beautiful.useless_gap,
       y = 2*beautiful.useless_gap,
-      bg = beautiful.xbg,
+      bg = statusbar_bg,
       fg = beautiful.xfg,
       shape = helpers.rrect(beautiful.corner_radius),
       height = s.geometry.height - 4*beautiful.useless_gap,
@@ -166,7 +206,7 @@ awful.screen.connect_for_each_screen(function(s)
       visible = true
    }
 
-   s.mybar:setup {
+   s.mywibox:setup {
        layout = wibox.layout.align.vertical,
        -- expand = "none",
        { -- Top widgets
@@ -189,4 +229,28 @@ awful.screen.connect_for_each_screen(function(s)
            -- datebox,
        },
    }
+
+   -- helper function to update the bar
+   -- should be "solid" when only one client is on the selected tag and "floating with rounded corners" if there are multiple
+   local function update_bar(t)
+     local clients = t:clients()
+     if #clients == 1 then
+       s.mywibox.shape = helpers.rrect(0)
+       s.mywibox.height = s.geometry.height
+       s.mywibox.width = statusbar_width
+       s.mywibox.x = 0
+       s.mywibox.y = 0
+     else
+       s.mywibox.shape = helpers.rrect(beautiful.corner_radius)
+       s.mywibox.height = s.geometry.height - 4*beautiful.useless_gap
+       s.mywibox.width = statusbar_width - 2*beautiful.useless_gap
+       s.mywibox.x = 2*beautiful.useless_gap
+       s.mywibox.y = 2*beautiful.useless_gap
+     end
+   end
+
+   -- connect all important signals
+   tag.connect_signal("tagged", function(t) update_bar(t) end)
+   tag.connect_signal("untagged", function(t) update_bar(t) end)
+   tag.connect_signal("property::selected", function(t) update_bar(t) end)
 end)

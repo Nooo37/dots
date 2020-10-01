@@ -66,8 +66,7 @@ globalkeys = my_table.join(
         if t == nil then
           return
         end
-        -- TODO change that hard coded part that there are exactly 5 tags
-        if t.index == 5 then
+        if t.index == #awful.util.tagnames then
           new_tagindex = 1
         else
           new_tagindex = t.index + 1
@@ -84,9 +83,8 @@ globalkeys = my_table.join(
         if t == nil then
           return
         end
-        -- TODO change that hard coded part that there are exactly 5 tags
         if t.index == 1 then
-          new_tagindex = 5
+          new_tagindex = #awful.util.tagnames
         else
           new_tagindex = t.index - 1
         end
@@ -198,15 +196,21 @@ globalkeys = my_table.join(
               -- Music with MPD and MPC
               -- =====================================================
 
-    -- prev song
+    -- mpd prev song
     awful.key({ modkey,           }, "d", function () awful.spawn.with_shell("mpc prev") end,
               {description = "prev song (mpd)", group = "music"}),
-    -- next song
+    -- mpd next song
     awful.key({ modkey,           }, "g", function () awful.spawn.with_shell("mpc next") end,
               {description = "next song (mpd)", group = "music"}),
-    -- pause toggle
+    -- mpd pause toggle
     awful.key({ modkey,           }, "f", function () awful.spawn.with_shell("mpc toggle") end,
               {description = "pause/unpause music (mpd)", group = "music"}),
+    -- mpd volume plus
+    awful.key({ modkey, "Shift" }, "+", function () awful.spawn.with_shell("mpc volume +5") end,
+              {description = "mpd volume up", group = "music"}),
+    -- mpd volume minus
+    awful.key({ modkey, "Shift" }, "-", function () awful.spawn.with_shell("mpc volume -5") end,
+              {description = "mpd volume down", group = "music"}),
     -- volume +
     awful.key({ modkey,           }, "+", function () awful.spawn.with_shell("amixer sset 'Master' 5%+") end,
               {description = "volume up", group = "music"}),
@@ -216,6 +220,7 @@ globalkeys = my_table.join(
     -- volume -
     awful.key({ modkey,           }, ".", function () awful.spawn.with_shell("amixer sset Master toggle") end,
               {description = "volume toggle mute", group = "music"}),
+
 
               -- =====================================================
               -- Layout Manipulation
@@ -254,12 +259,6 @@ globalkeys = my_table.join(
               {description = "increase brightness", group = "brightness"}),
     awful.key({ modkey, altkey }, "-", function () helpers.change_brightness_relative(-0.1)  end,
               {description = "decrease brightness", group = "brightness"}),
-
-    -- Change useless gaps on the fly
-    awful.key({ modkey, "Shift" }, "+", function () helpers.resize_gaps(1)                   end,
-              {description = "increment useless gaps", group = "tag"}),
-    awful.key({ modkey, "Shift" }, "-", function () helpers.resize_gaps(-1)                  end,
-              {description = "decrement useless gaps", group = "tag"}),
 
 
               -- =====================================================
@@ -490,7 +489,7 @@ awful.util.taglist_buttons = my_table.join(
                                               awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
                                           )
 
--- They annoy me more than I use them 
+-- They annoy me more than I use them
 -- Mouse bindings
 -- root.buttons(my_table.join(
 --     awful.button({ }, 3, function () awful.util.mymainmenu:toggle() end),

@@ -13,6 +13,10 @@ local theme = {}
 theme.config_path = config_path
 theme.wallpaper = config_path.."wallpaper.png"
 
+theme.weather_city = "Berlin"
+
+theme.terminal = "urxvt"
+
 theme.corner_radius = dpi(14) --8
 theme.font          = "sans 8"
 

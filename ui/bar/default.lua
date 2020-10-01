@@ -3,6 +3,7 @@ local beautiful = require('beautiful')
 local wibox = require('wibox')
 local gears = require('gears')
 
+-- TODO taglist_buttons and tasklist_buttons
 
 awful.screen.connect_for_each_screen(function(s)
     -- Create a promptbox for each screen
