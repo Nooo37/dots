@@ -8,16 +8,31 @@ mylayout.name = "horizontal"
 function mylayout.arrange(p)
     local area
     area = p.workarea
-    local i = 0
-    for _, c in pairs(p.clients) do
-            local g = {
-                    x = area.x,
-                    y = area.y + i * (area.height / #p.clients),
-                    width = area.width,
-                    height = area.height / #p.clients,
-            }
-            p.geometries[c] = g
-            i = i + 1
+    for idx, c in pairs(p.clients) do
+      local g
+      if #p.clients == 1 then -- if only one client make fullscreen and leave
+        g = {
+          x = area.x,
+          y = area.y,
+          width = area.width,
+          height = area.height,
+        }
+      elseif idx == 1 then -- if client is master
+        g = {
+          x = area.x,
+          y = area.y,
+          width = area.width,
+          height = area.height * awful.tag.getmwfact(),
+        }
+      else -- if client is slave
+        g = {
+          x = area.x,
+          y = area.y + (area.height * awful.tag.getmwfact()) + (idx-2) * ((area.height * (1-awful.tag.getmwfact())) / (#p.clients - 1)),
+          width = area.width,
+          height = ( area.height * (1-awful.tag.getmwfact()) ) / ( #p.clients - 1),
+        }
+      end
+      p.geometries[c] = g
     end
 end
 
