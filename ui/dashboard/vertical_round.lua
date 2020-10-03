@@ -544,7 +544,10 @@ awful.screen.connect_for_each_screen(function(s)
 
   -- helper function to update the sidebar
   -- should be "solid" when only one client is on the selected tag and "floating with rounded corners" if there are multiple
-  local function update_sidebar(t)
+  local function update_sidebar(t, c)
+    if c then
+      if c.floating then return end -- so scratchpad doesn't mess with that
+    end
     local clients = t:clients()
     if #clients == 1 then
       s.mybar.shape = helpers.rrect(0)
@@ -560,8 +563,8 @@ awful.screen.connect_for_each_screen(function(s)
   end
 
   -- connect all important signals
-  tag.connect_signal("tagged", function(t) update_sidebar(t) end)
-  tag.connect_signal("untagged", function(t) update_sidebar(t) end)
+  tag.connect_signal("tagged", function(t, c) update_sidebar(t, c) end)
+  tag.connect_signal("untagged", function(t, c) update_sidebar(t, c) end)
   tag.connect_signal("property::selected", function(t) update_sidebar(t) end)
 
 end)
