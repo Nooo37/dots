@@ -20,11 +20,10 @@ local modkey       = "Mod4"
 local altkey       = "Mod1"
 local modkey1      = "Control"
 
-
 local is_recording = false
 
 local scratch = require("module.scratchpad")
--- scratch.raise("alacritty", {instance = "alacritty"})
+awful.util.spawn_with_shell("tmux new -s scratchpad")
 
 local function add_tag_focus_with(application)
   -- if the appication is already open, focus it otherwise open an instance
@@ -140,10 +139,10 @@ globalkeys = my_table.join(
               {description = "view nect", group = "tag"}),
     -- Tag browsing + move current client to new tag
     awful.key({ modkey, "Shift" }, "l", function () shift_focus_and_move_client(false) end,
-              {description = "move client and view to next tag", group = "tag"}),
+              {description = "move client and view to next tag", group = "move client"}),
     -- Tag browsing + move current client to new tag
     awful.key({ modkey, "Shift" }, "h", function () shift_focus_and_move_client(true) end,
-              {description = "move client and view to prev tag", group = "tag"}),
+              {description = "move client and view to prev tag", group = "move client"}),
     -- Switch client focus next
     awful.key({ modkey,           }, "j", function () awful.client.focus.byidx( 1)             end,
               {description = "focus next by index", group = "client"}),
@@ -151,65 +150,78 @@ globalkeys = my_table.join(
     awful.key({ modkey,           }, "k", function () awful.client.focus.byidx(-1)             end,
               {description = "focus previous by index", group = "client"}),
     -- Show/Hide Wibox
-    awful.key({ modkey, altkey }, "z", function () local s = awful.screen.focused() s.mywibox.visible = not s.mywibox.visible end,
-              {description = "toggle wibox", group = "awesome"}),
+    awful.key({ modkey, "Shift  " }, "z", function () awesome.emit_signal("toggle::bar") end,
+              {description = "toggle wibox", group = "awesome"}), --local s = awful.screen.focused() s.mywibox.visible = not s.mywibox.visible
     -- launch proomptbox
     awful.key({ modkey },            "r",     function () awesome.emit_signal("toggle::prompt") end,
-              {description = "run lazy run prompt", group = "launch"}),
+              {description = "run prompt", group = "launch"}),
     -- kill all notifications
-    awful.key({ modkey },            "ö",     function () naughty.destroy_all_notifications(nil, naughty.notificationClosedReason.dismissedByUser) end,
+    awful.key({ modkey },            "#",     function () naughty.destroy_all_notifications(nil, naughty.notificationClosedReason.dismissedByUser) end,
               {description = "close notifications", group = "hotkeys"}),
     --}}}
     --{{{ SYSTEM
     -- suspend
-    awful.key({ modkey, altkey, "Shift"}, "s", function () awful.spawn.with_shell("systemctl suspend") end,
-              {description = "suspend", group = "awesome"}),
-    -- reboot
-    awful.key({ modkey, altkey, "Shift"}, "r", function () awful.spawn.with_shell("systemctl reboot") end,
-              {description = "reboot", group = "awesome"}),
+    -- awful.key({ modkey, altkey, "Shift"}, "s", function () awful.spawn.with_shell("systemctl suspend") end,
+    --           {description = "suspend", group = "awesome"}),
+    -- -- reboot
+    -- awful.key({ modkey, altkey, "Shift"}, "r", function () awful.spawn.with_shell("systemctl reboot") end,
+    --           {description = "reboot", group = "awesome"}),
     -- power off
-    awful.key({ modkey, altkey, "Shift"}, "q", function () awful.spawn.with_shell("systemctl poweroff") end,
-              {description = "shutdown", group = "awesome"}),
+    awful.key({ modkey,           }, "q", function () awful.spawn.with_shell("$HOME/prog/bash/exit.sh") end,
+              {description = "shutdown, quit, reload and reboot everything", group = "awesome"}),
+    -- clipboard history
+    awful.key({ modkey,           }, "o", function () awful.spawn.with_shell("greenclip print | sed '/^$/d' | rofi -dmenu -i -c -l 20 | xargs -r -d'\\n' -I '{}' greenclip print '{}'") end,
+              {description = "select from greenclip clipboard history", group = "awesome"}),
+    -- try out thing
+    awful.key({ modkey,           }, "u", function () awful.spawn("date") end,
+              {description = "select from greenclip clipboard history", group = "awesome"}),
+
     --}}}
     --{{{ LAUNCH
     -- Launch dasboard awesome.emit_signal("toggle::dash")
     awful.key({ modkey,           }, "Menu", function () awesome.emit_signal("toggle::sidebar") end,
               {description = "dashboard", group = "launch"}),
     -- run popup prompt
-    awful.key({modkey             }, "o", function () awful.spawn.with_shell("rofi -show run") end,
-              {description = "run rofi", group = "launch"}),
+    -- awful.key({modkey             }, "o", function () awful.spawn.with_shell("dmenu_run -c -l 20 -i") end,
+    --           {description = "run rofi", group = "launch"}),
+    -- launch terminal
+    awful.key({ modkey,           }, "t", function () awful.util.spawn(terminal) end,
+              {description = "launch terminal", group = "launch"}),
     -- launch or focus browser
     awful.key({ modkey,           }, "b", function () launch_or_focus(browser) end,
               {description = "launch browser", group = "launch"}),
     -- add tag focus with browser
     awful.key({ modkey, altkey    }, "b", function () add_tag_focus_with(browser) end,
               {description = "add focus browser", group = "launch"}),
-    -- launch terminal
-    awful.key({ modkey,           }, "t", function () awful.util.spawn(terminal) end,
-              {description = "launch terminal", group = "launch"}),
     -- launch or focus editor
     awful.key({ modkey,           }, "v", function () launch_or_focus(editor) end,
               {description = "launch editor", group = "launch"}),
     -- add tag focus with editor
     awful.key({ modkey, altkey    }, "v", function () add_tag_focus_with(editor) end,
               {description = "add focus editor", group = "launch"}),
+    -- launch or focus editor
+    awful.key({ modkey,           }, "x", function () launch_or_focus("discord") end,
+              {description = "launch discord", group = "launch"}),
+    -- add tag focus with editor
+    awful.key({ modkey, altkey    }, "x", function () add_tag_focus_with("discord") end,
+              {description = "add focus discord", group = "launch"}),
     --}}}
     --{{{ MUSIC MPD VOLUME
     -- mpd prev song
-    awful.key({ modkey,           }, "d", function () awful.spawn.with_shell("mpc prev") end,
-              {description = "prev song (mpd)", group = "music"}),
+    awful.key({ modkey, altkey   }, "d", function () awful.spawn.with_shell("mpc prev") end,
+              {description = "[mpd] prev song", group = "music"}),
     -- mpd next song
-    awful.key({ modkey,           }, "g", function () awful.spawn.with_shell("mpc next") end,
-              {description = "next song (mpd)", group = "music"}),
+    awful.key({ modkey, altkey   }, "g", function () awful.spawn.with_shell("mpc next") end,
+              {description = "[mpd] next song", group = "music"}),
     -- mpd pause toggle
-    awful.key({ modkey,           }, "f", function () awful.spawn.with_shell("mpc toggle") end,
-              {description = "pause/unpause music (mpd)", group = "music"}),
+    awful.key({ modkey, altkey  }, "f", function () awful.spawn.with_shell("mpc toggle") end,
+              {description = "[mpd] toggle pause", group = "music"}),
     -- mpd volume plus
-    awful.key({ modkey, "Shift" }, "+", function () awful.spawn.with_shell("mpc volume +5") end,
-              {description = "mpd volume up", group = "music"}),
+    awful.key({ modkey, altkey  }, "+", function () awful.spawn.with_shell("mpc volume +5") end,
+              {description = "[mpd] volume up", group = "music"}),
     -- mpd volume minus
-    awful.key({ modkey, "Shift" }, "-", function () awful.spawn.with_shell("mpc volume -5") end,
-              {description = "mpd volume down", group = "music"}),
+    awful.key({ modkey, altkey  }, "-", function () awful.spawn.with_shell("mpc volume -5") end,
+              {description = "[mpd] volume down", group = "music"}),
     -- volume +
     awful.key({ modkey,           }, "+", function () awful.spawn.with_shell("amixer sset 'Master' 5%+") end,
               {description = "volume up", group = "music"}),
@@ -227,6 +239,9 @@ globalkeys = my_table.join(
     -- just for stuff to experiment with
     awful.key({ modkey,            }, "ü", function() add_tag() end,
               {description = "add tag", group = "tag"}),
+    -- just for stuff to experiment with
+    awful.key({ modkey,            }, "ö", function() rename_tag() end,
+              {description = "rename current tag", group = "tag"}),
     --}}}
     --{{{ LAYOUT
     -- enter machi editor
@@ -235,7 +250,7 @@ globalkeys = my_table.join(
               -- {description = "edit the current machi", group = "Layout"}),
     -- move clients in machi layout
     awful.key({ modkey,           }, ",",    function () machi.switcher.start(client.focus) end,
-              {description = "swap clients in machi", group = "layout"}),
+              {description = "swap clients in machi", group = "move client"}),
     -- increase master width factor
     awful.key({ modkey, altkey    }, "l",     function () awful.tag.incmwfact( 0.05)      end,
               {description = "increase master width factor", group = "layout"}),
@@ -244,23 +259,23 @@ globalkeys = my_table.join(
               {description = "decrease master width factor", group = "layout"}),
     -- swap clients
     awful.key({ modkey, "Shift"   }, "j",     function () awful.client.swap.byidx(  1)    end,
-              {description = "swap with next client by index", group = "layout"}),
+              {description = "swap with next client by index", group = "move client"}),
     -- swap clients
     awful.key({ modkey, "Shift"   }, "k",     function () awful.client.swap.byidx( -1)    end,
-              {description = "swap with previous client by index", group = "layout"}),
+              {description = "swap with previous client by index", group = "move client"}),
     -- awful.key({ modkey,           }, "Enter",     function () awful.client.jumpto(1) 	end,
     --           {description = "shift focus to master", group = "layout"}),
     -- awful.key({ modkey,  "Shift"  }, "Enter",     function () awful.tag.viewidx(1) 	end,
     --           {description = "move to master and shift focus to master", group = "layout"}),
-    awful.key({ modkey,           }, "c",     function () scratch.toggle("urxvt -name scratch-term", {instance = "scratch-term"}) 	end,
+    awful.key({ modkey,           }, "c",     function () scratch.toggle("urxvt -name scratch -e tmux attach -t scratchpad", {instance = "scratch"}) 	end,
               {description = "scratchpad terminal urxvt", group = "launch"}),
-    --}}}scratch.toggle("alacritty", false, false)
+    --}}}
     --{{{ BRIGHNTESS
     -- increase brightness
-    awful.key({ modkey, altkey }, "+", function () helpers.change_brightness_relative(0.1)   end,
+    awful.key({ modkey, "Shift" }, "+", function () helpers.change_brightness_relative(0.1)   end,
               {description = "increase brightness", group = "brightness"}),
     -- decrease brightness
-    awful.key({ modkey, altkey }, "-", function () helpers.change_brightness_relative(-0.1)  end,
+    awful.key({ modkey, "Shift" }, "-", function () helpers.change_brightness_relative(-0.1)  end,
               {description = "decrease brightness", group = "brightness"}),
     --}}}
     --{{{ quit/reload awesome
@@ -278,8 +293,10 @@ globalkeys = my_table.join(
 
     -- make screenrecord
     awful.key({ modkey, "Shift"   }, "r", function()
-        --awful.util.spawn_with_shell('if ! killall --user $USER --ignore-case --signal INT ffmpeg; then ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 ~/pics/screenrecords/$(date +%y-%m-%d_%H-%M-%S).mp4; fi')
         awful.util.spawn_with_shell('if ! killall --user $USER --ignore-case --signal INT ffmpeg; then ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default  ~/pics/screenrecords/$(date +%y-%m-%d_%H-%M-%S).mp4; fi')
+          -- giph -s -l -c 1,1,1,0.3 -b 5 -p -5 out.gif
+          -- TODO change to that ^
+          -- can do only areas
         is_recording = not is_recording
         if is_recording then
             naughty.notify({title="[!] Is recording", text="mp4 will be saved at ~/pics/screenrecords", timeout=12*60*60})
@@ -370,8 +387,8 @@ for i = 1, 9 do
     if i == 1 or i == 9 then
         descr_view = {description = "view tag #", group = "tag"}
         descr_toggle = {description = "toggle tag #", group = "tag"}
-        descr_move = {description = "move focused client and view to tag #", group = "tag"}
-        descr_toggle_focus = {description = "toggle focused client on tag #", group = "tag"}
+        descr_move = {description = "move focused client and view to tag #", group = "move client"}
+        -- descr_toggle_focus = {description = "toggle focused client on tag #", group = "tag"}
     end
     globalkeys = my_table.join(globalkeys,
         -- View tag only.
@@ -405,19 +422,19 @@ for i = 1, 9 do
                           end
                      end
                   end,
-                  descr_move),
+                  descr_move)
         -- Toggle tag on focused client.
-        awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9,
-                  function ()
-                      if client.focus then
-                          local tag = client.focus.screen.tags[i]
-                          if tag then
-                              -- tag.viewonly()
-                              client.focus:toggle_tag(tag)
-                          end
-                      end
-                  end,
-                  descr_toggle_focus)
+        -- awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9,
+        --           function ()
+        --               if client.focus then
+        --                   local tag = client.focus.screen.tags[i]
+        --                   if tag then
+        --                       -- tag.viewonly()
+        --                       client.focus:toggle_tag(tag)
+        --                   end
+        --               end
+        --           end,
+        --           descr_toggle_focus)
     )
 end
 

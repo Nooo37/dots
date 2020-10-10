@@ -1,23 +1,28 @@
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
 local naughty = require("naughty")
+local gears = require("gears")
 local dpi = xresources.apply_dpi
 local xrdb = xresources.get_current_theme()
 local gfs = require("gears.filesystem")
+
+local helpers = require("ui.helpers") -- only for notification appearance
 
 local config_path = os.getenv("HOME") .. "/.config/awesome/"
 
 
 local theme = {}
 
+theme.weather_city = "Berlin"
+
+theme.terminal = "alacritty"
+theme.browser  = "Firefox"
+theme.editor   = "Atom"
+
 theme.config_path = config_path
 theme.wallpaper = config_path.."wallpaper.png"
 
-theme.weather_city = "Berlin"
-
-theme.terminal = "urxvt"
-
-theme.corner_radius = dpi(14) --8
+theme.corner_radius = dpi(8) --14   8
 theme.font          = "sans 8"
 
 -- Variables set for theming the menu:
@@ -91,32 +96,13 @@ theme.awesome_icon = theme_assets.awesome_icon(
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 theme.icon_theme = nil
 
-
-
 theme.font          = "sans 8"
-
-theme.bg_normal     = xrdb.background
-theme.bg_focus      = xrdb.color12
-theme.bg_urgent     = xrdb.color9
-theme.bg_minimize   = xrdb.color8
-theme.bg_systray    = theme.bg_normal
-
-theme.fg_normal     = xrdb.foreground
-theme.fg_focus      = theme.bg_normal
-theme.fg_urgent     = theme.bg_normal
-theme.fg_minimize   = theme.bg_normal
-
-theme.gap_single_client = true
-theme.useless_gap   = dpi(5)
-
-theme.border_width  = dpi(3)
-theme.border_normal = xrdb.color0
-theme.border_focus  = theme.bg_focus
-theme.border_marked = xrdb.color10
 
 -- colors
 theme.xfg                                       = xrdb.foreground or "#FFFFFF"
 theme.xbg                                       = xrdb.background or "#1A2026"
+theme.xbgdark                                   = xrdb.bgdark  or "#101010"---"#14181d"
+theme.xbglight                                  = xrdb.bglight or "#526170"
 theme.xcolor0                                   = xrdb.color0  or "#242D35"
 theme.xcolor8                                   = xrdb.color8  or "#526170"
 theme.xcolor1                                   = xrdb.color1  or "#FB6396"
@@ -134,23 +120,50 @@ theme.xcolor14                                  = xrdb.color14 or "#58D6BF"
 theme.xcolor7                                   = xrdb.color7  or "#CFCFCF"
 theme.xcolor15                                  = xrdb.color15 or "#F4F5F2"
 
+theme.bg_normal     = theme.xbg
+theme.bg_focus      = theme.xcolor12
+theme.bg_urgent     = theme.xcolor9
+theme.bg_minimize   = theme.xcolor8
+theme.bg_systray    = theme.xbg
+
+theme.fg_normal     = theme.xfg
+theme.fg_focus      = theme.xbg
+theme.fg_urgent     = theme.xbg
+theme.fg_minimize   = theme.xbg
+
+theme.gap_single_client = false
+theme.useless_gap   = dpi(5)
+
+-- borders
+theme.border_width  = dpi(2)
+theme.border_normal = theme.xcolor0
+theme.border_focus  = theme.xcolor1
+theme.border_marked = theme.xcolor10
 
 theme.tooltip_fg = theme.fg_normal
 theme.tooltip_bg = theme.bg_normal
 
 
 -- taglist
-theme.taglist_bg                                = theme.xbg
-theme.taglist_bg_focus                          = theme.xcolor13
-theme.taglist_fg_focus                          = theme.xfg
+theme.taglist_bg                                = "alpha" --theme.xcolor2
+theme.taglist_bg_focus                          = theme.xcolor5-- theme.xfg
+theme.taglist_fg_focus                          = theme.xfg--theme.xcolor2
 theme.taglist_bg_urgent                         = theme.xcolor2
 theme.taglist_fg_urgent                         = theme.xfg
-theme.taglist_bg_occupied                       = "#00000000"
+theme.taglist_bg_occupied                       = "alpha"-- theme.xcolor5
 theme.taglist_fg_occupied                       = theme.xfg
-theme.taglist_bg_empty                          = "#00000000"
+theme.taglist_bg_empty                          = "alpha" --theme.xcolor8
 theme.taglist_fg_empty                          = theme.xcolor8
 theme.taglist_bg_volatile                       = "#00000000"
 theme.taglist_fg_volatile                       = theme.xcolor15
+
+-- titlebar
+theme.titlebar_fg_normal 	                      = theme.xfg
+theme.titlebar_bg_normal 	                      = theme.xbg
+theme.titlebar_fg 	                            = theme.xfg
+theme.titlebar_bg 	                            = theme.xbg
+theme.titlebar_fg_focus 	                      = theme.xcolor15
+theme.titlebar_bg_focus 	                      = theme.xbgdark
 
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]
@@ -164,34 +177,34 @@ theme = theme_assets.recolor_layout(theme, theme.fg_normal)
 
 -- Recolor titlebar icons:
 --
-local function darker(color_value, darker_n)
-    local result = "#"
-    for s in color_value:gmatch("[a-fA-F0-9][a-fA-F0-9]") do
-        local bg_numeric_value = tonumber("0x"..s) - darker_n
-        if bg_numeric_value < 0 then bg_numeric_value = 0 end
-        if bg_numeric_value > 255 then bg_numeric_value = 255 end
-        result = result .. string.format("%2.2x", bg_numeric_value)
-    end
-    return result
-end
-theme = theme_assets.recolor_titlebar(
-    theme, theme.fg_normal, "normal"
-)
-theme = theme_assets.recolor_titlebar(
-    theme, darker(theme.fg_normal, -60), "normal", "hover"
-)
-theme = theme_assets.recolor_titlebar(
-    theme, xrdb.color1, "normal", "press"
-)
-theme = theme_assets.recolor_titlebar(
-    theme, theme.fg_focus, "focus"
-)
-theme = theme_assets.recolor_titlebar(
-    theme, darker(theme.fg_focus, -60), "focus", "hover"
-)
-theme = theme_assets.recolor_titlebar(
-    theme, xrdb.color1, "focus", "press"
-)
+-- local function darker(color_value, darker_n)
+--     local result = "#"
+--     for s in color_value:gmatch("[a-fA-F0-9][a-fA-F0-9]") do
+--         local bg_numeric_value = tonumber("0x"..s) - darker_n
+--         if bg_numeric_value < 0 then bg_numeric_value = 0 end
+--         if bg_numeric_value > 255 then bg_numeric_value = 255 end
+--         result = result .. string.format("%2.2x", bg_numeric_value)
+--     end
+--     return result
+-- end
+-- theme = theme_assets.recolor_titlebar(
+--     theme, theme.fg_normal, "normal"
+-- )
+-- theme = theme_assets.recolor_titlebar(
+--     theme, darker(theme.fg_normal, -60), "normal", "hover"
+-- )
+-- theme = theme_assets.recolor_titlebar(
+--     theme, xrdb.color1, "normal", "press"
+-- )
+-- theme = theme_assets.recolor_titlebar(
+--     theme, theme.fg_focus, "focus"
+-- )
+-- theme = theme_assets.recolor_titlebar(
+--     theme, darker(theme.fg_focus, -60), "focus", "hover"
+-- )
+-- theme = theme_assets.recolor_titlebar(
+--     theme, xrdb.color1, "focus", "press"
+-- )
 
 -- Define the icon theme for application icons. If not set then the icons
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
@@ -209,25 +222,32 @@ for s in theme.bg_normal:gmatch("[a-fA-F0-9][a-fA-F0-9]") do
 end
 local is_dark_bg = (bg_numberic_value < 383)
 
--- Generate wallpaper:
--- local wallpaper_bg = xrdb.color8
--- local wallpaper_fg = xrdb.color7
--- local wallpaper_alt_fg = xrdb.color12
--- if not is_dark_bg then
---     wallpaper_bg, wallpaper_fg = wallpaper_fg, wallpaper_bg
--- end
--- theme.wallpaper = function(s)
---     return theme_assets.wallpaper(wallpaper_bg, wallpaper_fg, wallpaper_alt_fg, s)
--- end
-
+-- Notifications appearance
 naughty.config.defaults['icon_size']  = 50
 naughty.config.defaults.timeout       = 5
 naughty.config.defaults.position      = "top_right"
 naughty.config.defaults.bg            = theme.xbg
-theme.notification_border_color   = theme.popup_border_color or "#000000"
+theme.notification_border_color       = theme.popup_border_color or "#000000"
 naughty.config.defaults.border_width  = theme.popup_border_width or 0
-naughty.config.defaults.margin = 10
-naughty.config.padding = 30
-naughty.config.spacing = 30
+naughty.config.defaults.margin        = 10
+naughty.config.padding                = 30
+naughty.config.spacing                = 10
+
+theme.notification_font          = theme.font
+theme.notification_bg            = theme.xbg
+theme.notification_fg 	         = theme.xfg
+theme.notification_border_width  = theme.border_width
+theme.notification_border_color  = theme.xcolor8
+theme.notification_position      = "top_right"
+-- theme.notification_shape 	       = function(cr, width, height) gears.shape.rounded_rect(cr, width, height, 10) end
+-- theme.notification_opacity 	Notifications opacity.
+theme.notification_margin 	     = 30
+-- theme.notification_width 	Notifications width.
+theme.notification_max_width     = 500
+theme.notification_max_height    = 400
+theme.notification_icon_size     = 50
+
+naughty.config.shape = helpers.rrect(5)
+
 
 return theme

@@ -1,45 +1,46 @@
 pcall(require, "luarocks.loader")       -- seems to be standard
 local gears = require("gears")
 local awful = require("awful")
+local wibox = require("wibox")
 require("awful.autofocus")
 local naughty = require("naughty")
 local beautiful = require("beautiful")  -- Theme handling library
+
+
+-- require("dynamite")
 
 beautiful.init(require("theme")) -- intialize the theme
 
 awful.util.tagnames = {"MAIN", "WEBS", "CODE", "READ", "CHAT"} -- declare tag names
 
-require("layout")
-require("keys")
 
+-- require("tenacious")
 require("module.no_single_client_borders")
 require("module.no_single_client_round_corners")
-require("module.titlebar_only_in_floating")
+-- require("module.triangular_clients")
+-- require("module.titlebar_only_in_floating")
 require("module.sloppy_focus")
 require("module.set_wallpaper")(beautiful.wallpaper)
-require("module.auto_start")({"mpd", "picom", "aw-qt"})
+require("module.auto_start")({"mpd", "picom", "aw-qt", "greenclip daemon",
+                              "tmux has-session -t scratchpad || tmux new-session -d -s scratchpad"})
 require("module.error_handling")
 
-require("signal")({"volume", "mpd", "temp", "cpu", "ram", "newsboat", "disk", "brightness_desktop"})
+require("keys")
+require("layout")
+
+require("signal")({"volume", "mpd", "temp", "cpu", "ram", "newsboat", "disk", "weather", "brightness_desktop"})
 
 
--- require("ui.titlebar.default")
-require("ui.titlebar.java_tb")
--- require("ui.bar.default")
--- require("ui.bar.powerarrows")
--- require("ui.bar.minimal")
--- require("ui.bar.fragmented")
--- require("ui.bar.vertical")
+-- require("ui.titlebar.powerarrows")
+-- require("ui.bar.vertical_tiny")
 require("ui.bar.vertical_round")
-
-require("ui.dashboard.vertical-round")
-
+require("ui.dashboard.vertical_round")
 require("ui.popup.layout_box")
+require("ui.popup.tag_box")
 require("ui.popup.volume_adjust")
 -- require("ui.popup.mpd_control")
 require("ui.popup.bad_run_prompt")
 require("ui.popup.mpd_notify")
-
 
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
@@ -91,6 +92,11 @@ awful.rules.rules = {
     -- Add titlebars to normal clients and dialogs
     { rule_any = {type = { "normal", "dialog" }
   }, properties = { titlebars_enabled = false }
+    },
+
+    { rule_any = {instance = { "scratch" }},
+      properties = {},
+      callback = require("ui.titlebar.scratchpad")
     },
 
     -- Set Firefox to always map on the tag named "2" on screen 1.
