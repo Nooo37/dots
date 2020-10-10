@@ -9,6 +9,7 @@ mylayout.name = "vertical"
 function mylayout.arrange(p)
     local area
     area = p.workarea
+    local mwfact = awful.tag.getmwfact()
     for idx, c in pairs(p.clients) do
       local g
       if #p.clients == 1 then -- if only one client make fullscreen and leave
@@ -22,14 +23,14 @@ function mylayout.arrange(p)
         g = {
           x = area.x,
           y = area.y,
-          width = area.width * awful.tag.getmwfact(),
+          width = area.width * mwfact,
           height = area.height
         }
       else -- if client is slave
         g = {
-          x = area.x + (area.width * awful.tag.getmwfact()) + (idx-2) * ((area.width * (1-awful.tag.getmwfact())) / (#p.clients - 1)),
+          x = area.x + (area.width * mwfact) + (idx-2) * ((area.width * (1-mwfact)) / (#p.clients - 1)),
           y = area.y,
-          width = ( area.width * (1-awful.tag.getmwfact()) ) / ( #p.clients - 1),
+          width = ( area.width * (1-mwfact) ) / ( #p.clients - 1),
           height = area.height
         }
       end
