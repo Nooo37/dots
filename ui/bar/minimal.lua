@@ -164,13 +164,13 @@ awful.screen.connect_for_each_screen(function(s)
    }
 
    -- Create the wibox
-   s.mywibox = awful.wibar({ position = "top", screen = s, height = 19, bg = beautiful.xbg, fg = beautiful.xfg, opacity=1, visible=true })
+   s.mywibar = awful.wibar({ position = "top", screen = s, height = 19, bg = beautiful.xbg, fg = beautiful.xfg, opacity=1, visible=true })
 
 
    -- =====================================================
    -- The status bar -> it's all comming together
    -- =====================================================
-   s.mywibox:setup {
+   s.mywibar:setup {
        layout = wibox.layout.align.horizontal,
        expand = "none",
        { -- Left widgets

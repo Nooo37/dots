@@ -361,7 +361,7 @@ local function create_half_box(heading, body)
           layout = wibox.layout.align.vertical
         },
       bg = secondary_bg,
-      shape = helpers.rrect(dpi(20)),
+      shape = helpers.rrect(beautiful.corner_radius),
       forced_width = dpi(165),
       widget = wibox.container.background
     },

@@ -1,5 +1,3 @@
--- TODO clean up formatting
-
 local gears = require("gears")
 local beautiful = require("beautiful")
 local awful = require("awful")
@@ -13,9 +11,7 @@ local helpers = require("ui.helpers")
 
 local statusbar_height = 19
 
--- =====================================================
--- MPD
--- =====================================================
+--{{{ MPD
 local mpdtextbox = wibox.widget.textbox("s")
 mpdtextbox.font = beautiful.font
 
@@ -28,10 +24,9 @@ awesome.connect_signal("evil::mpd", function(artist, title, paused)
         mpdtextbox.text = "  ⏵  "
     end
 end)
+--}}}
 
--- =====================================================
--- Volume
--- =====================================================
+--{{{ VOLUME
 local volumetextbox = wibox.widget.textbox("?%")
 volumetextbox.font = beautiful.font
 awesome.connect_signal("evil::volume", function(volume_int, muted)
@@ -45,59 +40,36 @@ awesome.connect_signal("evil::volume", function(volume_int, muted)
     volumetextbox.text = " 🕪  " .. tostring(volume_int) .. "%  "
   end
 end)
+--}}}
 
--- =====================================================
--- CPU Usage
--- =====================================================
-local cputextbox = wibox.widget.textbox("?%")
-cputextbox.font = beautiful.font
-awesome.connect_signal("evil::cpu", function(cpu_a)
-    cputextbox.text = " ⊠ " .. cpu_a .. "% "
-end)
+-- --{{{ CPU Usage
+-- local cputextbox = wibox.widget.textbox("?%")
+-- cputextbox.font = beautiful.font
+-- awesome.connect_signal("evil::cpu", function(cpu_a)
+--     cputextbox.text = " ⊠ " .. cpu_a .. "% "
+-- end)
+-- --}}}
 
--- =====================================================
--- RAM Usage
--- =====================================================
-local ramtextbox = wibox.widget.textbox("?")
-ramtextbox.font = beautiful.font
-awesome.connect_signal("evil::ram", function(used, total)
-    ramtextbox.text = " ⊟ " .. tostring(used) .. "MB "
-end)
+-- --{{{ RAM Usage
+-- local ramtextbox = wibox.widget.textbox("?")
+-- ramtextbox.font = beautiful.font
+-- awesome.connect_signal("evil::ram", function(used, total)
+--     ramtextbox.text = " ⊟ " .. tostring(used) .. "MB "
+-- end)
+-- --}}}
 
--- =====================================================
--- Clock
--- =====================================================
+
+--{{{ CLOCK
 local clocktextbox = wibox.widget.textbox("?")
 clocktextbox.font = beautiful.font
 awful.widget.watch("date +' %a %d %b %R '", 60, function(_, stdout)
         clocktextbox.text = stdout
     end
 )
-
--- show calender when hovering/clicking clocktextbox
--- local calendar_widget = require("widgets.calendar")
-
--- local cal_popup = awful.popup({
---   widget = calendar_widget,
---   visible = false,
---   border_color = '#777777',
---   border_width = 2,
---   ontop        = true,
---   placement    = awful.placement.bottom_right,
---   shape        = gears.shape.rounded_rect
--- })
---
--- clocktextbox:connect_signal("mouse::enter",
---       function(_, _, _, button) cal_popup.visible = not cal_popup.visible end)
---
--- clocktextbox:connect_signal("mouse::leave",
---       function(_, _, _, button) cal_popup.visible = not cal_popup.visible end)
+--}}}
 
 
-
--- =====================================================
--- Arrows
--- =====================================================
+--{{{ Some powerarrow creators
 
 local separators = { height = 0, width = 9 }
 
@@ -198,7 +170,7 @@ function separators.arrow_left(col1, col2)
    return widget
 end
 
--- ]]
+--}}}
 ------------
 
 
@@ -272,16 +244,10 @@ local taglist_powerarrows = wibox.widget({
     l_arrow("alpha", beautiful.xcolor2),
   tag_main
 })
+--}}}
 
--- =====================================================
--- What really matters
--- =====================================================
+--{{{ Where it all comes together
 awful.screen.connect_for_each_screen(function(s)
-    -- local wallpaper = theme.wallpaper
-    -- if type(wallpaper) == "function" then
-    --     wallpaper = wallpaper(s)
-    -- end
-    -- gears.wallpaper.maximized(wallpaper, s, true)
     -- All tags open with layout 1
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -330,7 +296,6 @@ awful.screen.connect_for_each_screen(function(s)
       s.mytasklist.visible = false
 
       -- Create a taglist widget
-      -- s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons) -- langweileig
       s.mytaglist = awful.widget.taglist {
           screen  = s,
           filter  = awful.widget.taglist.filter.all,
@@ -349,14 +314,6 @@ awful.screen.connect_for_each_screen(function(s)
           widget_template = {
               {
                   {
-                          -- {
-                          --     {
-                          --         id     = 'index_role',
-                          --         widget = wibox.widget.textbox,
-                          --     },
-                          --     margins = 4,
-                          --     widget  = wibox.container.margin,
-                          -- },
                       {
                         {
                           id     = 'text_role',
@@ -373,36 +330,18 @@ awful.screen.connect_for_each_screen(function(s)
               },
               id     = 'background_role',
               widget = wibox.container.background,
-              -- -- Add support for hover colors and an index label
-              -- create_callback = function(self, c3, index, objects) --luacheck: no unused args
-              --     self:get_children_by_id('index_role')[1].markup = '<b> '..index..' </b>'
-              --     self:connect_signal('mouse::enter', function()
-              --         if self.bg ~= '#ff0000' then
-              --             self.backup     = self.bg
-              --             self.has_backup = true
-              --         end
-              --         self.bg = '#ff0000'
-              --     end)
-              --     self:connect_signal('mouse::leave', function()
-              --         if self.has_backup then self.bg = self.backup end
-              --     end)
-              -- end,
-              -- update_callback = function(self, c3, index, objects) --luacheck: no unused args
-              --     self:get_children_by_id('index_role')[1].markup = '<b> '..index..' </b>'
-              -- end,
           },
           buttons = awful.util.taglist_buttons
       }
 
       --------------
-      -- top
-      -- Create the wibox
-      s.mywibox = awful.wibar({ position = "top", screen = s, height = statusbar_height, bg = beautiful.xbg, fg = beautiful.xfg, opacity=1, visible=true })
 
-      -- =====================================================
-      -- The status bar -> it's all comming together
-      -- =====================================================
-      s.mywibox:setup {
+      -- Create the wibox
+      s.mywibar = awful.wibar({ position = "top", screen = s, height = statusbar_height, bg = beautiful.xbg, fg = beautiful.xfg, opacity=1, visible=true })
+
+
+      -- The status bar
+      s.mywibar:setup {
           layout = wibox.layout.align.horizontal,
           expand = "none",
           { -- Left widgets
@@ -458,4 +397,8 @@ awful.screen.connect_for_each_screen(function(s)
               helpers.horizontal_pad(dpi(5)),
           },
       }
+
+      awesome.connect_signal("toggle::bar", function()
+        s.mywibar.visible = not s.mywibar.visible
+      end)
   end)
