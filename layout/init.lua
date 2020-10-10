@@ -11,10 +11,16 @@ require("beautiful").layout_vertical = vertical.get_icon()
 local horizontal = require("layout.horizontal")
 require("beautiful").layout_horizontal = horizontal.get_icon()
 
+local centered = require("layout.centered")
+require("beautiful").layout_centered = centered.get_icon()
+
 -- awful.layout.suit.tile.left.mirror = true
 awful.layout.layouts = {
-    awful.layout.suit.tile,
     vertical.layout,
+    centered.layout,
+    -- require("dynamite").layout.tabbed,
+    -- require("layout.cascade"),
+    awful.layout.suit.tile,
     horizontal.layout,
     -- require("layout.treetile"),
     machi.default_layout,
