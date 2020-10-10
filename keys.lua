@@ -7,7 +7,6 @@ local naughty = require("naughty")
 
 local helpers = require("ui.helpers")
 local machi = require("layout.machi")
-local treetile = require("layout.treetile")
 
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
 local hotkeys_popup = require("awful.hotkeys_popup").widget
