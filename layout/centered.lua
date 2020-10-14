@@ -8,13 +8,15 @@ mylayout.name = "centered"
 function mylayout.arrange(p)
     local area
     area = p.workarea
+    local t = p.tag or screen[p.screen].selected_tag
     local num_of_clients_in_left_pane  = math.floor((#p.clients - 1)/2)
     local num_of_clients_in_right_pane = #p.clients - 1 - num_of_clients_in_left_pane
     local iterable_of_client_on_right_pane = 0
     local iterable_of_client_on_left_pane  = 0
-    local mwfact = awful.tag.getmwfact()
+    local mwfact = t.master_width_factor 
     for idx, c in pairs(p.clients) do
       local g
+      -- Special case: One client
       if #p.clients == 1 then -- if only one client make fullscreen and leave
         g = {
           x = area.x,
@@ -22,13 +24,22 @@ function mylayout.arrange(p)
           width = area.width,
           height = area.height,
         }
+      -- Special case: Two clients
       elseif idx == 1 and #p.clients == 2 then -- if client is master and there are two clients in total
         g = {
           x = area.x,
           y = area.y,
-          width = area.width * (mwfact + (1-mwfact)/2),
+          width = area.width * mwfact,
           height = area.height,
         }
+      elseif idx == 2 and #p.clients == 2 then -- if client is slave and there are two clients in total
+          g = {
+            x = area.x + area.width * mwfact,
+            y = area.y,
+            width = area.width * (1-mwfact),
+            height = area.height,
+          }
+      -- Normal case: More than 2 clients
       elseif idx == 1 then -- if client is master (and there more than 2 clients in total)
         g = {
           x = area.x + (1-mwfact)/2 * area.width,

@@ -1,35 +1,36 @@
 local awful = require("awful")
+local beautiful = require("beautiful")
+
 
 -- -- manual layout
 local machi = require("layout.machi")
-require("beautiful").layout_machi = machi.get_icon()
+beautiful.layout_machi = machi.get_icon()
 local editor = machi.editor.create()
 
 local vertical = require("layout.vertical")
-require("beautiful").layout_vertical = vertical.get_icon()
+beautiful.layout_vertical = vertical.get_icon()
 
 local horizontal = require("layout.horizontal")
-require("beautiful").layout_horizontal = horizontal.get_icon()
+beautiful.layout_horizontal = horizontal.get_icon()
 
 local centered = require("layout.centered")
-require("beautiful").layout_centered = centered.get_icon()
+beautiful.layout_centered = centered.get_icon()
 
 -- awful.layout.suit.tile.left.mirror = true
 awful.layout.layouts = {
-    vertical.layout,
+    --require("layout.centerwork"),
     centered.layout,
-    -- require("dynamite").layout.tabbed,
-    -- require("layout.cascade"),
+    vertical.layout,
+    --strange.layout,
     awful.layout.suit.tile,
-    horizontal.layout,
-    -- require("layout.treetile"),
+    --horizontal.layout,
     machi.default_layout,
     awful.layout.suit.spiral,
     awful.layout.suit.floating,
     --awful.layout.suit.tile.left,
     --awful.layout.suit.tile.bottom,
     --awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
+    --awful.layout.suit.fair,
     -- awful.layout.suit.fair.horizontal,
     --awful.layout.suit.spiral,
     --awful.layout.suit.spiral.dwindle,

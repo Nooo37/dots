@@ -8,7 +8,8 @@ mylayout.name = "horizontal"
 function mylayout.arrange(p)
     local area
     area = p.workarea
-    local mwfact = awful.tag.getmwfact()
+    local t = p.tag or screen[p.screen].selected_tag
+    local mwfact = t.master_width_factor
     for idx, c in pairs(p.clients) do
       local g
       if #p.clients == 1 then -- if only one client make fullscreen and leave
