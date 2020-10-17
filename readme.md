@@ -4,22 +4,22 @@ This repo is intended as a hodgepodge for all kinds of different titlebars, stat
 
 You can either copy the whole repository and have a fully functional and good looking awesomewm configuration and start customizing from there on or you can cherrypick the parts you need or take some inspiration from it.
 
-It currently is (and probably always will be) a work in progress so expect to see some stuff that doesn't look like it should be published. 
+It currently is (and probably always will be) a work in progress so expect to see some stuff that doesn't look like it should be published.
 
 ## How does it look like?
 
-That's what a configuration with that repo can look like. I used the [*mountaineer*](https://github.com/co1ncidence/mountaineer.vim) color scheme for that screenshot: 
-<img src="preview.png" alt="img">
+That's what a configuration with that repo can look like. I used the [*mountaineer*](https://github.com/co1ncidence/mountaineer.vim) color scheme for that screenshot:
+<img src="https://media.discordapp.net/attachments/635625917623828520/761627296636600360/preview.png" alt="img">
 
 ## How is that config structured?
 
 I try my best to keep everything nice and neet so here is the meaning of the different directories:
+- `collision/`: I have only touched the init file in that folder (to change some keybindings). Otherwise it is a copy of [Elv13s window navigation module](https://github.com/Elv13/collision)
 - `icon/`: The only place in which you will find only icons (mostly pngs).
-- `layout/`: All custom layouts go here. If you want to change the available layouts in your config, you will have to edit the `init.lua` file.
+- `layout/`: All custom layouts go here. If you want to change the available layouts in your config, you will have to edit the `init.lua` file. Every layout in here is self-made except for the [manual machi layout](https://github.com/xinhaoyuan/layout-machi)
 - `module/`: All sort of usefull background scripts (setting your wallpaper, autostarting applications, sloppy focus etc). Primarily to not junk your `rc.lua` with these things.
 - `signal/`:  All signals to update system info (for example how high the volume is, what mpd song is playing, how much battery power is left etc)
 - `ui/`: Everything you can actually see goes in that folder (titlebar, statusbar, popups, dashboards etc).
-- `wallpaper.png`: That file will be used as your wallpaper. You can change it or just not use the set-wallpaper module and use something like nitrogen instead.
 - `keys.lua`: Sets the keybindings. Hopefully the default ones as intuitive as possible but you are encouraged to do your own keybindings.
 - `theme.lua`: Sets the theme. It is getting its colors from your .xresources by default.
 - `rc.lua`: The file where everything comes together.
