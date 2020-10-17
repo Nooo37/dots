@@ -16,16 +16,20 @@ beautiful.layout_horizontal = horizontal.get_icon()
 local centered = require("layout.centered")
 beautiful.layout_centered = centered.get_icon()
 
--- awful.layout.suit.tile.left.mirror = true
-awful.layout.layouts = {
-    --require("layout.centerwork"),
+local mstab = require("layout.mstab")
+beautiful.layout_mstab = mstab.get_icon()
+
+
+ awful.layout.layouts = {
     centered.layout,
-    vertical.layout,
-    --strange.layout,
+    mstab.layout,
+    -- tabandtwo,
     awful.layout.suit.tile,
+    vertical.layout,
+    horizontal.layout,
     --horizontal.layout,
     machi.default_layout,
-    awful.layout.suit.spiral,
+    --awful.layout.suit.spiral,
     awful.layout.suit.floating,
     --awful.layout.suit.tile.left,
     --awful.layout.suit.tile.bottom,
