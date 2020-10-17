@@ -247,6 +247,34 @@ theme.notification_max_width     = 500
 theme.notification_max_height    = 400
 theme.notification_icon_size     = 50
 
+-- collision
+theme.collision_bg_focus            = theme.xcolor8
+theme.collision_fg_focus 	          = theme.xbg
+theme.collision_bg_center 	        = theme.xcolor8
+theme.collision_resize_width 	      = 30
+-- theme.collision_resize_shape 	      =
+theme.collision_resize_border_width = theme.border_width
+theme.collision_resize_border_color = theme.xcolor6
+-- theme.collision_resize_padding 	    = ??
+theme.collision_resize_bg 	        = theme.xcolor8
+theme.collision_resize_fg           = theme.xcolor6
+-- theme.collision_focus_shape         = theme.
+theme.collision_focus_border_width  = 0
+theme.collision_focus_border_color  = theme.xcolor1
+-- theme.collision_focus_padding       = theme.
+theme.collision_focus_bg            = theme.xcolor8
+theme.collision_focus_fg            = theme.xbg
+theme.collision_focus_bg_center     = theme.xcolor8
+-- theme.collision_screen_shape        =
+theme.collision_screen_border_width = 0 
+theme.collision_screen_border_color = theme.xcolor5
+-- theme.collision_screen_padding      =
+theme.collision_screen_bg           = theme.xcolor8
+theme.collision_screen_fg           = theme.xcolor2
+theme.collision_screen_bg_focus     = theme.xcolor8
+theme.collision_screen_fg_focus     = theme.xcolor1
+
+
 naughty.config.shape = helpers.rrect(5)
 
 

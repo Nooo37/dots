@@ -19,6 +19,8 @@ local modkey       = "Mod4"
 local altkey       = "Mod1"
 local modkey1      = "Control"
 
+local collision = require("collision")
+
 local is_recording = false
 
 local scratch = require("module.scratchpad")
@@ -123,7 +125,6 @@ local function shift_focus_and_move_client(move_back)
 end
 
 
-
 globalkeys = my_table.join(
 
     --{{{ USEFULL, TAG BROWSING
@@ -131,25 +132,25 @@ globalkeys = my_table.join(
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
               {description = "show help", group="awesome"}),
     -- Tag browsing
-    awful.key({ modkey,           }, "l",      awful.tag.viewnext,
-              {description = "view previous" , group = "tag"}),
+    --awful.key({ modkey,           }, "z", function() collision.tag(4, nil, true) end,
+    --         {description = "view previous" , group = "tag"}),
     -- Tag browsing
-    awful.key({ modkey,           }, "h",      awful.tag.viewprev,
-              {description = "view nect", group = "tag"}),
+    --awful.key({ modkey, "Control" }, "o", function() collision.tag(1, nil, true) end ,
+    --         {description = "view next", group = "tag"}),
     -- Tag browsing + move current client to new tag
-    awful.key({ modkey, "Shift" }, "l", function () shift_focus_and_move_client(false) end,
+    awful.key({ modkey, "Shift", "Control" }, "l", function () shift_focus_and_move_client(false) end,
               {description = "move client and view to next tag", group = "move client"}),
     -- Tag browsing + move current client to new tag
-    awful.key({ modkey, "Shift" }, "h", function () shift_focus_and_move_client(true) end,
+    awful.key({ modkey, "Shift", "Control" }, "h", function () shift_focus_and_move_client(true) end,
               {description = "move client and view to prev tag", group = "move client"}),
     -- Switch client focus next
-    awful.key({ modkey,           }, "j", function () awful.client.focus.byidx( 1)             end,
+    awful.key({ modkey,           }, "Tab", function () awful.client.focus.byidx( 1)             end,
               {description = "focus next by index", group = "client"}),
     -- Switch client focus prev
-    awful.key({ modkey,           }, "k", function () awful.client.focus.byidx(-1)             end,
+    awful.key({ modkey, "Shift"   }, "Tab", function () awful.client.focus.byidx(-1)             end,
               {description = "focus previous by index", group = "client"}),
     -- Show/Hide Wibox
-    awful.key({ modkey, "Shift  " }, "z", function () awesome.emit_signal("toggle::bar") end,
+    awful.key({ modkey,           }, "Return", function () awesome.emit_signal("toggle::bar") end,
               {description = "toggle wibox", group = "awesome"}), --local s = awful.screen.focused() s.mywibox.visible = not s.mywibox.visible
     -- launch proomptbox
     awful.key({ modkey },            "r",     function () awesome.emit_signal("toggle::prompt") end,
@@ -169,11 +170,11 @@ globalkeys = my_table.join(
     awful.key({ modkey,           }, "q", function () awful.spawn.with_shell("$HOME/prog/bash/exit.sh") end,
               {description = "shutdown, quit, reload and reboot everything", group = "awesome"}),
     -- clipboard history
-    awful.key({ modkey,           }, "o", function () awful.spawn.with_shell("greenclip print | sed '/^$/d' | rofi -dmenu -i -c -l 20 | xargs -r -d'\\n' -I '{}' greenclip print '{}'") end,
+    awful.key({ modkey,           }, "y", function () awful.spawn.with_shell("greenclip print | sed '/^$/d' | rofi -dmenu -i -c -l 20 | xargs -r -d'\\n' -I '{}' greenclip print '{}'") end,
               {description = "select from greenclip clipboard history", group = "awesome"}),
     -- try out thing
-    awful.key({ modkey,           }, "u", function () awful.spawn("date") end,
-              {description = "select from greenclip clipboard history", group = "awesome"}),
+    -- awful.key({ modkey,           }, "y", function () awful.spawn("date") end,
+    --           {description = "select from greenclip clipboard history", group = "awesome"}),
 
     --}}}
     --{{{ LAUNCH
@@ -251,10 +252,16 @@ globalkeys = my_table.join(
     awful.key({ modkey,           }, ",",    function () machi.switcher.start(client.focus) end,
               {description = "swap clients in machi", group = "move client"}),
     -- increase master width factor
-    awful.key({ modkey, altkey    }, "l",     function () awful.tag.incmwfact( 0.05)      end,
+    awful.key({ modkey,           }, "i",     function () awful.tag.incmwfact( 0.05)      end,
               {description = "increase master width factor", group = "layout"}),
     -- decrease master width factor
-    awful.key({ modkey, altkey    }, "h",     function () awful.tag.incmwfact(-0.05)      end,
+    awful.key({ modkey,           }, "u",     function () awful.tag.incmwfact(-0.05)      end,
+              {description = "decrease number of master client", group = "layout"}),
+    -- increase master width factor
+    awful.key({ modkey,  "Shift"  }, "i",     function () awful.tag.incnmaster(-1, nil, true) end,
+              {description = "increase number of master clients", group = "layout"}),
+    -- decrease master width factor
+    awful.key({ modkey, "Shift"   }, "u",     function () awful.tag.incnmaster(1, nil, true) end,
               {description = "decrease master width factor", group = "layout"}),
     -- swap clients
     awful.key({ modkey, "Shift"   }, "j",     function () awful.client.swap.byidx(  1)    end,
@@ -290,6 +297,9 @@ globalkeys = my_table.join(
               {description = "select previous", group = "layout"}),
     --}}}
 
+    -- colorpicker
+    awful.key({ modkey, "Shift"   }, "p", function () awful.util.spawn_with_shell("farge --notify")  end,
+              {description = "pick color", group = "hotkeys"}),
     -- make screenrecord
     awful.key({ modkey, "Shift"   }, "r", function()
         awful.util.spawn_with_shell('if ! killall --user $USER --ignore-case --signal INT ffmpeg; then ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default  ~/pics/screenrecords/$(date +%y-%m-%d_%H-%M-%S).mp4; fi')
@@ -304,6 +314,13 @@ globalkeys = my_table.join(
         end
       end,
       {description = "make screenrecord", group = "hotkeys"}),
+
+    -- make screenshot whole
+    awful.key({ modkey, "Control", "Shift"}, "s", function()
+        local timestamp = os.date("%y-%m-%d_%H-%M-%S")
+        awful.util.spawn_with_shell('scrot | tee >(xclip -selection clipboard -t image/png) $HOME/pics/screenshots/' .. timestamp .. '.png | xclip -selection primary')
+    end,
+            {description="make screenshot whole", group="hotkeys"}),
 
     -- make screenshot // DEPENDS on "maim"
     awful.key({ modkey, "Shift"   }, "s", function()

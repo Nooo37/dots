@@ -6,27 +6,36 @@ require("awful.autofocus")
 local naughty = require("naughty")
 local beautiful = require("beautiful")  -- Theme handling library
 
-
--- require("dynamite")
-
+awful.util.spawn_with_shell("xrdb ~/.config/X/Xresources")
 beautiful.init(require("theme")) -- intialize the theme
 
-awful.util.tagnames = {"MAIN", "WEBS", "CODE", "READ", "CHAT"} -- declare tag names
+awful.util.tagnames = {"1", "2", "3", "4", "5"} -- declare tag names
 
-
--- require("tenacious")
 require("module.no_single_client_borders")
 require("module.no_single_client_round_corners")
 -- require("module.triangular_clients")
 -- require("module.titlebar_only_in_floating")
 require("module.sloppy_focus")
-require("module.set_wallpaper")(beautiful.wallpaper)
-require("module.auto_start")({"mpd", "picom", "aw-qt", "greenclip daemon",
+require("module.auto_start")({"mpd", "picom", "aw-qt", "greenclip daemon", "setxkbmap -option caps:escape",
                               "tmux has-session -t scratchpad || tmux new-session -d -s scratchpad"})
 require("module.error_handling")
 
+--require("module.set_wallpaper")(beautiful.wallpaper)
+gears.wallpaper.set(beautiful.xcolor8)
+
 require("keys")
 require("layout")
+
+require("collision") {
+    --       Normal    Vim    Xephyr
+    up    = { "k" },--,    "Up",   ")" },
+    down  = { "j" },--,  "Down",   "(" },
+    left  = { "h" },--,  "Left",   "/" },
+    right = { "l" },--, "Right",   "=" },
+}
+
+local collision = require("collision")
+collision.settings.swap_across_screen = true
 
 require("signal")({"volume", "mpd", "temp", "cpu", "ram", "newsboat", "disk", "weather", "brightness_desktop"})
 
@@ -36,7 +45,7 @@ require("signal")({"volume", "mpd", "temp", "cpu", "ram", "newsboat", "disk", "w
 require("ui.bar.vertical_round")
 require("ui.dashboard.vertical_round")
 require("ui.popup.layout_box")
-require("ui.popup.tag_box")
+--require("ui.popup.tag_box") -- no need with collision
 require("ui.popup.volume_adjust")
 -- require("ui.popup.mpd_control")
 require("ui.popup.bad_run_prompt")
@@ -105,12 +114,21 @@ awful.rules.rules = {
 }
 -- }}}
 
----{{{ Notify when cpu temp rises above 65°C
+---{{{ all clients spawn as slave
+client.connect_signal(
+    "manage",
+    function(c)
+        if not awesome.startup then
+            awful.client.setslave(c)
+        end
+    end
+)
+---}}}
 
+---{{{ Notify when cpu temp rises above 65°C
 awesome.connect_signal("evil::temp", function(temp)
     if temp > 65 then
         naughty.notify({title="[!] CPU is getting hot", text="Currently at " .. tostring(temp) .. "°C"})
     end
 end)
-
---}}}
+---}}}
