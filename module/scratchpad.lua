@@ -12,6 +12,11 @@ local defaultRule = {instance = "scratch"}
 local function turn_on(c)
     local s = c.screen
     local current_tag = awful.tag.selected(s)
+    c.floating = true
+    c.height = s.workarea.height * 0.75
+    c.width = s.workarea.width * 0.75
+    c.y = s.workarea.height/2 - c.height/2
+    c.x = s.workarea.width/2  - c.width/2
     ctags = {current_tag}
     for k,tag in pairs(c:tags()) do
         if tag ~= current_tag then table.insert(ctags, tag) end
@@ -20,11 +25,6 @@ local function turn_on(c)
     c:raise()
     client.focus = c
     -- added the following to make scratchpad good looking and not tile
-    c.floating = true
-    c.height = s.workarea.height * 0.75
-    c.width = s.workarea.width * 0.75
-    c.y = s.workarea.height/2 - c.height/2
-    c.x = s.workarea.width/2  - c.width/2
 end
 
 -- Turn off this scratch window client (remove current tag from window's tags)

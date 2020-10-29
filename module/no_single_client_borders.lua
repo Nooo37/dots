@@ -14,7 +14,7 @@ local border_normal = beautiful.border_normal or "#cccccc"
 local border_focus  = beautiful.border_focus  or "#ff0000"
 
 function border_adjust(c)
-    if c.maximized then -- no borders if only 1 client visible
+    if c.maximized or c.first_tag.layout.name == "max" then -- no borders if only 1 client visible
         c.border_width = 0
     elseif #awful.screen.focused().clients == 1 then
         c.border_width = 0

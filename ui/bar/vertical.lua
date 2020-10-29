@@ -97,10 +97,10 @@ awful.screen.connect_for_each_screen(function(s)
 
    local statusbar_width = dpi(40)
    -- Create the wibar
-   s.mywibox = awful.wibar({ position = "left", screen = s, width = statusbar_width, bg=beautiful.xbg, opacity=0, ontop=false, visible=true })
+   s.mywibar = awful.wibar({ position = "left", screen = s, width = statusbar_width, bg=beautiful.xbg, opacity=1, ontop=false, visible=true })
    -- Create the wibox
 
-   s.mywibox:setup {
+   s.mywibar:setup {
        layout = wibox.layout.align.vertical,
        -- expand = "none",
        { -- Top widgets
@@ -126,4 +126,8 @@ awful.screen.connect_for_each_screen(function(s)
            -- datebox,
        },
    }
+
+   awesome.connect_signal("toggle::bar", function() 
+        s.mywibar.visible = not s.mywibar.visible
+   end)
 end)

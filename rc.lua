@@ -6,28 +6,58 @@ require("awful.autofocus")
 local naughty = require("naughty")
 local beautiful = require("beautiful")  -- Theme handling library
 
-awful.util.spawn_with_shell("xrdb ~/.config/X/Xresources")
 beautiful.init(require("theme")) -- intialize the theme
 
 awful.util.tagnames = {"1", "2", "3", "4", "5"} -- declare tag names
 
-require("module.no_single_client_borders")
+-- require("module.no_single_client_borders")
 require("module.no_single_client_round_corners")
--- require("module.triangular_clients")
 -- require("module.titlebar_only_in_floating")
 require("module.sloppy_focus")
-require("module.auto_start")({"mpd", "picom", "aw-qt", "greenclip daemon", "setxkbmap -option caps:escape",
-                              "tmux has-session -t scratchpad || tmux new-session -d -s scratchpad"})
+require("module.auto_start")({"mpd", "picom", "aw-qt", "greenclip daemon", "setxkbmap -option caps:escape"})
 require("module.error_handling")
 
---require("module.set_wallpaper")(beautiful.wallpaper)
-gears.wallpaper.set(beautiful.xcolor8)
 
-require("keys")
-require("layout")
+--{{{ bling
+local bling = require("bling")
 
+bling.module.window_swallowing.start()
+bling.module.flash_focus.enable()
+
+-- set wallpaper
+awful.screen.connect_for_each_screen(function(s)
+    bling.module.tiled_wallpaper("", s, { -- 
+        fg = beautiful.xbg, 
+        bg = beautiful.xcolor8,
+        font = "JetBrains Mono Nerd Font", 
+        font_size = 20,
+        padding = 80,
+        zickzack = true 
+    })
+end)
+--}}}
+
+--{{{ Layouts
+local machi = require("module.machi")
+beautiful.layout_machi = machi.get_icon()
+local editor = machi.editor.create()
+
+awful.layout.layouts = {
+    bling.layout.mstab,
+    bling.layout.centered,
+    machi.default_layout,
+    -- bling.layout.horizontal,
+    -- bling.layout.vertical,
+    awful.layout.suit.tile,
+    -- awful.layout.suit.spiral,
+    awful.layout.suit.floating,
+    -- awful.layout.suit.max
+}
+awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
+--}}}
+
+--{{{ collision
 require("collision") {
-    --       Normal    Vim    Xephyr
     up    = { "k" },--,    "Up",   ")" },
     down  = { "j" },--,  "Down",   "(" },
     left  = { "h" },--,  "Left",   "/" },
@@ -36,12 +66,13 @@ require("collision") {
 
 local collision = require("collision")
 collision.settings.swap_across_screen = true
+--}}}
 
+--{{{ require
+require("keys")
 require("signal")({"volume", "mpd", "temp", "cpu", "ram", "newsboat", "disk", "weather", "brightness_desktop"})
-
-
 -- require("ui.titlebar.powerarrows")
--- require("ui.bar.vertical_tiny")
+-- require("ui.bar.powerarrows")
 require("ui.bar.vertical_round")
 require("ui.dashboard.vertical_round")
 require("ui.popup.layout_box")
@@ -50,6 +81,8 @@ require("ui.popup.volume_adjust")
 -- require("ui.popup.mpd_control")
 require("ui.popup.bad_run_prompt")
 require("ui.popup.mpd_notify")
+--}}}
+
 
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
@@ -104,7 +137,7 @@ awful.rules.rules = {
     },
 
     { rule_any = {instance = { "scratch" }},
-      properties = {},
+      properties = { floating = true, placement=awful.placement.centered},
       callback = require("ui.titlebar.scratchpad")
     },
 
@@ -113,6 +146,7 @@ awful.rules.rules = {
     --   properties = { screen = 1, tag = "2" } },
 }
 -- }}}
+
 
 ---{{{ all clients spawn as slave
 client.connect_signal(
@@ -132,3 +166,4 @@ awesome.connect_signal("evil::temp", function(temp)
     end
 end)
 ---}}}
+

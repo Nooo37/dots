@@ -12,11 +12,12 @@ local helpers = require("ui.helpers")
 
 local statusbar_font = "Hack Bold"
 local statusbar_bg = beautiful.xbg
+local statusbar_width = 35
 local highlight_width = 5
 
 --{{{ Clock
 
-local clocktextbox = wibox.widget.textclock("%R\n%d.%m") -- old:  %a, %d %b %R
+local clocktextbox = wibox.widget.textclock("%R") --\n%d.%m") -- old:  %a, %d %b %R
 clocktextbox.font = statusbar_font .. " 8.5"
 
 local temp_wid = wibox.widget {
@@ -26,10 +27,17 @@ local temp_wid = wibox.widget {
           widget  = wibox.container.background,
 }
 
+
+local clocktextbox_rotated  = wibox.container {
+    clocktextbox,
+    direction = 'east',
+    widget    = wibox.container.rotate
+}
+
 local clockbox = wibox.widget {
   helpers.horizontal_pad(3),
   {
-      clocktextbox,
+      clocktextbox_rotated,
       top   = 5,
       bottom = 5,
       widget = wibox.container.margin
@@ -64,11 +72,16 @@ local temp_wid = wibox.widget {
           widget  = wibox.container.background,
 }
 
+local volumetextbox_rotated = wibox.container {
+    volumetextbox,
+    direction = 'east',
+    widget    = wibox.container.rotate
+}
 
 local volumebox = wibox.widget {
   helpers.horizontal_pad(4),
   {
-      volumetextbox,
+      volumetextbox_rotated,
       top   = 5,
       bottom = 5,
       widget = wibox.container.margin
@@ -143,27 +156,6 @@ awful.screen.connect_for_each_screen(function(s)
            },
            layout  = wibox.layout.fixed.vertical
        },
-       -- widget_template = {
-       --                helpers.horizontal_pad(5),
-       --                {
-       --                   {
-       --                     {
-       --                       id     = 'text_role',
-       --                       align = "center",
-       --                       valign = "center",
-       --                       widget = wibox.widget.textbox,
-       --                     },
-       --                     top   = 5,
-       --                     bottom = 5,
-       --                     right = 5,
-       --                     left = 5,
-       --                     widget = wibox.container.margin
-       --                   },
-       --                   id = 'background_role',
-       --                   widget  = wibox.container.background,
-       --                 },
-       --                layout = wibox.layout.align.horizontal,
-       -- },
        widget_template = {
                       helpers.horizontal_pad(5),
                       {
@@ -188,10 +180,8 @@ awful.screen.connect_for_each_screen(function(s)
                       layout = wibox.layout.align.horizontal,
        },
        buttons = taglist_buttons
-       -- Create a taglist widget
    }
 
-   local statusbar_width = 55
    -- Create the wibar
    s.mywibar = awful.wibar({ position = "left", screen = s, width = statusbar_width, bg="#00000000", opacity=0, ontop=false, visible=true })
    -- Create the wibox
@@ -206,6 +196,9 @@ awful.screen.connect_for_each_screen(function(s)
       visible = true
    }
 
+   -- Create promptbox
+   s.mypromptbox = awful.widget.prompt()
+
    s.mywibox:setup {
        layout = wibox.layout.align.vertical,
        -- expand = "none",
@@ -213,6 +206,7 @@ awful.screen.connect_for_each_screen(function(s)
            layout = wibox.layout.fixed.vertical,
            helpers.vertical_pad(10),
            s.mytaglist,
+           s.mypromptbox,
        },
        {
           nil, -- Middle widgets lol
@@ -220,7 +214,7 @@ awful.screen.connect_for_each_screen(function(s)
        },
        { -- Bottom widgets
            layout = wibox.layout.fixed.vertical,
-           systraybox,
+           -- systraybox,
            helpers.vertical_pad(8),
            volumebox,
            helpers.vertical_pad(8),
@@ -233,11 +227,14 @@ awful.screen.connect_for_each_screen(function(s)
    -- helper function to update the bar
    -- should be "solid" when only one client is on the selected tag and "floating with rounded corners" if there are multiple
    local function update_bar(t, c)
-     if c then
-       if c.floating then return end -- so scratchpad doesn't mess with that
-     end
      local clients = t:clients()
-     if #clients == 1 then
+     local client_count = 0
+     for _, c in ipairs(clients) do 
+        if not(c.floating or c.minimized) then 
+            client_count = client_count + 1
+        end 
+    end
+     if client_count == 1 or t.layout.name == "max" then
        s.mywibox.shape = helpers.rrect(0)
        s.mywibox.height = s.geometry.height
        s.mywibox.width = statusbar_width
@@ -251,6 +248,11 @@ awful.screen.connect_for_each_screen(function(s)
        s.mywibox.y = 2*beautiful.useless_gap
      end
    end
+
+   awesome.connect_signal("toggle::bar", function()
+       s.mywibar.visible = not s.mywibar.visible
+       s.mywibox.visible = not s.mywibox.visible
+   end)
 
    -- connect all important signals
    tag.connect_signal("tagged", function(t, c) update_bar(t, c) end)

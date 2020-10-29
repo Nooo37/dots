@@ -491,6 +491,67 @@ local mpd_box = wibox.widget {
 --}}}
 
 
+--{{{ TODO finish activity watch piechart 
+
+
+local piechart = wibox.widget {
+    data_list = {
+        { 'L1', 100 },
+        { 'L2', 200 },
+        { 'L3', 300 },
+    },
+    border_width = 1,
+    border_color = beautiful.xfg,
+    colors = {
+        beautiful.xcolor2,
+        beautiful.xcolor1,
+        beautiful.xcolor5,
+    },
+    forced_height = dpi(65),
+    widget = wibox.widget.piechart
+}
+
+function string:split(pat)
+  pat = pat or '%s+'
+  local st, g = 1, self:gmatch("()("..pat..")")
+  local function getter(segs, seps, sep, cap1, ...)
+    st = sep and seps + #sep
+    return self:sub(segs, (seps or 0) - 1), cap1 or sep, ...
+  end
+  return function() if st then return getter(st, g()) end end
+end
+
+
+local activitywatch_script = [[
+    bash -c "
+    python $HOME/prog/python/aw_notify.py
+"]]
+
+local update_interval = 2*60
+
+awful.widget.watch(activitywatch_script, update_interval, function(_, stdout)
+    local new_data_list = {}
+    -- iterate through lines
+    for line in stdout:split("\n") do
+        local _app = string.match(line, "^.*[a-zA-Z]")
+        local _time = string.match(line, "[0-9.].*$")
+        if _app ~= "" and _time ~= "" then
+            -- saftey to not have empty elements in there
+            if not tonumber(_time) then
+                _app = ""
+                _time = 0
+            end
+            new_data_list[#new_data_list+1] = {_app, tonumber(_time)}
+        end
+    end
+    piechart.data_list = new_data_list
+    --piechart.data_list = {{'Terminal', 2.6}, {'Internet', 3.4}}
+end)
+
+local acititywatch_box = create_half_box(piechart, nil)
+
+--}}}
+
 awful.screen.connect_for_each_screen(function(s)
 
   s.myplacehodler = awful.wibar({ position=dashboard_position, screen=s, width=dashboard_width , bg="#00000000", opacity=0, ontop=false, visible=false })
@@ -527,10 +588,10 @@ awful.screen.connect_for_each_screen(function(s)
         temp_box,
         layout = wibox.layout.fixed.horizontal,
       },
+      --acititywatch_box,
       user_box,
       {
         weather_box,
-        void_box,
         layout = wibox.layout.fixed.horizontal,
       },
       mpd_box,
@@ -549,7 +610,7 @@ awful.screen.connect_for_each_screen(function(s)
       if c.floating then return end -- so scratchpad doesn't mess with that
     end
     local clients = t:clients()
-    if #clients == 1 then
+    if #clients == 1 or t.layout.name == "max" then
       s.mybar.shape = helpers.rrect(0)
       s.mybar.height = s.workarea.height
       s.mybar.width = dashboard_width

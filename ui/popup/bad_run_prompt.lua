@@ -99,9 +99,9 @@ end
 awesome.connect_signal("toggle::prompt", function()
     runwidget.visible=true
     dashboard_grabber = awful.keygrabber.run(function(_, key, event)
-      if key == ' ' then -- do run prompt
-        awful.keygrabber.stop(dashboard_grabber)
-        prompt:run()
+      if key == ' ' then -- do run rofi run
+        awful.spawn.with_shell("rofi -show run")
+        quit_popup()
       else
         if key == 'Escape' or key == 'q' or key == 'F1' then
           quit_popup()

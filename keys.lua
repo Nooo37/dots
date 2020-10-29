@@ -6,7 +6,7 @@ local gears = require("gears")
 local naughty = require("naughty")
 
 local helpers = require("ui.helpers")
-local machi = require("layout.machi")
+local machi = require("module.machi")
 
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
 local hotkeys_popup = require("awful.hotkeys_popup").widget
@@ -23,8 +23,9 @@ local collision = require("collision")
 
 local is_recording = false
 
-local scratch = require("module.scratchpad")
-awful.util.spawn_with_shell("tmux new -s scratchpad")
+local bling = require("bling")
+local scratchpad = require("module.scratchpad")
+-- awful.util.spawn_with_shell("tmux new -s scratchpad")
 
 local function add_tag_focus_with(application)
   -- if the appication is already open, focus it otherwise open an instance
@@ -104,7 +105,7 @@ local function shift_focus_and_move_client(move_back)
   end
   if move_back then
     if t.index == 1 then
-      new_tagindex = #awful.screen.focused().tags     -- TODO change in giit
+      new_tagindex = #awful.screen.focused().tags
     else
       new_tagindex = t.index - 1
     end
@@ -124,6 +125,7 @@ local function shift_focus_and_move_client(move_back)
   end
 end
 
+local temp_bool = false
 
 globalkeys = my_table.join(
 
@@ -152,38 +154,24 @@ globalkeys = my_table.join(
     -- Show/Hide Wibox
     awful.key({ modkey,           }, "Return", function () awesome.emit_signal("toggle::bar") end,
               {description = "toggle wibox", group = "awesome"}), --local s = awful.screen.focused() s.mywibox.visible = not s.mywibox.visible
-    -- launch proomptbox
-    awful.key({ modkey },            "r",     function () awesome.emit_signal("toggle::prompt") end,
-              {description = "run prompt", group = "launch"}),
     -- kill all notifications
     awful.key({ modkey },            "#",     function () naughty.destroy_all_notifications(nil, naughty.notificationClosedReason.dismissedByUser) end,
               {description = "close notifications", group = "hotkeys"}),
     --}}}
     --{{{ SYSTEM
-    -- suspend
-    -- awful.key({ modkey, altkey, "Shift"}, "s", function () awful.spawn.with_shell("systemctl suspend") end,
-    --           {description = "suspend", group = "awesome"}),
-    -- -- reboot
-    -- awful.key({ modkey, altkey, "Shift"}, "r", function () awful.spawn.with_shell("systemctl reboot") end,
-    --           {description = "reboot", group = "awesome"}),
     -- power off
-    awful.key({ modkey,           }, "q", function () awful.spawn.with_shell("$HOME/prog/bash/exit.sh") end,
+    awful.key({ modkey,           }, "q", function () awful.spawn.with_shell("$HOME/scripts/exit") end,
               {description = "shutdown, quit, reload and reboot everything", group = "awesome"}),
     -- clipboard history
     awful.key({ modkey,           }, "y", function () awful.spawn.with_shell("greenclip print | sed '/^$/d' | rofi -dmenu -i -c -l 20 | xargs -r -d'\\n' -I '{}' greenclip print '{}'") end,
               {description = "select from greenclip clipboard history", group = "awesome"}),
-    -- try out thing
-    -- awful.key({ modkey,           }, "y", function () awful.spawn("date") end,
-    --           {description = "select from greenclip clipboard history", group = "awesome"}),
-
     --}}}
     --{{{ LAUNCH
+    awful.key({ modkey },            "r",     function () awful.spawn.with_shell('rofi -show run') end,
+              {description = "run prompt", group = "launch"}),
     -- Launch dasboard awesome.emit_signal("toggle::dash")
     awful.key({ modkey,           }, "Menu", function () awesome.emit_signal("toggle::sidebar") end,
               {description = "dashboard", group = "launch"}),
-    -- run popup prompt
-    -- awful.key({modkey             }, "o", function () awful.spawn.with_shell("dmenu_run -c -l 20 -i") end,
-    --           {description = "run rofi", group = "launch"}),
     -- launch terminal
     awful.key({ modkey,           }, "t", function () awful.util.spawn(terminal) end,
               {description = "launch terminal", group = "launch"}),
@@ -246,8 +234,8 @@ globalkeys = my_table.join(
     --{{{ LAYOUT
     -- enter machi editor
     awful.key({ modkey,           }, "<",    function () machi.default_editor.start_interactive() end,
-              {}), -- otherwise it's creating an empty group in shortcut overview :(
-              -- {description = "edit the current machi", group = "Layout"}),
+              -- {}), -- otherwise it's creating an empty group in shortcut overview :(
+              {description = "edit the current machi", group = "Layout"}),
     -- move clients in machi layout
     awful.key({ modkey,           }, ",",    function () machi.switcher.start(client.focus) end,
               {description = "swap clients in machi", group = "move client"}),
@@ -273,8 +261,9 @@ globalkeys = my_table.join(
     --           {description = "shift focus to master", group = "layout"}),
     -- awful.key({ modkey,  "Shift"  }, "Enter",     function () awful.tag.viewidx(1) 	end,
     --           {description = "move to master and shift focus to master", group = "layout"}),
-    awful.key({ modkey,           }, "c",     function () scratch.toggle("urxvt -name scratch -e tmux attach -t scratchpad", {instance = "scratch"}) 	end,
-              {description = "scratchpad terminal urxvt", group = "launch"}),
+    awful.key({ modkey,           }, "c",     function () scratchpad.toggle("alacritty --class scratchpad", {instance = "scratch"}) 	end,
+              {description = "scratchpad terminal", group = "launch"}),
+              --- urxvt -name scratch -e tmux attach -t scratchpad
     --}}}
     --{{{ BRIGHNTESS
     -- increase brightness
@@ -297,38 +286,45 @@ globalkeys = my_table.join(
               {description = "select previous", group = "layout"}),
     --}}}
 
-    -- colorpicker
-    awful.key({ modkey, "Shift"   }, "p", function () awful.util.spawn_with_shell("farge --notify")  end,
-              {description = "pick color", group = "hotkeys"}),
-    -- make screenrecord
-    awful.key({ modkey, "Shift"   }, "r", function()
-        awful.util.spawn_with_shell('if ! killall --user $USER --ignore-case --signal INT ffmpeg; then ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 -f pulse -ac 2 -i default  ~/pics/screenrecords/$(date +%y-%m-%d_%H-%M-%S).mp4; fi')
-          -- giph -s -l -c 1,1,1,0.3 -b 5 -p -5 out.gif
-          -- TODO change to that ^
-          -- can do only areas
-        is_recording = not is_recording
-        if is_recording then
-            naughty.notify({title="[!] Is recording", text="mp4 will be saved at ~/pics/screenrecords", timeout=12*60*60})
-        else
-            naughty.destroy_all_notifications(nil, naughty.notificationClosedReason.dismissedByUser)
-        end
-      end,
-      {description = "make screenrecord", group = "hotkeys"}),
-
-    -- make screenshot whole
-    awful.key({ modkey, "Control", "Shift"}, "s", function()
-        local timestamp = os.date("%y-%m-%d_%H-%M-%S")
-        awful.util.spawn_with_shell('scrot | tee >(xclip -selection clipboard -t image/png) $HOME/pics/screenshots/' .. timestamp .. '.png | xclip -selection primary')
-    end,
-            {description="make screenshot whole", group="hotkeys"}),
-
-    -- make screenshot // DEPENDS on "maim"
-    awful.key({ modkey, "Shift"   }, "s", function()
-        local timestamp = os.date("%y-%m-%d_%H-%M-%S")
-        awful.util.spawn_with_shell('maim -s | tee >(xclip -selection clipboard -t image/png) $HOME/pics/screenshots/' .. timestamp .. '.png | xclip -selection primary')
-        --"~/pics/screenshots/" .. timestamp .. ".png"
+    -- show color that is in clipboard
+    awful.key({ modkey, "Shift"   }, "p", function ()
+        local handle = io.popen("xclip -selection -c -o")
+        local result = handle:read("*a")
+        handle:close()
+        naughty.notify({title="your color", bg=result})
         end,
+              {description = "pick color", group = "hotkeys"}),
+    -- pick color from the screen
+    awful.key({ modkey, "Shift"   }, "v", function () awful.util.spawn_with_shell("farge --notify")  end,
+              {description = "show color", group = "hotkeys"}),
+    -- launch emoji picker
+    awful.key({ modkey, "Shift"   }, "e", function () awful.util.spawn_with_shell("$HOME/scripts/emoji")  end,
+              {description = "pick emoji", group = "hotkeys"}),
+    -- gib memes
+    awful.key({ modkey, "Shift"   }, "m", function() awful.util.spawn_with_shell('$HOME/scripts/memes') end,
+      {description = "make screenrecord", group = "hotkeys"}),
+    -- make screenrecord
+    awful.key({ modkey, "Shift"   }, "r", function() awful.util.spawn_with_shell('$HOME/scripts/screenrecord') end,
+      {description = "make screenrecord", group = "hotkeys"}),
+    -- make screenshot // DEPENDS on "maim"
+    awful.key({ modkey, "Shift"   }, "s", function() awful.util.spawn_with_shell("$HOME/scripts/screenshot") end,
     	      {description = "make screenshot", group = "hotkeys"}),
+    -- make screenshot // DEPENDS on "maim"
+    awful.key({ modkey, "Shift"   }, "c", function() awful.util.spawn_with_shell("$HOME/scripts/chcolor") end,
+    	      {description = "change colorscheme", group = "hotkeys"}),
+    -- try stuff out
+    awful.key({  modkey, altkey   }, "i", function()
+        if temp_bool then 
+            for s in screen do
+                s.wall_anime:start()
+            end 
+        else
+            for s in screen do 
+                s.wall_anime:stop()
+            end 
+        end 
+    end,
+              {description = "treetile vertical", group = "layout"}),
 
     awful.key({ modkey,           }, "n",  function ()
         local minimized_c = awful.client.restore()
@@ -357,16 +353,18 @@ clientkeys = my_table.join(
 
     awful.key({ modkey,         }, "w",      function (c)
       -- c:kill() would be enoguh to kill the client but i want to kill discord process if client is discord
-      local kill_discord = false
-      if string.sub(c.name, -7) == "Discord" then
-        kill_discord = true
-      end
-      c:kill()
-      if kill_discord then
-        awful.util.spawn_with_shell("killall Discord")
-      end
+        local kill_discord = false
+        if c.name then 
+            if string.sub(c.name, -7) == "Discord" then
+                kill_discord = true
+            end
+        end 
+        c:kill()
+        if kill_discord then
+            awful.util.spawn_with_shell("killall Discord")
+        end
     end,
-              {description = "close windoow", group = "hotkeys"}),
+            {description = "close windoow", group = "hotkeys"}),
 
     awful.key({ modkey, "Shift" }, "f",  awful.client.floating.toggle                     ,
              {description = "toggle floating", group = "client"}),
