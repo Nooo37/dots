@@ -7,7 +7,7 @@ local awful = require("awful")
 local update_interval = 60*30
 local brightness_script = [[
    bash -c "
-   python $HOME/prog/python/newsboat_notify.py
+   python $HOME/code/python/newsboat_notify.py
 "]]
 
 -- take a look here ^^
