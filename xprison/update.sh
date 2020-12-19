@@ -1,0 +1,57 @@
+#!/bin/sh
+# overwrites the colorscheme of discord, zathura, rofi, alacritty and firefox based on xrdb
+# TODO someone should make the two big blocks better looking
+
+
+XRDB_RAW=`xrdb -query "*"`
+PATHXPRISON="$HOME/code/dots/xprison"
+
+background=`echo "$XRDB_RAW" |  grep "\*\.background" | awk '{print $2}'`
+foreground=`echo "$XRDB_RAW" |  grep "\*\.foreground" | awk '{print $2}'`
+color0=`echo "$XRDB_RAW" | grep "\*\.color0:" | awk '{print $2}'`
+color1=`echo "$XRDB_RAW" | grep "\*\.color1:" | awk '{print $2}'` 
+color2=`echo "$XRDB_RAW" | grep "\*\.color2:" | awk '{print $2}'`
+color3=`echo "$XRDB_RAW" | grep "\*\.color3:" | awk '{print $2}'`
+color4=`echo "$XRDB_RAW" | grep "\*\.color4:" | awk '{print $2}'`
+color5=`echo "$XRDB_RAW" | grep "\*\.color5:" | awk '{print $2}'`
+color6=`echo "$XRDB_RAW" | grep "\*\.color6:" | awk '{print $2}'`
+color7=`echo "$XRDB_RAW" | grep "\*\.color7:" | awk '{print $2}'`
+color8=`echo "$XRDB_RAW" | grep "\*\.color8:" | awk '{print $2}'`
+color9=`echo "$XRDB_RAW" | grep "\*\.color9:" | awk '{print $2}'`
+color10=`echo "$XRDB_RAW" | grep "\*\.color10:" | awk '{print $2}'`
+color11=`echo "$XRDB_RAW" | grep "\*\.color11:" | awk '{print $2}'`
+color12=`echo "$XRDB_RAW" | grep "\*\.color12:" | awk '{print $2}'`
+color13=`echo "$XRDB_RAW" | grep "\*\.color13:" | awk '{print $2}'`
+color14=`echo "$XRDB_RAW" | grep "\*\.color14:" | awk '{print $2}'`
+color15=`echo "$XRDB_RAW" | grep "\*\.color15:" | awk '{print $2}'`
+
+# iterate through all files in res
+for dotfile in $PATHXPRISON/res/*; do
+    new_dotfile=$(cat $dotfile)
+    new_dotfile=`echo "$new_dotfile" | sed "s/@background@/$background/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@foreground@/$foreground/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color0@/$color0/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color1@/$color1/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color2@/$color2/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color3@/$color3/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color4@/$color4/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color5@/$color5/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color6@/$color6/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color7@/$color7/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color8@/$color8/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color9@/$color9/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color10@/$color10/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color11@/$color11/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color12@/$color12/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color13@/$color13/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color14@/$color14/g"`
+    new_dotfile=`echo "$new_dotfile" | sed "s/@color15@/$color15/g"`
+    case "$dotfile" in 
+        *"alacritty.yml")           echo "$new_dotfile" > "$HOME/.config/alacritty/alacritty.yml" ;;
+        *"firefox.css")             echo "$new_dotfile" > "$HOME/.mozilla/firefox/vwjwx9c6.default-release/chrome/userChrome.css" ;;
+        *"zathura.txt")             echo "$new_dotfile" > "$HOME/.config/zathura/zathurarc" ;;
+        *"mytheme.rasi")        echo "$new_dotfile" > "$HOME/.config/rofi/mytheme.rasi" ;;
+        *"discord.css"     )        echo "$new_dotfile" > "$HOME/.config/EnhancedDiscord/plugins/style.css" ;;
+    esac
+done
+

@@ -1,0 +1,20 @@
+! amarena https://github.com/elenapan/dotfiles/
+*.foreground:  #FFFFFF
+*.background:  #1A2026
+*.color0:      #242D35
+*.color8:      #526170
+*.color1:      #f08383 
+*.color9:      #f46666
+*.color2:      #94CF95
+*.color10:     #6CCB6E
+*.color3:      #F692B2
+*.color11:     #F26190
+*.color4:      #6EC1D6
+*.color12:     #4CB9D6
+*.color5:      #CD84C8
+*.color13:     #C269BC
+*.color6:      #7FE4D2
+*.color14:     #58D6BF
+*.color7:      #CFCFCF
+*.color15:     #F4F5F2
+

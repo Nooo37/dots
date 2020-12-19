@@ -1,0 +1,19 @@
+! idk where that is from 
+*.foreground:  #c5c8c6
+*.background:  #101010
+*.color8:      #373d4a
+*.color0:      #1a1d23
+*.color1:      #b87278
+*.color9:      #ad5c63
+*.color2:      #8aa479
+*.color10:     #7a9766
+*.color3:      #bea97e
+*.color11:     #b29968
+*.color4:      #6d9cc2
+*.color12:     #558cb8
+*.color5:      #aa7bb8
+*.color13:     #9c65ac
+*.color6:      #62949b
+*.color14:     #56848a
+*.color7:      #c3c3c3
+*.color15:     #c5c8c6

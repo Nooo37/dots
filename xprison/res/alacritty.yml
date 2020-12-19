@@ -1,0 +1,72 @@
+# Configuration for Alacritty, the GPU enhanced terminal emulator.
+
+# Padding
+window:
+  padding:
+    x: 50
+    y: 35
+
+# Disable the visual bell
+bell:
+  animation: EaseOutExpo
+  duration: 0
+  color: '0xffffff'
+
+# Scrolling
+scrolling:
+  history: 10000
+  multiplier: 3
+
+# Fonts
+font:
+  normal:
+    family: JetBrainsMono Nerd Font
+    style: Regular
+  bold:
+    family: JetBrainsMono Nerd Font 
+    style: Bold
+  italic:
+    family: JetBrainsMono Nerd Font
+    style: Italic
+  bold_italic:
+    family: monospace
+    style: Bold Italic
+  size: 9.0
+  offset:
+   x: 0
+   y: 0
+
+# Colors
+colors:
+    primary:
+      background: '@background@'
+      foreground: '@foreground@'
+    normal:
+      black:    '@color0@'
+      red:      '@color1@'
+      green:    '@color2@'
+      yellow:   '@color3@'
+      blue:     '@color4@'
+      magenta:  '@color5@'
+      cyan:     '@color6@'
+      white:    '@color7@'
+    bright:
+     black:   '@color8@'
+     red:     '@color9@'
+     green:   '@color10@'
+     yellow:  '@color11@'
+     blue:    '@color12@'
+     magenta: '@color13@'
+     cyan:    '@color14@'
+     white:   '@color15@'
+    dim:
+     black:   '@color8@'
+     red:     '@color1@'
+     green:   '@color2@'
+     yellow:  '@color3@'
+     blue:    '@color4@'
+     magenta: '@color5@'
+     cyan:    '@color6@'
+     white:   '@color7@'
+
+

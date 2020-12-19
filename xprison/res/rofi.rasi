@@ -1,0 +1,152 @@
+// Styles
+// stolen from javacafe. How can you tell? Very subtle
+
+* {
+    javacafe0:                       @color0@;
+    javacafe1:                       @color1@;
+    javacafe2:                       @color1@;
+    javacafe3:                       @color3@;
+    javacafe4:                       @color4@;
+    javacafe5:                       @color5@;
+    javacafe6:                       @color6@;
+    javacafe7:                       @color7@;
+    javacafe8:                       @color8@;
+    javacafe9:                       @color9@;
+    javacafe10:                      @color10@;
+    javacafe11:                      @color11@;
+    javacafe12:                      @color12@;
+    javacafe13:                      @color13@;
+    javacafe14:                      @color14@;
+    javacafe15:                      @color15@;
+    background:                  @background@;
+    foreground:                  @foreground@;
+    selected-normal-foreground:  @javacafe4;
+    normal-foreground:           @foreground;
+    alternate-normal-background: @background;
+    selected-urgent-foreground:  @javacafe4;
+    urgent-foreground:           @foreground;
+    alternate-urgent-background: @javacafe0;
+    active-foreground:           @foreground;
+    selected-active-foreground:  @foreground;
+    alternate-active-background: @background;
+    bordercolor:                 @javacafe0;
+    alternate-normal-foreground: @foreground;
+    normal-background:           @background;
+    selected-normal-background:  @javacafe0;
+    border-color:                @javacafe7;
+    spacing:                     1;
+    separatorcolor:              @javacafe8;
+    urgent-background:           @background;
+    selected-urgent-background:  @javacafe3;
+    alternate-urgent-foreground: @urgent-foreground;
+    background-color:            @background;
+    alternate-active-foreground: @active-foreground;
+    active-background:           @background;
+    selected-active-background:  @javacafe3;
+}
+
+#window {
+    background-color: @background;
+    padding: 30;
+    width: 600px;
+    height: 600px;
+}
+
+#mainbox {
+    padding: 15;
+}
+
+#message {
+    border:       4px 4px 4px ;
+    border-color: @separatorcolor;
+    padding:      20 ;
+}
+
+#textbox {
+    text-color: @foreground;
+}
+
+#listview {
+    fixed-height: 0;
+    padding:	  5 2 2;
+    spacing:      5px ;
+}
+
+#element {
+    border:  0;
+    padding: 10px ;
+}
+
+#element.normal.normal {
+    background-color: @normal-background;
+    text-color:       @normal-foreground;
+}
+
+#element.normal.urgent {
+    background-color: @urgent-background;
+    text-color:       @urgent-foreground;
+}
+
+#element.normal.active {
+    background-color: @active-background;
+    text-color:       @active-foreground;
+}
+
+#element.selected.normal {
+    border-radius: 6;
+    background-color: @selected-normal-background;
+    text-color:       @selected-normal-foreground;
+}
+
+#element.selected.urgent {
+    background-color: @selected-urgent-background;
+    text-color:       @selected-urgent-foreground;
+}
+
+#element.selected.active {
+    background-color: @selected-active-background;
+    text-color:       @selected-active-foreground;
+}
+
+#element.alternate.normal {
+    background-color: @alternate-normal-background;
+    text-color:       @alternate-normal-foreground;
+}
+
+#element.alternate.urgent {
+    background-color: @alternate-urgent-background;
+    text-color:       @alternate-urgent-foreground;
+}
+
+#element.alternate.active {
+    background-color: @alternate-active-background;
+    text-color:       @alternate-active-foreground;
+}
+
+#button.selected {
+    background-color: @selected-normal-background;
+    text-color:       @selected-normal-foreground;
+}
+
+#inputbar {
+    spacing:    5;
+    text-color: @normal-foreground;
+    padding:    5px ;
+    border:	0 0 2;
+    border-color: @separatorcolor;
+}
+
+#case-indicator {
+    spacing:    0;
+    text-color: @normal-foreground;
+}
+
+#entry {
+    spacing:    0;
+    text-color: @normal-foreground;
+}
+
+#prompt {
+    spacing:    3;
+    text-color: @javacafe6;
+}
