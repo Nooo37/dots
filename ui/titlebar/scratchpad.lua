@@ -11,6 +11,8 @@ local helpers = require("ui.helpers")
 local toolbar_position = "bottom"
 local toolbar_size = dpi(40)
 local toolbar_bg = beautiful.xcolor0
+local toolbar_font = beautiful.toolbar_font or beautiful.font or "Mono 12"
+local toolbar_fg = beautiful.xcolor4 
 local toolbar_enabled_initially = true
 
 local terminal_has_to_move_after_resizing = {["scratch-term"] = true}
@@ -35,8 +37,8 @@ local create_scratchpad_titlebar_deco = function(c)
     awful.titlebar(c, {
         position = toolbar_position,
         size = toolbar_size,
-        bg = beautiful.xcolor1,
-        fg = beautiful.xbg
+        bg = toolbar_bg,
+        fg = toolbar_fg,
     }):setup{
         {
                     {
@@ -44,7 +46,7 @@ local create_scratchpad_titlebar_deco = function(c)
                           text = "Scratchpad",
                           widget = wibox.widget.textbox,
                           valign = "center",
-                          font = "Sans 15",
+                          font = toolbar_font,
                         },
                         left = dpi(5),
                         right = dpi(5),

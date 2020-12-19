@@ -13,6 +13,7 @@
 local theme = require("theme")
 local awful = require("awful")
 local gears = require("gears")
+local gcolor = require("gears.color")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
@@ -79,7 +80,7 @@ creator.create = function()
   -- Poster (image)
   ------------------------------------------------------------
   local box_image = wibox.widget {
-      shape = helpers.rrect(dpi(6)),
+      shape = helpers.rrect(dpi(10)),
       widget = wibox.widget.imagebox
   }
   -- box_image.image = icons.music
@@ -237,12 +238,11 @@ creator.create = function()
   ------------------------------------------------------------
 
   local music_directory = "music"
-
+  local default_art = os.getenv("HOME") .. "/music/covers/0DEFAULT.png"
   -- Main script
   ------------------------------------------------------------
   local script = [[bash -c '
     IMG_REG="(front|cover|art)\.(jpg|jpeg|png|gif)$"
-    DEFAULT_ART="$HOME/music/covers/0DEFAULT.png"
 
     file=`mpc current -f %file%`
     basefilename="${file%.mp3}"
@@ -253,7 +253,7 @@ creator.create = function()
     if ]] .. '[ -f "$HOME/music/covers/$picfilename" ]' .. [[; then
       cover="$HOME/music/covers/$picfilename"
     else
-      cover="$DEFAULT_ART"
+      cover="]] .. default_art .. [["
     fi
 
     echo $info"##"$cover"##"
@@ -303,7 +303,12 @@ creator.create = function()
         -- Escape &'s
         title = string.gsub(title, "&", "&amp;")
         artist = string.gsub(artist, "&", "&amp;")
-        box_image:set_image(cover_path)
+
+        if cover_path == default_art then 
+            box_image:set_image(gcolor.recolor_image(cover_path, beautiful.xcolor6))
+        else 
+            box_image:set_image(cover_path)
+        end 
 
         mpd_title.markup = helpers.colorize_text(title, title_fg)
         mpd_artist.markup = helpers.colorize_text(artist, artist_fg)

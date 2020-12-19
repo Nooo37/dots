@@ -13,7 +13,7 @@ local helpers = require("ui.helpers")
 local statusbar_font = "Hack Bold"
 local statusbar_bg = beautiful.xbg
 local statusbar_width = 35
-local highlight_width = 5
+local highlight_width = 4
 
 --{{{ Clock
 
@@ -258,4 +258,5 @@ awful.screen.connect_for_each_screen(function(s)
    tag.connect_signal("tagged", function(t, c) update_bar(t, c) end)
    tag.connect_signal("untagged", function(t, c) update_bar(t, c) end)
    tag.connect_signal("property::selected", function(t) update_bar(t) end)
+   client.connect_signal("property::minimized", function(c) local t = c.first_tag update_bar(t) end)
 end)

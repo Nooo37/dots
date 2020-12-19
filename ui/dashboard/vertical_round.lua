@@ -7,9 +7,12 @@ local dpi   = require("beautiful").xresources.apply_dpi
 local helpers = require("ui.helpers")
 
 local dashboard_width = dpi(400)
+local dashboard_border_color = beautiful.xcolor8
+local dashboard_border_width = 2
 local secondary_bg = beautiful.xbg
-local dashboard_bg = beautiful.xbgdark
+local dashboard_bg = beautiful.xcolor0
 local dashboard_position = "right"
+local small_font = "JetBrainsMono Nerd Font Bold 20"
 
 --- {{{ Clock and date
 
@@ -22,7 +25,7 @@ end)
 fancy_time_widget.fg = beautiful.xfg
 fancy_time_widget.align = "center"
 fancy_time_widget.valign = "center"
-fancy_time_widget.font = "JetBrains Mono 55"
+fancy_time_widget.font = "JetBrainsMono Nerd Font 45"
 
 local fancy_time = {fancy_time_widget, layout = wibox.layout.fixed.vertical}
 
@@ -34,7 +37,7 @@ fancy_date_widget:connect_signal("widget::redraw_needed", function()
 end)
 fancy_date_widget.align = "center"
 fancy_date_widget.valign = "center"
-fancy_date_widget.font = "JetBrains Mono 15"
+fancy_date_widget.font = "Sans bold 12"
 
 local fancy_date = {fancy_date_widget, layout = wibox.layout.fixed.vertical}
 
@@ -43,10 +46,10 @@ local fancy_time_box = wibox.widget {
   {
     {
       {
-          helpers.vertical_pad(dpi(25)),
+          helpers.vertical_pad(dpi(18)),
           fancy_time,
           fancy_date,
-          helpers.vertical_pad(dpi(25)),
+          helpers.vertical_pad(dpi(18)),
           layout = wibox.layout.fixed.vertical
       },
       forced_width = dashboard_width * 0.7,
@@ -315,6 +318,7 @@ local user_bar_widgets = wibox.widget {
       helpers.horizontal_pad(dpi(15)),
       layout = wibox.layout.fixed.horizontal
     },
+    helpers.vertical_pad(dpi(15)),
     layout = wibox.layout.fixed.vertical
 }
 
@@ -362,7 +366,7 @@ local function create_half_box(heading, body)
         },
       bg = secondary_bg,
       shape = helpers.rrect(beautiful.corner_radius),
-      forced_width = dpi(165),
+      forced_width = (dashboard_width * 0.85 - dpi(10)) / 2,
       widget = wibox.container.background
     },
     left = dpi(20),
@@ -381,7 +385,7 @@ local newsboat_fg = beautiful.xcolor6
 local newsboat_heading = wibox.widget({
         align = "center",
         valign = "center",
-        font = "Sans bold 20",
+        font = small_font,
         markup = helpers.colorize_text("?", newsboat_fg),
         widget = wibox.widget.textbox()
 })
@@ -410,7 +414,7 @@ local temp_fg = beautiful.xcolor2
 local temp_heading = wibox.widget({
         align = "center",
         valign = "center",
-        font = "Sans bold 20",
+        font = small_font,
         markup = helpers.colorize_text("?", temp_fg),
         widget = wibox.widget.textbox()
 })
@@ -432,6 +436,49 @@ local temp_box = create_half_box(temp_heading, temp_info)
 
 --}}}
 
+--{{{ fortune box
+
+local fortune_command = "fortune -n 50 -s"
+local fortune_update_interval = 360
+-- local fortune_command = "fortune -n 140 -s computers"
+local fortune = wibox.widget {
+    text = "Loading your cookie...",
+    align = "center",
+    valign = "center",
+    font = "Sans medium 10",
+    widget = wibox.widget.textbox
+}
+
+local update_fortune = function()
+    awful.spawn.easy_async_with_shell(fortune_command, function(out)
+        -- Remove trailing whitespaces
+        out = out:gsub('^%s*(.-)%s*$', '%1')
+        fortune.markup = "<i>"..helpers.colorize_text(out, beautiful.xcolor3).."</i>"
+    end)
+end
+
+gears.timer {
+    autostart = true,
+    timeout = fortune_update_interval,
+    single_shot = false,
+    call_now = true,
+    callback = update_fortune
+}
+
+local fortune_widget = wibox.widget {
+    {
+        nil,
+        fortune,
+        layout = wibox.layout.align.horizontal,
+    },
+    margins = 4,
+    color = "#00000000",
+    widget = wibox.container.margin
+}
+
+local fortune_box = create_half_box(nil, fortune_widget)
+--}}}
+
 --{{{ weather temp
 
 local weather_fg = beautiful.xcolor1
@@ -439,7 +486,7 @@ local weather_fg = beautiful.xcolor1
 local weather_heading = wibox.widget({
         align = "center",
         valign = "center",
-        font = "Sans bold 20",
+        font = small_font,
         markup = helpers.colorize_text("?", temp_fg),
         widget = wibox.widget.textbox()
 })
@@ -591,7 +638,8 @@ awful.screen.connect_for_each_screen(function(s)
       --acititywatch_box,
       user_box,
       {
-        weather_box,
+	  weather_box,
+	  fortune_box,
         layout = wibox.layout.fixed.horizontal,
       },
       mpd_box,
@@ -606,11 +654,14 @@ awful.screen.connect_for_each_screen(function(s)
   -- helper function to update the sidebar
   -- should be "solid" when only one client is on the selected tag and "floating with rounded corners" if there are multiple
   local function update_sidebar(t, c)
-    if c then
-      if c.floating then return end -- so scratchpad doesn't mess with that
-    end
-    local clients = t:clients()
-    if #clients == 1 or t.layout.name == "max" then
+      local clients = t:clients()
+      local client_count = 0
+      for _, c in ipairs(clients) do 
+          if not (c.floating or c.minimized) then 
+              client_count = client_count + 1
+          end 
+      end 
+    if client_count == 1 or t.layout.name == "max" then
       s.mybar.shape = helpers.rrect(0)
       s.mybar.height = s.workarea.height
       s.mybar.width = dashboard_width
@@ -627,5 +678,6 @@ awful.screen.connect_for_each_screen(function(s)
   tag.connect_signal("tagged", function(t, c) update_sidebar(t, c) end)
   tag.connect_signal("untagged", function(t, c) update_sidebar(t, c) end)
   tag.connect_signal("property::selected", function(t) update_sidebar(t) end)
+  client.connect_signal("property::minimized", function(c) local t = c.first_tag update_sidebar(t) end)
 
 end)

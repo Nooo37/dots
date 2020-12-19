@@ -8,34 +8,34 @@ local beautiful = require("beautiful")  -- Theme handling library
 
 beautiful.init(require("theme")) -- intialize the theme
 
-awful.util.tagnames = {"1", "2", "3", "4", "5"} -- declare tag names
+awful.util.tagnames = {"1", "2"} -- declare tag names
 
 -- require("module.no_single_client_borders")
 require("module.no_single_client_round_corners")
 -- require("module.titlebar_only_in_floating")
 require("module.sloppy_focus")
-require("module.auto_start")({"mpd", "picom", "aw-qt", "greenclip daemon", "setxkbmap -option caps:escape"})
+require("module.auto_start")({"mpd", "aw-qt", "emacs --daemon", "picom", "greenclip daemon", "setxkbmap -option caps:super", "xcape -e 'Super_L=Escape'", "nitrogen --restore"}) -- all my daemons
+require("module.auto_start")({"setxkbmap -option caps:super", "xcape -e 'Super_L=Escape'"}) -- overpowered caps key
 require("module.error_handling")
-
 
 --{{{ bling
 local bling = require("bling")
 
-bling.module.window_swallowing.start()
+-- bling.module.window_swallowing.start()
 bling.module.flash_focus.enable()
 
 -- set wallpaper
 awful.screen.connect_for_each_screen(function(s)
-    bling.module.tiled_wallpaper("", s, { -- 
-        fg = beautiful.xbg, 
-        bg = beautiful.xcolor8,
+    bling.module.tiled_wallpaper("", s, { -- ﱢﰉ
+        fg = beautiful.xcolor0,
+        bg = beautiful.xbg,
         font = "JetBrains Mono Nerd Font", 
-        font_size = 20,
-        padding = 80,
-        zickzack = true 
+        font_size = 17,
+        padding = 70,
+        zickzack = true
     })
 end)
---}}}
+-- }}}
 
 --{{{ Layouts
 local machi = require("module.machi")
@@ -43,15 +43,15 @@ beautiful.layout_machi = machi.get_icon()
 local editor = machi.editor.create()
 
 awful.layout.layouts = {
+    awful.layout.suit.tile,
     bling.layout.mstab,
     bling.layout.centered,
-    machi.default_layout,
+    -- machi.default_layout,
     -- bling.layout.horizontal,
-    -- bling.layout.vertical,
-    awful.layout.suit.tile,
+    bling.layout.vertical,
     -- awful.layout.suit.spiral,
     awful.layout.suit.floating,
-    -- awful.layout.suit.max
+    awful.layout.suit.max
 }
 awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
 --}}}
@@ -72,14 +72,14 @@ collision.settings.swap_across_screen = true
 require("keys")
 require("signal")({"volume", "mpd", "temp", "cpu", "ram", "newsboat", "disk", "weather", "brightness_desktop"})
 -- require("ui.titlebar.powerarrows")
--- require("ui.bar.powerarrows")
 require("ui.bar.vertical_round")
+-- require("ui.bar.vertical_round")
 require("ui.dashboard.vertical_round")
 require("ui.popup.layout_box")
 --require("ui.popup.tag_box") -- no need with collision
 require("ui.popup.volume_adjust")
 -- require("ui.popup.mpd_control")
-require("ui.popup.bad_run_prompt")
+-- require("ui.popup.bad_run_prompt")
 require("ui.popup.mpd_notify")
 --}}}
 
@@ -99,6 +99,11 @@ awful.rules.rules = {
                      placement = awful.placement.no_overlap+awful.placement.no_offscreen
      }
     },
+
+    {
+        rule_any = {type = {"normal", "dialog"}},
+        properties = {ontop = true}
+    },          
 
     -- Floating clients.
     { rule_any = {
@@ -128,18 +133,22 @@ awful.rules.rules = {
           "AlarmWindow",  -- Thunderbird's calendar.
           "ConfigManager",  -- Thunderbird's about:config.
           "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
-        }
+        },
+	property = {
+	    floating = true
+	}
       }, properties = { floating = true }},
 
     -- Add titlebars to normal clients and dialogs
-    { rule_any = {type = { "normal", "dialog" }
-  }, properties = { titlebars_enabled = false }
-    },
+      { rule_any = {type = { "normal", "dialog" }
+    }, properties = { titlebars_enabled = false }
+      },
 
     { rule_any = {instance = { "scratch" }},
       properties = { floating = true, placement=awful.placement.centered},
       callback = require("ui.titlebar.scratchpad")
     },
+
 
     -- Set Firefox to always map on the tag named "2" on screen 1.
     -- { rule = { class = "Firefox" },
@@ -149,14 +158,11 @@ awful.rules.rules = {
 
 
 ---{{{ all clients spawn as slave
-client.connect_signal(
-    "manage",
-    function(c)
-        if not awesome.startup then
-            awful.client.setslave(c)
-        end
+client.connect_signal("manage",function(c)
+    if not awesome.startup then
+        awful.client.setslave(c)
     end
-)
+end)
 ---}}}
 
 ---{{{ Notify when cpu temp rises above 65°C
@@ -166,4 +172,24 @@ awesome.connect_signal("evil::temp", function(temp)
     end
 end)
 ---}}}
+
+--{{{ numered tagnames
+local function update_tagnames()
+    local tags = awful.screen.focused().tags
+    for idx, tag in ipairs(tags) do
+        tag.name = tostring(idx)
+    end
+end
+tag.connect_signal("property::selected", update_tagnames)
+--}}}
+
+---{{{ just close that weird aw-qt window forever
+client.connect_signal("manage", function(c)
+    if c.class == "aw-qt" then 
+        c:kill()
+    end 
+end)
+---}}}
+
+awesome.emit_signal("toggle::bar")
 

@@ -14,11 +14,11 @@ local config_path = os.getenv("HOME") .. "/.config/awesome/"
 -- inherent from default file (only for the icons)
 local theme = dofile("/usr/share/awesome/themes/default/theme.lua")
 
-theme.weather_city = "Berlin"
+theme.weather_city = "Regensburg"
 
-theme.terminal = "Alacritty"
+theme.terminal = "st"
 theme.browser  = "Firefox"
-theme.editor   = "Atom"
+theme.editor   = "emacsclient --create-frame"
 
 theme.config_path = config_path
 theme.wallpaper = config_path.."wallpaper.png"
@@ -48,7 +48,7 @@ theme.font          = "sans 8"
 -- colors
 theme.xfg                                       = xrdb.foreground or "#FFFFFF"
 theme.xbg                                       = xrdb.background or "#1A2026"
-theme.xbgdark                                   = xrdb.bgdark  or "#101010"---"#14181d"
+theme.xbgdark                                   = xrdb.bgdark  or "#aa1010"---"#14181d"
 theme.xbglight                                  = xrdb.bglight or "#526170"
 theme.xcolor0                                   = xrdb.color0  or "#242D35"
 theme.xcolor8                                   = xrdb.color8  or "#526170"
@@ -68,13 +68,13 @@ theme.xcolor7                                   = xrdb.color7  or "#CFCFCF"
 theme.xcolor15                                  = xrdb.color15 or "#F4F5F2"
 
 theme.bg_normal     = theme.xbg
-theme.bg_focus      = theme.xcolor12
+theme.bg_focus      = theme.xcolor0
 theme.bg_urgent     = theme.xcolor9
 theme.bg_minimize   = theme.xcolor8
 theme.bg_systray    = theme.xbg
 
 theme.fg_normal     = theme.xfg
-theme.fg_focus      = theme.xbg
+theme.fg_focus      = theme.xcolor4
 theme.fg_urgent     = theme.xbg
 theme.fg_minimize   = theme.xbg
 
@@ -130,7 +130,7 @@ theme.titlebar_bg_normal 	                      = theme.xbg
 theme.titlebar_fg 	                            = theme.xfg
 theme.titlebar_bg 	                            = theme.xbg
 theme.titlebar_fg_focus 	                      = theme.xcolor15
-theme.titlebar_bg_focus 	                      = theme.xbgdark
+theme.titlebar_bg_focus 	                      = theme.xcolor0
 
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]
@@ -205,14 +205,33 @@ theme.collision_screen_fg_focus     = theme.xcolor1
 
 
 -- bling
-theme.mstab_tabbar_orientation = "bottom"
+theme.mstab_tabbar_position = "bottom"
 theme.mstab_bar_height = 35
-theme.mstab_font = "sans 10"
+theme.mstab_font = "JetBrains Mono Nerd Font 10"
+theme.mstab_dont_resize_slaves = false
+theme.mstab_bar_padding = 0
+theme.mstab_bar_ontop = true
 theme.flash_focus_start_opacity = 0.8
 theme.flash_focus_step = 0.05
+theme.tabbar_bg_normal = theme.xcolor0
+theme.tabbar_fg_normal = theme.xfg
+theme.tabbar_bg_focus = theme.xbg
+theme.tabbar_fg_focus = theme.xcolor4
+theme.tabbar_style = "mine"
+theme.tabbed_spawn_in_tab = true
+theme.tabbar_font = "JetBrains Mono Nerd Font 10"
+theme.tabbar_position = "bottom"
 
-
+-- other
 naughty.config.shape = helpers.rrect(5)
+theme.toolbar_font = "JetBrains Mono Nerd Font 12"
 
+-- layoutlist funst net ???
+theme.layoutlist_fg_normal          = theme.xfg
+theme.layoutlist_bg_normal          = theme.xbg
+theme.layoutlist_fg_selected        = theme.xcolor4
+theme.layoutlist_bg_selected        = theme.xcolor0
+
+theme.wibar_opacity = 0.5
 
 return theme

@@ -1,5 +1,4 @@
 -- All Keybindings go here
-
 local awful = require("awful")
 local beautiful = require("beautiful")
 local gears = require("gears")
@@ -23,9 +22,9 @@ local collision = require("collision")
 
 local is_recording = false
 
-local bling = require("bling")
 local scratchpad = require("module.scratchpad")
--- awful.util.spawn_with_shell("tmux new -s scratchpad")
+
+local bling = require("bling")
 
 local function add_tag_focus_with(application)
   -- if the appication is already open, focus it otherwise open an instance
@@ -160,14 +159,18 @@ globalkeys = my_table.join(
     --}}}
     --{{{ SYSTEM
     -- power off
-    awful.key({ modkey,           }, "q", function () awful.spawn.with_shell("$HOME/scripts/exit") end,
+    awful.key({ modkey,           }, "q", function () awful.spawn.with_shell("$HOME/code/scripts/exit") end,
               {description = "shutdown, quit, reload and reboot everything", group = "awesome"}),
     -- clipboard history
     awful.key({ modkey,           }, "y", function () awful.spawn.with_shell("greenclip print | sed '/^$/d' | rofi -dmenu -i -c -l 20 | xargs -r -d'\\n' -I '{}' greenclip print '{}'") end,
               {description = "select from greenclip clipboard history", group = "awesome"}),
     --}}}
     --{{{ LAUNCH
-    awful.key({ modkey },            "r",     function () awful.spawn.with_shell('rofi -show run') end,
+    -- launch emacs
+    awful.key({ modkey },            "e",     function () awful.spawn.with_shell("emacsclient --create-frame") end,
+              {description = "launch emacs", group = "launch"}),
+    -- launch applauncher
+    awful.key({ modkey },            "r",     function () awful.spawn.with_shell("rofi -show run") end,
               {description = "run prompt", group = "launch"}),
     -- Launch dasboard awesome.emit_signal("toggle::dash")
     awful.key({ modkey,           }, "Menu", function () awesome.emit_signal("toggle::sidebar") end,
@@ -298,36 +301,37 @@ globalkeys = my_table.join(
     awful.key({ modkey, "Shift"   }, "v", function () awful.util.spawn_with_shell("farge --notify")  end,
               {description = "show color", group = "hotkeys"}),
     -- launch emoji picker
-    awful.key({ modkey, "Shift"   }, "e", function () awful.util.spawn_with_shell("$HOME/scripts/emoji")  end,
+    awful.key({ modkey, "Shift"   }, "e", function () awful.util.spawn_with_shell("$HOME/code/scripts/emoji")  end,
               {description = "pick emoji", group = "hotkeys"}),
     -- gib memes
-    awful.key({ modkey, "Shift"   }, "m", function() awful.util.spawn_with_shell('$HOME/scripts/memes') end,
-      {description = "make screenrecord", group = "hotkeys"}),
+    awful.key({ modkey, "Shift"   }, "m", function() awful.util.spawn_with_shell('$HOME/code/scripts/memes') end,
+      {description = "pick meme", group = "hotkeys"}),
     -- make screenrecord
-    awful.key({ modkey, "Shift"   }, "r", function() awful.util.spawn_with_shell('$HOME/scripts/screenrecord') end,
-      {description = "make screenrecord", group = "hotkeys"}),
+    -- awful.key({ modkey, "Shift"   }, "r", function() awful.util.spawn_with_shell('$HOME/code/scripts/screenrecord') end,
+    --   {description = "make screenrecord", group = "hotkeys"}),
     -- make screenshot // DEPENDS on "maim"
-    awful.key({ modkey, "Shift"   }, "s", function() awful.util.spawn_with_shell("$HOME/scripts/screenshot") end,
+    awful.key({ modkey, "Shift"   }, "s", function() awful.util.spawn_with_shell("$HOME/code/scripts/screenshot") end,
     	      {description = "make screenshot", group = "hotkeys"}),
     -- make screenshot // DEPENDS on "maim"
-    awful.key({ modkey, "Shift"   }, "c", function() awful.util.spawn_with_shell("$HOME/scripts/chcolor") end,
+    awful.key({ modkey, "Shift"   }, "c", function() awful.util.spawn_with_shell("$HOME/code/scripts/chcolor") end,
     	      {description = "change colorscheme", group = "hotkeys"}),
     -- try stuff out
-    awful.key({  modkey, altkey   }, "i", function()
-        if temp_bool then 
-            for s in screen do
-                s.wall_anime:start()
-            end 
-        else
-            for s in screen do 
-                s.wall_anime:stop()
-            end 
-        end 
-    end,
-              {description = "treetile vertical", group = "layout"}),
+    awful.key({  modkey, altkey   }, "i", bling.module.tabbed.iter,
+              {description = "iterate through tab", group = "bling"}),
+    awful.key({  modkey, altkey, "Shift"   }, "i", function() bling.module.tabbed.iter(-1) end,
+              {description = "iterate through tab", group = "bling"}),
+    awful.key({  modkey, altkey   }, "z", bling.module.tabbed.pop,
+              {description = "tabbed remove current client from tab", group = "bling"}),
+    awful.key({  modkey, altkey   }, "o", bling.module.tabbed.pick,
+              {description = "add client to tab through picker", group = "bling"}),
+    awful.key({  modkey, altkey   }, "u", bling.module.tabbed.pick_by_dmenu,
+              {description = "experiment", group = "bling"}),
+    awful.key({  modkey, altkey   }, "c", function()  awesome.emit_signal("toggle::prompt") end,
+              {description = "experiment", group = "bling"}),
 
     awful.key({ modkey,           }, "n",  function ()
         local minimized_c = awful.client.restore()
+        if not client.focus then return end
         local current_c = client.focus
         if minimized_c then -- if there is a minimized client restore it
             client.focus = minimized_c
@@ -339,7 +343,7 @@ globalkeys = my_table.join(
                 {description = "toggle minimize", group = "client"}),
     -- aw report
     awful.key({ modkey,           }, "p", function()
-        local handle = io.popen("python $HOME/prog/python/aw_notify.py")
+        local handle = io.popen("python $HOME/code/python/aw_notify.py")
         local result = handle:read("*a")
         handle:close()
         naughty.notify({title="ActivityWatch Usage Report", text=result, icon=os.getenv("HOME") .. "/pics/icons/hourglass.svg", timeout=20, font="monospace 12"})

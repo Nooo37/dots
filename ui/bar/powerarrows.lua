@@ -293,7 +293,6 @@ awful.screen.connect_for_each_screen(function(s)
               widget = wibox.container.background,
           },
       }
-      s.mytasklist.visible = false
 
       -- Create a taglist widget
       s.mytaglist = awful.widget.taglist {
