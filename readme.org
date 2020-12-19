@@ -1,0 +1,19 @@
+#+title: ~/.dotfiles
+#+author: 37
+
+** How does it look like?
+
+[[https://media.discordapp.net/attachments/655947537538088962/788151542863233034/rice.png]]
+
+** Other less relevant questions
+*** How do I clone that?
+Since I make use of git submodules, you would have to set the recurse-submodules flag:
+
+#+begin_src 
+git clone --recurse-submodules https://github.com/Nooo37/dots.git best-dots-Ive-ever-seen
+#+end_src
+
+*** Why that weird folder structure?
+Don't feel like making my home directory a git repo. I also think it's clearer that way since I don't intend to backup everything.
+*** Where have you stolen all that from?
+I reused, got inspiration and stole stuff from [[https://github.com/javacafe01][javacafe]],[[https://github.com/elenapan/][ elenapan]] and some of my awesomeWM config structure comes from [[https://gitlab.com/bloxiebird/linux-awesomewm-modular-starter-kit/][Curt Spark]].
