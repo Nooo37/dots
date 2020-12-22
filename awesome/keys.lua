@@ -159,7 +159,7 @@ globalkeys = my_table.join(
     --}}}
     --{{{ SYSTEM
     -- power off
-    awful.key({ modkey,           }, "q", function () awful.spawn.with_shell("$HOME/code/scripts/exit") end,
+    awful.key({ modkey,           }, "q", function () awful.spawn.with_shell("$HOME/code/dots/scripts/dmenu-exit") end,
               {description = "shutdown, quit, reload and reboot everything", group = "awesome"}),
     -- clipboard history
     awful.key({ modkey,           }, "y", function () awful.spawn.with_shell("greenclip print | sed '/^$/d' | rofi -dmenu -i -c -l 20 | xargs -r -d'\\n' -I '{}' greenclip print '{}'") end,
@@ -300,20 +300,20 @@ globalkeys = my_table.join(
     -- pick color from the screen
     awful.key({ modkey, "Shift"   }, "v", function () awful.util.spawn_with_shell("farge --notify")  end,
               {description = "show color", group = "hotkeys"}),
+    -- pick new wallpaper
+    awful.key({ modkey, "Shift"   }, "w", function () awful.util.spawn_with_shell("$HOME/code/dots/scripts/dmenu-chwallpaper")  end,
+              {description = "change wallpaper", group = "hotkeys"}),
     -- launch emoji picker
-    awful.key({ modkey, "Shift"   }, "e", function () awful.util.spawn_with_shell("$HOME/code/scripts/emoji")  end,
+    awful.key({ modkey, "Shift"   }, "e", function () awful.util.spawn_with_shell("$HOME/code/dots/scripts/dmenu-emoji")  end,
               {description = "pick emoji", group = "hotkeys"}),
     -- gib memes
-    awful.key({ modkey, "Shift"   }, "m", function() awful.util.spawn_with_shell('$HOME/code/scripts/memes') end,
+    awful.key({ modkey, "Shift"   }, "m", function() awful.util.spawn_with_shell('$HOME/code/dots/scripts/dmenu-memes') end,
       {description = "pick meme", group = "hotkeys"}),
-    -- make screenrecord
-    -- awful.key({ modkey, "Shift"   }, "r", function() awful.util.spawn_with_shell('$HOME/code/scripts/screenrecord') end,
-    --   {description = "make screenrecord", group = "hotkeys"}),
     -- make screenshot // DEPENDS on "maim"
-    awful.key({ modkey, "Shift"   }, "s", function() awful.util.spawn_with_shell("$HOME/code/scripts/screenshot") end,
+    awful.key({ modkey, "Shift"   }, "s", function() awful.util.spawn_with_shell("$HOME/code/dots/scripts/dmenu-screenshot") end,
     	      {description = "make screenshot", group = "hotkeys"}),
     -- make screenshot // DEPENDS on "maim"
-    awful.key({ modkey, "Shift"   }, "c", function() awful.util.spawn_with_shell("$HOME/code/scripts/chcolor") end,
+    awful.key({ modkey, "Shift"   }, "c", function() awful.util.spawn_with_shell("$HOME/code/dots/scripts/dmenu-chcolor") end,
     	      {description = "change colorscheme", group = "hotkeys"}),
     -- try stuff out
     awful.key({  modkey, altkey   }, "i", bling.module.tabbed.iter,
@@ -324,7 +324,7 @@ globalkeys = my_table.join(
               {description = "tabbed remove current client from tab", group = "bling"}),
     awful.key({  modkey, altkey   }, "o", bling.module.tabbed.pick,
               {description = "add client to tab through picker", group = "bling"}),
-    awful.key({  modkey, altkey   }, "u", bling.module.tabbed.pick_by_dmenu,
+    awful.key({  modkey, altkey   }, "u", bling.module.tabbed.pick_with_dmenu,
               {description = "experiment", group = "bling"}),
     awful.key({  modkey, altkey   }, "c", function()  awesome.emit_signal("toggle::prompt") end,
               {description = "experiment", group = "bling"}),
@@ -368,7 +368,7 @@ clientkeys = my_table.join(
             awful.util.spawn_with_shell("killall Discord")
         end
     end,
-            {description = "close windoow", group = "hotkeys"}),
+            {description = "close windoow", group = "client"}),
 
     awful.key({ modkey, "Shift" }, "f",  awful.client.floating.toggle                     ,
              {description = "toggle floating", group = "client"}),

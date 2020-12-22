@@ -344,11 +344,11 @@ Emoji picker 😉
 Should probably look up how to actually use that thing.
 
 #+begin_src emacs-lisp
-;;(use-package undo-tree
-;;  :config
-;;  (global-undo-tree-mode t)
-;;  (setq undo-tree-auto-save-history t)
-;;  (push '("." . "~/.emacs.d/undo-tree-history") undo-tree-history-directory-alist))
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode t)
+  (setq undo-tree-auto-save-history t)
+  (push '("." . "~/.emacs.d/undo-tree-history") undo-tree-history-directory-alist))
 #+end_src
 
 ** color preview

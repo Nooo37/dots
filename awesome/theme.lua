@@ -16,7 +16,7 @@ local theme = dofile("/usr/share/awesome/themes/default/theme.lua")
 
 theme.weather_city = "Regensburg"
 
-theme.terminal = "st"
+theme.terminal = "alacritty"
 theme.browser  = "Firefox"
 theme.editor   = "emacsclient --create-frame"
 

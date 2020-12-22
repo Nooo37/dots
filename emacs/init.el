@@ -207,11 +207,11 @@
       initial-scratch-message ""
       initial-major-mode 'org-mode)
 
-;;(use-package undo-tree
-;;  :config
-;;  (global-undo-tree-mode t)
-;;  (setq undo-tree-auto-save-history t)
-;;  (push '("." . "~/.emacs.d/undo-tree-history") undo-tree-history-directory-alist))
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode t)
+  (setq undo-tree-auto-save-history t)
+  (push '("." . "~/.emacs.d/undo-tree-history") undo-tree-history-directory-alist))
 
 (use-package rainbow-mode
   :hook (after-init . rainbow-mode))

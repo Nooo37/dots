@@ -601,7 +601,7 @@ local acititywatch_box = create_half_box(piechart, nil)
 
 awful.screen.connect_for_each_screen(function(s)
 
-  s.myplacehodler = awful.wibar({ position=dashboard_position, screen=s, width=dashboard_width , bg="#00000000", opacity=0, ontop=false, visible=false })
+  -- s.myplacehodler = awful.wibar({ position=dashboard_position, screen=s, width=dashboard_width , bg="#00000000", opacity=0, ontop=false, visible=false })
 
   local x
   local y
@@ -622,7 +622,8 @@ awful.screen.connect_for_each_screen(function(s)
      shape = helpers.rrect(beautiful.corner_radius),
      height = s.workarea.height - 4*beautiful.useless_gap,
      width = dashboard_width - 2*beautiful.useless_gap,
-     visible = false
+     visible = false,
+     ontop = true
   }
 
   s.mybar:setup {
@@ -647,7 +648,7 @@ awful.screen.connect_for_each_screen(function(s)
 
   -- shortcut to toggle sidebar
   awesome.connect_signal("toggle::sidebar", function()
-      s.myplacehodler.visible = not s.myplacehodler.visible
+      -- s.myplacehodler.visible = not s.myplacehodler.visible
       s.mybar.visible = not s.mybar.visible
   end)
 

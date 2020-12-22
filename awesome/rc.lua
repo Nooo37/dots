@@ -14,8 +14,9 @@ awful.util.tagnames = {"1", "2"} -- declare tag names
 require("module.no_single_client_round_corners")
 -- require("module.titlebar_only_in_floating")
 require("module.sloppy_focus")
-require("module.auto_start")({"mpd", "aw-qt", "emacs --daemon", "picom", "greenclip daemon", "setxkbmap -option caps:super", "xcape -e 'Super_L=Escape'", "nitrogen --restore"}) -- all my daemons
+require("module.auto_start")({"mpd", "aw-qt", "emacs --daemon", "picom", "greenclip daemon", "nitrogen --restore"}) -- all my daemons
 require("module.auto_start")({"setxkbmap -option caps:super", "xcape -e 'Super_L=Escape'"}) -- overpowered caps key
+
 require("module.error_handling")
 
 --{{{ bling
