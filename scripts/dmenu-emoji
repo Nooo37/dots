@@ -1,0 +1,5 @@
+#!/bin/sh
+# spawn dmenu to choose a emoji into clipboard
+
+cat "$(dirname $0)/res/emojis.txt" | rofi -dmenu -i -p "Which emoji? " | awk '{print $1}' | tr -d '\n' | xclip -selection clipboard
+

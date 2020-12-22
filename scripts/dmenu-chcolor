@@ -1,7 +1,8 @@
 #!/bin/sh
 # provides a nice rofi menu to chose a new xrdb colorscheme and call the update script
 
-PATHXPRISON="$HOME/code/dots/xprison"
+BASEDIR=$(dirname $0)
+PATHXPRISON="$BASEDIR/../xprison"
 
 if [ "$1" == "" ] ; then 
     CHOICE=$(ls "$PATHXPRISON/colors" | rofi -dmenu -i -p "Choose a colorscheme: " | tr -d '\n')
@@ -17,7 +18,7 @@ if [ "$CHOICE" == "" ] ; then exit 0; fi
 cp "$PATHXPRISON/colors/$CHOICE" "$HOME/.config/X/Xresources"
 cat "$PATHXPRISON/base.xres" >> "$HOME/.config/X/Xresources"
 xrdb -load "$HOME/.config/X/Xresources"
-$PATHXPRISON/update.sh
+$BASEDIR/dots-update
 awesome-client "awesome.restart()"
 echo "Success! Colorscheme set to $CHOICE"
 

@@ -1,0 +1,12 @@
+#!/bin/sh
+# converts all jpg images in a dir to png
+
+LIST_JPG=$(ls -p | grep "\.jpg$")
+
+echo "$LIST_JPG" | while read line ; do
+    base_filename=`echo "$line" | cut -d"." -f1`
+    echo $base_filename
+    convert "$line" "$base_filename.png"
+    trash-put "$line"
+done
+

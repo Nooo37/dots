@@ -1,0 +1,14 @@
+#!/bin/sh
+# pulls and pushes the actual config from wherever it lies on the system or to wherever it should be
+
+BASEDIR=$(dirname $0)
+
+# awesome config
+rm -R -f $BASEDIR/../awesome
+cp -R $HOME/.config/awesome $BASEDIR/../awesome
+
+# emacs config 
+cp -f $HOME/.emacs.d/config.org $BASEDIR/../emacs/config.org
+cp -f $HOME/.emacs.d/init.el $BASEDIR/../emacs/init.el
+cp -f $HOME/.emacs.d/doom-mine-theme.el $BASEDIR/../emacs/doom-mine-theme.el
+

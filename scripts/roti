@@ -1,0 +1,4 @@
+#!/bin/sh
+# get the rule of the internet with something like $ roti 34 
+
+grep  "^$1\." "$(dirname $0)/res/rules-of-the-internet.txt"

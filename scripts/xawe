@@ -1,0 +1,4 @@
+#!/bin/sh
+# creates a nested X session with awesome running in it
+
+Xephyr -br -ac -noreset -screen 800x600 :1 & sleep 2 ; DISPLAY=:1 awesome

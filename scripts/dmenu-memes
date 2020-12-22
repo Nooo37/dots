@@ -1,0 +1,30 @@
+#!/bin/sh
+# let you select a meme from your meme dir and pipes it into xclip
+
+MEME_PATH="$HOME/pics/memes"
+
+# list everything in the meme path
+LS=`ls -p $MEME_PATH`
+
+# make list good looking for dmenu
+DMENU_LS=`echo -e "$LS" | grep -v "/" | grep "\.png$" | tr "-" " " | cut -d'.' -f1`
+
+# select through rofis dmenu
+SELECTION=`echo -e "$DMENU_LS" | rofi -dmenu -i -p "Search for memes: " | tr -d "\n"`
+
+# get file from selection
+GREPABLE=`echo -e "$SELECTION" | tr " " "-"`
+FILE=`echo -e "$LS" | grep "$GREPABLE"`
+
+# exit if nothing selected
+[ "$SELECTION" == ""  ] && exit
+
+# echo path of meme
+echo "$MEME_PATH/$FILE"
+
+# copy image to clipboard
+xclip -selection clipboard -t image/png -i "$MEME_PATH/$FILE"
+
+# send notification
+notify-send "Ausgezeichnete Meme Wahl!" "$SELECTION" --icon="$MEME_PATH/$FILE"
+

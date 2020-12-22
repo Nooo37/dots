@@ -1,0 +1,10 @@
+#!/bin/sh
+# stolen from javacafe01
+# Takes a file as argument, uploads it to 0x0.st and pipes into clipboard
+
+[ -f "$1" ] && op="cat"
+${op:-echo} "${@:-$(cat -)}" \
+	| curl -sF file='@-' 'http://0x0.st' \
+	| tee /dev/stderr \
+	| tr -d '\n'      \
+	| xclip -sel clip

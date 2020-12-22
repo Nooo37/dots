@@ -1,0 +1,12 @@
+#!/bin/sh
+# changing wallpapers on the fly with rofi dmenu 
+
+PATH_TO_WALLPAPER="$HOME/pics/wallpapers"
+
+CHOICE=$(ls "$PATH_TO_WALLPAPER" | rofi -dmenu -i -p "Choose a wallpaper: " | tr -d '\n')
+if [ "$CHOICE" == "" ]; then exit 0; fi
+[[ -e "$PATH_TO_WALLPAPER/$CHOICE" ]] || exit
+
+nitrogen "$PATH_TO_WALLPAPER/$CHOICE" --set-scaled
+notify-send "New wallpaper!" "$CHOICE" --icon="$PATH_TO_WALLPAPER/$CHOICE"
+

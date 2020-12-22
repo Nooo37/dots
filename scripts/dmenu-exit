@@ -1,0 +1,37 @@
+#!/bin/sh
+# cpmfy dmenu for exiting, rebooting and so on
+
+action=$(echo -e "shutdown\nreboot\nsuspend\nquit awesome\nrestart awesome" | rofi -dmenu -i -p "What do you want to do? ")
+
+if [ "$action" == "" ]; then
+    exit 0
+fi
+
+affirm=`echo -e "no\nyes" | rofi -dmenu -i -p "You sure?"`
+
+if [ "$affirm" != "yes" ]; then
+    exit 0
+fi
+
+echo "$action"
+
+case $action in
+    "shutdown")
+        systemctl poweroff
+        ;;
+    "reboot")
+        systemctl reboot
+        ;;
+    "suspend")
+        systemctl suspend
+        ;;
+    "quit awesome")
+        awesome-client "awesome.quit()"
+        ;;
+    "restart awesome")
+        awesome-client "awesome.restart()"
+        ;;
+esac
+
+exit 0
+
