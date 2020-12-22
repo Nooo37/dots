@@ -4,14 +4,10 @@
 BASEDIR=$(dirname $0)
 PATHXPRISON="$BASEDIR/../xprison"
 
-if [ "$1" == "" ] ; then 
-    CHOICE=$(ls "$PATHXPRISON/colors" | rofi -dmenu -i -p "Choose a colorscheme: " | tr -d '\n')
-else
-    CHOICE=$1
-fi
+[ "$1" == "" ] && CHOICE=$(ls "$PATHXPRISON/colors" | rofi -dmenu -i -p "Choose a colorscheme: " | tr -d '\n') || CHOICE=$1
 
 # check input
-if [ "$CHOICE" == "" ] ; then exit 0; fi
+[ "$CHOICE" == "" ] && exit
 [[ -e "$PATHXPRISON/colors/$CHOICE" ]] || exit
 
 # do new colorscheme by writing a new Xresource file, updating xrdb, calling the update script and restarting awesomeWM

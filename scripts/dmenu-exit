@@ -2,16 +2,10 @@
 # cpmfy dmenu for exiting, rebooting and so on
 
 action=$(echo -e "shutdown\nreboot\nsuspend\nquit awesome\nrestart awesome" | rofi -dmenu -i -p "What do you want to do? ")
-
-if [ "$action" == "" ]; then
-    exit 0
-fi
+[ "$action" == "" ] && exit
 
 affirm=`echo -e "no\nyes" | rofi -dmenu -i -p "You sure?"`
-
-if [ "$affirm" != "yes" ]; then
-    exit 0
-fi
+[ "$affirm" != "yes" ] && exit
 
 echo "$action"
 
