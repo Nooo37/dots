@@ -1,3 +1,10 @@
 [submodule "bling"]
-	path = awesome/bling
-	url = https://github.com/Nooo37/bling.git
+    path = awesome/bling
+    url = https://github.com/Nooo37/bling.git
+    branch = master
+
+[submodule "gtk"]
+    path = xprison/res/gtk
+    url = https://github.com/phocus/gtk.git
+    branch = master
+

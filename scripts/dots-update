@@ -52,6 +52,7 @@ for dotfile in $PATHXPRISON/res/*; do
         *"zathura.txt")   echo "$new_dotfile" > "$HOME/.config/zathura/zathurarc" ;;
         *"rofi.rasi")     echo "$new_dotfile" > "$HOME/.config/rofi/mytheme.rasi" ;;
         *"discord.css")   echo "$new_dotfile" > "$HOME/.config/EnhancedDiscord/plugins/style.css" ;;
+        *"phocus.scss")   echo "$new_dotfile" > "$(dirname $0)/../xprison/res/gtk/scss/gtk-3.0/_colors.scss" ;;
     esac
 done
 
