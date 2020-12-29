@@ -1,0 +1,185 @@
+#!/bin/sh
+# awesomewm wrapper utility
+
+case "$1" in
+    wm)
+        shift
+        case "$1" in 
+            restart)
+                awesome-client "awesome.restart()"
+                ;;
+            quit)
+                awesome-client "awesome.quit()"
+                ;;
+            *)
+                echo "Couldn't find subcommand '$1' in command 'wm'"
+                ;;
+        esac
+        ;;
+    window)
+        shift
+        case "$1" in
+            focus|swap)
+                awesome-client "require(\"awful\").client.$1.global_bydirection(\"$2\")"
+                ;;
+            next|prev)
+                [ "$1" == "next" ] && STEP="1" || STEP="-1"
+                awesome-client "require(\"awful\").client.focus.byidx($STEP)"
+                ;;
+            close)
+                awesome-client "client.focus:kill()"
+                ;;
+            maximize)
+                awesome-client "if not client.focus then return end
+                                client.focus.maximized = not client.focus.maximized"
+                ;;
+	    minimize) # unminimized if there is a minimized window otherwise minimizes current one
+		awesome-client "local minimized_c = require(\"awful\").client.restore()
+                                if minimized_c then client.focus = minimized_c; minimized_c:raise()
+                                elseif client.focus then client.focus.minimized = true end"
+		;;
+	    floating)
+		awesome-client "if not client.focus then return end
+                                client.focus.floating = not client.focus.floating"
+		;;
+            launch)
+                shift
+                awesome-client "require(\"awful\").spawn(\"$1\")"
+                ;;
+            *)
+                echo "Couldn't find subcommand '$1' in command 'window'"
+                ;;
+        esac
+        ;;
+    tag)
+        shift
+        case "$1" in
+            next|prev)
+                awesome-client "require(\"awful\").tag.view$1()"
+                ;;
+            focus)
+                shift
+                awesome-client "local s = require(\"awful\").screen.focused()
+                                local t = s.tags[$1]
+                                if t then t:view_only() end"
+                ;;
+            move-window)
+                shift
+                awesome-client "if not client.focus then return end
+                                local t = client.focus.screen.tags[$1]
+                                if t then client.focus:move_to_tag(t) end"
+                ;;
+            delete)
+                awesome-client "local t = require(\"awful\").screen.focused().selected_tag;
+                                if not t then return end; t:delete()"
+                ;;
+            add)
+                awesome-client "local a = require(\"awful\")
+                                local sf = a.screen.focused()
+                                a.tag.add(
+                                    tostring(#sf.tags+1), 
+                                    {screen = af, layout = a.layout.layouts[1] }
+                                ):view_only()"
+                ;;
+            rename) # needs a promptbox on the screen named "mypromptbox"
+                awesome-client "local a = require(\"awful\")
+                                a.prompt.run({
+                                    prompt = \"New tag name: \",
+                                    textbox = a.screen.focused().mypromptbox.widget,
+                                    exe_callback = function(new_name)
+                                        if not new_name or #new_name == 0 then return end
+                                        local t = a.screen.focused().selected_tag
+                                        if t then t.name = new_name end
+                                    end
+                                })"
+                ;;
+            *)
+                echo "Couldn't find subcommand '$1' in command 'tag'"
+                ;;
+        esac
+        ;;
+    layout)
+        shift
+        case "$1" in 
+            next|prev)
+                [ "$1" == "next" ] && STEP="1" || STEP="-1"
+                awesome-client "require(\"awful\").layout.inc($STEP)"
+                ;;
+            masterwidthfact)
+                shift
+                awesome-client "require(\"awful\").tag.incmwfact($1)"
+                ;;
+            mastercount)
+                shift
+                awesome-client "require(\"awful\").tag.incnmaster($1)"
+                ;;
+            *)
+                echo "Couldn't find subcommand '$1' in command 'layout'"
+                ;;
+        esac
+        ;;
+    notifications)
+        shift 
+        case "$1" in
+            killall)
+                awesome-client "local n = require(\"naughty\")
+                                n.destroy_all_notifications(nil, n.notificationClosedReason.dismissedByUser)"
+                ;;
+        esac
+        ;;
+    # from here on commands are likely to not work in other awesomewm configs
+    toggle)
+        shift
+        case "$1" in
+            bar)
+                awesome-client "awesome.emit_signal(\"toggle::bar\")"
+                ;;
+            dash)
+                awesome-client "awesome.emit_signal(\"toggle::sidebar\")"
+                ;;
+            scratchpad)
+                awesome-client "awesome.emit_signal(\"toggle::scratchpad\")"
+                ;;
+            *)
+                echo "Couldn't find subcommand '$1' in command 'toggle'"
+                ;;
+        esac
+        ;;
+    tabbing)
+        shift
+        case "$1" in
+            iter)
+                awesome-client "require(\"bling\").module.tabbed.iter(1)"
+                ;;
+            add)
+                awesome-client "require(\"bling\").module.tabbed.pick_with_dmenu()"
+                ;;
+            pop)
+                awesome-client "require(\"bling\").module.tabbed.pop()"
+                ;;
+            *)
+                echo "Couldn't find subcommand '$1' in command 'tabbing'"
+                ;;
+        esac
+        ;;
+    launch-or-focus)
+        shift
+        awesome-client "awesome.emit_signal(\"launch_or_focus\", \"$1\")"
+        ;;
+    wallpaper)
+        awesome-client "local b = require(\"beautiful\")
+            require(\"awful\").screen.connect_for_each_screen(function(s)
+                require(\"bling\").module.tiled_wallpaper(\"\", s, { -- ﱢﰉ
+                    fg = b.xcolor0,
+                    bg = b.xbg,
+                    font = \"JetBrains Mono Nerd Font\", 
+                    font_size = 17,
+                    padding = 70,
+                    zickzack = true
+                })
+            end)"
+        ;;
+    *)
+        echo "Command '$1' couldn't be found"
+        ;;
+esac

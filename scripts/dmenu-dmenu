@@ -1,0 +1,9 @@
+#!/bin/sh
+
+scriptsel="$(echo "$(ls $(dirname $0) | grep "dmenu-.*" | cut -d'-' -f2)" | rofi -dmenu -i -p "What to do:" | tr -d '\n')"
+
+[ "$scriptsel" ] || exit
+
+echo "$scriptsel"
+
+"$(dirname $0)/dmenu-$scriptsel"

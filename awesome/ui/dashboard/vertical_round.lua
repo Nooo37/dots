@@ -7,12 +7,107 @@ local dpi   = require("beautiful").xresources.apply_dpi
 local helpers = require("ui.helpers")
 
 local dashboard_width = dpi(400)
-local dashboard_border_color = beautiful.xcolor8
-local dashboard_border_width = 2
+local dashboard_border_color_normal = beautiful.xcolor0
+local dashboard_border_color_focus = beautiful.xcolor6
+local dashboard_border_width = 5
 local secondary_bg = beautiful.xbg
-local dashboard_bg = beautiful.xcolor0
+local dashboard_bg = beautiful.xbg
 local dashboard_position = "right"
 local small_font = "JetBrainsMono Nerd Font Bold 20"
+local bar_background = beautiful.xcolor0
+
+--{{{ Create dashboard box
+
+function create_box(widget) 
+    local temp_wid = wibox.widget {
+        {
+            {
+                {
+                    {
+                        widget,
+                        forced_width = dashboard_width * 0.7,
+                        left = dpi(20),
+                        right = dpi(20),
+                        bottom = dpi(20),
+                        top = dpi(20),
+                        widget = wibox.container.margin,
+                    },
+                    shape = helpers.rrect(beautiful.border_radius),
+                    bg = secondary_bg, --"#00000077",
+                    widget = wibox.container.background
+                },
+                margins = dashboard_border_width,
+                widget = wibox.container.margin
+            },
+            id = "border",
+            bg = dashboard_border_color_normal,
+            shape = helpers.rrect(beautiful.border_radius + dashboard_border_width / 2),
+            widget = wibox.container.background
+        },
+        forced_width = dashboard_width * 0.85,
+        left = dpi(20),
+        right = dpi(20),
+        bottom = dpi(20),
+        -- top = dpi(20),
+        widget = wibox.container.margin,
+    }
+    temp_wid:connect_signal("mouse::enter", function()
+        temp_wid:get_children_by_id("border")[1].bg = dashboard_border_color_focus
+    end)
+    temp_wid:connect_signal("mouse::leave", function()
+        temp_wid:get_children_by_id("border")[1].bg = dashboard_border_color_normal
+    end)
+    return temp_wid
+end
+
+--}}}
+
+--{{{ Create half box
+
+local function create_half_box(heading, body)
+    local temp_wid = wibox.widget {
+        {
+            {
+                {
+                    {
+                        nil,
+                        {
+                            helpers.vertical_pad(dpi(10)),
+                            heading,
+                            body,
+                            helpers.vertical_pad(dpi(13)),
+                            layout = wibox.layout.fixed.vertical
+                        },
+                        nil,
+                        layout = wibox.layout.align.vertical
+                    },
+                    bg = secondary_bg,
+                    shape = helpers.rrect(beautiful.corner_radius),
+                    forced_width = (dashboard_width * 0.85 - dpi(10) - 4 * dashboard_border_width) / 2,
+                    widget = wibox.container.background 
+                },
+                margins = dashboard_border_width,
+                widget = wibox.container.margin
+            },
+            id = "border",
+            bg = dashboard_border_color_normal,
+            shape = helpers.rrect(beautiful.border_radius + dashboard_border_width / 2),
+            widget = wibox.container.background
+        },
+        left = dpi(20),
+        bottom = dpi(20),
+        widget = wibox.container.margin
+    }
+    temp_wid:connect_signal("mouse::enter", function()
+        temp_wid:get_children_by_id("border")[1].bg = dashboard_border_color_focus
+    end)
+    temp_wid:connect_signal("mouse::leave", function()
+        temp_wid:get_children_by_id("border")[1].bg = dashboard_border_color_normal
+    end)
+    return temp_wid
+end
+
+--}}}
 
 --- {{{ Clock and date
 
@@ -41,34 +136,18 @@ fancy_date_widget.font = "Sans bold 12"
 
 local fancy_date = {fancy_date_widget, layout = wibox.layout.fixed.vertical}
 
-
 local fancy_time_box = wibox.widget {
-  {
-    {
-      {
-          helpers.vertical_pad(dpi(18)),
-          fancy_time,
-          fancy_date,
-          helpers.vertical_pad(dpi(18)),
-          layout = wibox.layout.fixed.vertical
-      },
-      forced_width = dashboard_width * 0.7,
-      left = dpi(20),
-      right = dpi(20),
-      bottom = dpi(20),
-      top = dpi(20),
-      widget = wibox.container.margin,
-    },
-    shape = helpers.rrect(beautiful.corner_radius),
-    bg = secondary_bg, --"#00000077",
-    widget = wibox.container.background
-  },
-  forced_width = dashboard_width * 0.85,
-  left = dpi(20),
-  right = dpi(20),
-  bottom = dpi(20),
-  top = dpi(20),
-  widget = wibox.container.margin,
+    helpers.vertical_pad(dpi(20)),
+    create_box(
+        wibox.widget{
+              -- helpers.vertical_pad(dpi(5)),
+              fancy_time,
+              fancy_date,
+              helpers.vertical_pad(dpi(12)),
+              layout = wibox.layout.fixed.vertical
+        }
+    ),
+    layout = wibox.layout.fixed.vertical
 }
 
 ---}}}
@@ -111,7 +190,7 @@ local cpu_heading = wibox.widget {
   widget = wibox.widget.textbox
 }
 
-local cpu_bar = create_blank_bar(beautiful.xcolor1, beautiful.xcolor9, beautiful.xcolor8)
+local cpu_bar = create_blank_bar(beautiful.xcolor1, beautiful.xcolor9, bar_background)
 
 awesome.connect_signal("evil::cpu", function(percentage)
   cpu_bar.value = tonumber(percentage)
@@ -127,7 +206,7 @@ local ram_heading = wibox.widget {
   widget = wibox.widget.textbox
 }
 
-local ram_bar = create_blank_bar(beautiful.xcolor2, beautiful.xcolor10, beautiful.xcolor8)
+local ram_bar = create_blank_bar(beautiful.xcolor2, beautiful.xcolor10, bar_background)
 
 awesome.connect_signal("evil::ram", function(used, total)
   ram_bar.value = tonumber(100*(used/total))
@@ -144,7 +223,7 @@ local disk_heading = wibox.widget {
   widget = wibox.widget.textbox
 }
 
-local disk_bar = create_blank_bar(beautiful.xcolor3, beautiful.xcolor11, beautiful.xcolor8)
+local disk_bar = create_blank_bar(beautiful.xcolor3, beautiful.xcolor11, bar_background)
 
 awesome.connect_signal("evil::disk", function(used, total)
   disk_bar.value = tonumber(100*(used/total))
@@ -161,7 +240,7 @@ local vol_heading = wibox.widget {
   widget = wibox.widget.textbox
 }
 
-local vol_bar = create_blank_bar(beautiful.xcolor4, beautiful.xcolor12, beautiful.xcolor8)
+local vol_bar = create_blank_bar(beautiful.xcolor4, beautiful.xcolor12, bar_background)
 
 awesome.connect_signal("evil::volume", function(percentage)
   vol_bar.value = tonumber(percentage)
@@ -178,7 +257,7 @@ local mpd_heading = wibox.widget {
   widget = wibox.widget.textbox
 }
 
-local mpd_bar = create_blank_bar(beautiful.xcolor6, beautiful.xcolor14, beautiful.xcolor8)
+local mpd_bar = create_blank_bar(beautiful.xcolor6, beautiful.xcolor14, bar_background)
 
 awesome.connect_signal("evil::mpd_volume", function(percentage)
   mpd_bar.value = tonumber(percentage)
@@ -195,7 +274,7 @@ local bri_heading = wibox.widget {
   widget = wibox.widget.textbox
 }
 
-local bri_bar = create_blank_bar(beautiful.xcolor5, beautiful.xcolor13, beautiful.xcolor8)
+local bri_bar = create_blank_bar(beautiful.xcolor5, beautiful.xcolor13, bar_background)
 
 awesome.connect_signal("evil::brightness", function(percentage)
   bri_bar.value = tonumber(percentage)*100
@@ -207,7 +286,7 @@ end)
 --{{{ conglomarat of bars
 
 local perform_bar_widgets = wibox.widget {
-    helpers.vertical_pad(dpi(15)),
+    -- helpers.vertical_pad(dpi(5)),
     {
       helpers.horizontal_pad(dpi(15)),
       cpu_heading,
@@ -249,34 +328,14 @@ local perform_bar_widgets = wibox.widget {
       helpers.horizontal_pad(dpi(15)),
       layout = wibox.layout.fixed.horizontal
     },
-    helpers.vertical_pad(dpi(15)),
+    -- helpers.vertical_pad(dpi(5)),
     layout = wibox.layout.fixed.vertical
 }
 
-local performance_box = wibox.widget {
-  {
-    {
-      perform_bar_widgets,
-      forced_width = dashboard_width * 0.7,
-      left = dpi(20),
-      right = dpi(20),
-      bottom = dpi(20),
-      top = dpi(20),
-      widget = wibox.container.margin,
-    },
-    shape = helpers.rrect(beautiful.corner_radius),
-    bg = secondary_bg, --"#00000077",
-    widget = wibox.container.background
-  },
-  forced_width = dashboard_width * 0.85,
-  left = dpi(20),
-  right = dpi(20),
-  bottom = dpi(20),
-  widget = wibox.container.margin,
-}
+local performance_box = create_box(perform_bar_widgets)
 
 local user_bar_widgets = wibox.widget {
-    helpers.vertical_pad(dpi(15)),
+    -- helpers.vertical_pad(dpi(5)),
     {
       helpers.horizontal_pad(dpi(15)),
       vol_heading,
@@ -318,65 +377,14 @@ local user_bar_widgets = wibox.widget {
       helpers.horizontal_pad(dpi(15)),
       layout = wibox.layout.fixed.horizontal
     },
-    helpers.vertical_pad(dpi(15)),
+    -- helpers.vertical_pad(dpi(5)),
     layout = wibox.layout.fixed.vertical
 }
 
-local user_box = wibox.widget {
-  {
-    {
-      user_bar_widgets,
-      forced_width = dashboard_width * 0.7,
-      left = dpi(20),
-      right = dpi(20),
-      bottom = dpi(20),
-      top = dpi(20),
-      widget = wibox.container.margin,
-    },
-    shape = helpers.rrect(beautiful.corner_radius),
-    bg = secondary_bg, --"#00000077",
-    widget = wibox.container.background
-  },
-  forced_width = dashboard_width * 0.85,
-  left = dpi(20),
-  right = dpi(20),
-  bottom = dpi(20),
-  widget = wibox.container.margin,
-}
+
+local user_box = create_box(user_bar_widgets)
 
 --}}}
-
-
---{{{ Create half box
-
-local function create_half_box(heading, body)
-  return wibox.widget {
-    {
-        {
-          nil,
-          {
-            helpers.vertical_pad(dpi(15)),
-            heading,
-            body,
-            helpers.vertical_pad(dpi(15)),
-            layout = wibox.layout.fixed.vertical
-          },
-          nil,
-          layout = wibox.layout.align.vertical
-        },
-      bg = secondary_bg,
-      shape = helpers.rrect(beautiful.corner_radius),
-      forced_width = (dashboard_width * 0.85 - dpi(10)) / 2,
-      widget = wibox.container.background
-    },
-    left = dpi(20),
-    bottom = dpi(20),
-    widget = wibox.container.margin
-  }
-end
-
---}}}
-
 
 --{{{ newsboat
 
@@ -428,7 +436,7 @@ local temp_info = wibox.widget({
         align = "center",
         valign = "center",
         font = "Sans medium 10",
-        markup = helpers.colorize_text(" <i>Temperatur\nin <b>CPU</b></i>", temp_fg),
+        markup = helpers.colorize_text(" <i>Temperature\nin <b>CPU</b></i>", temp_fg),
         widget = wibox.widget.textbox()
 })
 
@@ -495,13 +503,13 @@ local weather_info = wibox.widget({
         align = "center",
         valign = "center",
         font = "Sans medium 10",
-        markup = helpers.colorize_text(" <i>Temperatur\n<b>IRL</b></i>", weather_fg),
+        markup = helpers.colorize_text(" <i>Temperature\n<b>IRL</b></i>", weather_fg),
         widget = wibox.widget.textbox()
 })
 
 awesome.connect_signal("evil::weather", function(temp, wind, emoji)
   weather_heading.markup = helpers.colorize_text(tostring(temp) .. "°C", weather_fg)
-  weather_info.markup = helpers.colorize_text(" <i>Temperatur\n<b>IRL</b> (" .. tostring(wind) .. "km/h wind)</i>", weather_fg)
+  weather_info.markup = helpers.colorize_text(" <i>Temperature\n<b>IRL</b> (" .. tostring(wind) .. "km/h wind)</i>", weather_fg)
 end)
 
 local weather_box = create_half_box(weather_heading, weather_info)
@@ -512,28 +520,8 @@ local weather_box = create_half_box(weather_heading, weather_info)
 
 --{{{ mpd
 
-local mpd_box = wibox.widget {
-  {
-    {
-      require("ui.widget.mpd").create(),
-      forced_width = dashboard_width * 0.7,
-      left = dpi(20),
-      right = dpi(20),
-      bottom = dpi(20),
-      top = dpi(20),
-      widget = wibox.container.margin,
-    },
-    shape = helpers.rrect(beautiful.corner_radius),
-    -- forced_width = dashboard_width * 0.8,
-    bg = secondary_bg, --"#00000077",
-    widget = wibox.container.background
-  },
-  forced_width = dashboard_width * 0.85,
-  left = dpi(20),
-  right = dpi(20),
-  bottom = dpi(20),
-  widget = wibox.container.margin,
-}
+local mpd_wid = require("ui.widget.mpd").create(bar_background)
+local mpd_box = create_box(mpd_wid)
 
 --}}}
 
@@ -646,6 +634,8 @@ awful.screen.connect_for_each_screen(function(s)
       mpd_box,
   }
 
+  s.mybar:connect_signal("mouse::leave", function() awesome.emit_signal("toggle::sidebar") end)
+
   -- shortcut to toggle sidebar
   awesome.connect_signal("toggle::sidebar", function()
       -- s.myplacehodler.visible = not s.myplacehodler.visible
@@ -676,9 +666,9 @@ awful.screen.connect_for_each_screen(function(s)
   end
 
   -- connect all important signals
-  tag.connect_signal("tagged", function(t, c) update_sidebar(t, c) end)
-  tag.connect_signal("untagged", function(t, c) update_sidebar(t, c) end)
-  tag.connect_signal("property::selected", function(t) update_sidebar(t) end)
-  client.connect_signal("property::minimized", function(c) local t = c.first_tag update_sidebar(t) end)
+  -- tag.connect_signal("tagged", function(t, c) update_sidebar(t, c) end)
+  -- tag.connect_signal("untagged", function(t, c) update_sidebar(t, c) end)
+  -- tag.connect_signal("property::selected", function(t) update_sidebar(t) end)
+  -- client.connect_signal("property::minimized", function(c) local t = c.first_tag update_sidebar(t) end)
 
 end)

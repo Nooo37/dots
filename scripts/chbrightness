@@ -1,0 +1,12 @@
+#!/bin/sh
+# changes the brightness of my screen relative to its current brightness (without backlighting)
+
+current_brightness="$(xrandr --verbose | grep -i brightness | awk '{ print $2 }')"
+new_brightness="$(echo "$current_brightness + $1" | bc)"
+
+(( $(echo "$new_brightness > 1.0" | bc -l) )) && exit
+(( $(echo "$new_brightness < 0.2" | bc -l) )) && exit
+
+xrandr --output DisplayPort-0 --brightness "$new_brightness"
+
+echo "$new_brightness"

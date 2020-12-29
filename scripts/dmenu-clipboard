@@ -1,0 +1,3 @@
+#!/bin/sh
+
+greenclip print | sed '/^$/d' | rofi -dmenu -i -c -l 20 | xargs -r -d'\\n' -I '{}' greenclip print '{}'

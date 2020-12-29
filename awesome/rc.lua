@@ -1,42 +1,26 @@
-pcall(require, "luarocks.loader")       -- seems to be standard
+pcall(require, "luarocks.loader") -- seems to be standard
 local gears = require("gears")
 local awful = require("awful")
 local wibox = require("wibox")
 require("awful.autofocus")
 local naughty = require("naughty")
-local beautiful = require("beautiful")  -- Theme handling library
+local beautiful = require("beautiful") 
+
+awful.spawn.with_shell("$HOME/code/dots/scripts/autostart")
 
 beautiful.init(require("theme")) -- intialize the theme
 
 awful.util.tagnames = {"1", "2"} -- declare tag names
 
--- require("module.no_single_client_borders")
 require("module.no_single_client_round_corners")
--- require("module.titlebar_only_in_floating")
 require("module.sloppy_focus")
-require("module.auto_start")({"mpd", "aw-qt", "emacs --daemon", "picom", "greenclip daemon", "nitrogen --restore"}) -- all my daemons
-require("module.auto_start")({"setxkbmap -option caps:super", "xcape -e 'Super_L=Escape'"}) -- overpowered caps key
-
 require("module.error_handling")
 
 --{{{ bling
 local bling = require("bling")
-
--- bling.module.window_swallowing.start()
 bling.module.flash_focus.enable()
-
--- set wallpaper
-awful.screen.connect_for_each_screen(function(s)
-    bling.module.tiled_wallpaper("", s, { -- ﱢﰉ
-        fg = beautiful.xcolor0,
-        bg = beautiful.xbg,
-        font = "JetBrains Mono Nerd Font", 
-        font_size = 17,
-        padding = 70,
-        zickzack = true
-    })
-end)
--- }}}
+-- bling.module.window_swallowing.start()
+--}}}
 
 --{{{ Layouts
 local machi = require("module.machi")
@@ -50,37 +34,18 @@ awful.layout.layouts = {
     -- machi.default_layout,
     -- bling.layout.horizontal,
     bling.layout.vertical,
-    -- awful.layout.suit.spiral,
     awful.layout.suit.floating,
     awful.layout.suit.max
 }
 awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
 --}}}
 
---{{{ collision
-require("collision") {
-    up    = { "k" },--,    "Up",   ")" },
-    down  = { "j" },--,  "Down",   "(" },
-    left  = { "h" },--,  "Left",   "/" },
-    right = { "l" },--, "Right",   "=" },
-}
-
-local collision = require("collision")
-collision.settings.swap_across_screen = true
---}}}
-
 --{{{ require
-require("keys")
 require("signal")({"volume", "mpd", "temp", "cpu", "ram", "newsboat", "disk", "weather", "brightness_desktop"})
--- require("ui.titlebar.powerarrows")
-require("ui.bar.vertical_round")
--- require("ui.bar.vertical_round")
+require("ui.bar.fragmented")
 require("ui.dashboard.vertical_round")
 require("ui.popup.layout_box")
---require("ui.popup.tag_box") -- no need with collision
 require("ui.popup.volume_adjust")
--- require("ui.popup.mpd_control")
--- require("ui.popup.bad_run_prompt")
 require("ui.popup.mpd_notify")
 --}}}
 
@@ -88,81 +53,42 @@ require("ui.popup.mpd_notify")
 -- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
-    -- All clients will match this rule.
-    { rule = { },
-      properties = { border_width = beautiful.border_width or 0,
-                     border_color = beautiful.border_normal or "#000000",
-                     focus = awful.client.focus.filter,
-                     raise = true,
-                     keys = clientkeys,
-                     buttons = clientbuttons,
-                     screen = awful.screen.preferred,
-                     placement = awful.placement.no_overlap+awful.placement.no_offscreen
-     }
+    {
+        rule = { },  -- All clients will match this rule.
+        properties = {
+	     border_width = beautiful.border_width or 0,
+             border_color = beautiful.border_normal or "#000000",
+             focus = awful.client.focus.filter,
+             raise = true,
+             keys = clientkeys,
+             buttons = clientbuttons,
+             screen = awful.screen.preferred,
+             placement = awful.placement.no_overlap+awful.placement.no_offscreen
+	}
     },
 
     {
-        rule_any = {type = {"normal", "dialog"}},
-        properties = {ontop = true}
+        rule_any = { type = {"normal", "dialog"} },
+        properties = { ontop = true }
     },          
 
-    -- Floating clients.
-    { rule_any = {
-        instance = {
-          "DTA",  -- Firefox addon DownThemAll.
-          "copyq",  -- Includes session name in class.
-          "pinentry",
-        },
-        class = {
-          "Arandr",
-          "Blueman-manager",
-          "Gpick",
-          "Kruler",
-          "MessageWin",  -- kalarm.
-          "Sxiv",
-          "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
-          "Wpa_gui",
-          "veromix",
-          "xtightvncviewer"},
-
-        -- Note that the name property shown in xprop might be set slightly after creation of the client
-        -- and the name shown there might not match defined rules here.
-        name = {
-          "Event Tester",  -- xev.
-        },
-        role = {
-          "AlarmWindow",  -- Thunderbird's calendar.
-          "ConfigManager",  -- Thunderbird's about:config.
-          "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
-        },
-	property = {
-	    floating = true
-	}
-      }, properties = { floating = true }},
-
-    -- Add titlebars to normal clients and dialogs
-      { rule_any = {type = { "normal", "dialog" }
-    }, properties = { titlebars_enabled = false }
-      },
-
-    { rule_any = {instance = { "scratch" }},
-      properties = { floating = true, placement=awful.placement.centered},
-      callback = require("ui.titlebar.scratchpad")
+    {
+        rule_any = { instance = { "scratch" } },
+        properties = { floating = true, placement=awful.placement.centered },
+        callback = require("ui.titlebar.scratchpad")
     },
-
-
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
 }
 -- }}}
 
 
----{{{ all clients spawn as slave
+---{{{ on client spawn
 client.connect_signal("manage",function(c)
     if not awesome.startup then
-        awful.client.setslave(c)
+        awful.client.setslave(c) -- all clients spawn as slave
     end
+    if c.class == "aw-qt" then -- close that weird aw-qt window for me please
+        c:kill()
+    end 
 end)
 ---}}}
 
@@ -184,13 +110,55 @@ end
 tag.connect_signal("property::selected", update_tagnames)
 --}}}
 
----{{{ just close that weird aw-qt window forever
-client.connect_signal("manage", function(c)
-    if c.class == "aw-qt" then 
-        c:kill()
-    end 
-end)
----}}}
+--{{{ needed doing scratchpad and "launch or focus" for sxhkd keybinds
+local scratchpad = require("module.scratchpad")
 
+awesome.connect_signal("toggle::scratchpad", function()
+    scratchpad.toggle("alacritty --class scratchpad", {instance = "scratch"})
+end)
+
+local function launch_or_focus(application)
+    -- if the appication is already open, focus it otherwise open an instance
+    local is_app = function(c)
+        return awful.rules.match(c, {instance = application}) or awful.rules.match(c, {class = application})
+    end
+    for c in awful.client.iterate(is_app) do
+        if c.first_tag then 
+            c.first_tag:view_only()
+            client.focus = c
+            return
+        elseif c.bling_tabbed then 
+            local tabobj = c.bling_tabbed
+            local tag = tabobj.clients[tabobj.focused_idx].first_tag
+            tag:view_only()
+            client.focus = tabobj.clients[tabobj.focused_idx]
+            bling.module.tabbed.iter()
+            launch_or_focus(application)
+            return
+        end
+    end
+    awful.util.spawn(application)
+end
+
+awesome.connect_signal("launch_or_focus", launch_or_focus)
+--}}}
+
+--{{{ Essentially just backup keybinds when sxhkd fails
+local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
+local hotkeys_popup = require("awful.hotkeys_popup").widget
+local modkey       = "Mod4"
+
+globalkeys = my_table.join(
+   awful.key({ modkey,           }, "ü", function() awful.util.spawn(beautiful.terminal:lower() or "xterm") end,
+              {description = "launch terminal", group = "launch"}),
+   awful.key({ modkey,           }, "s", hotkeys_popup.show_help,
+              {description = "show help", group="awesome"})
+)
+
+root.keys(globalkeys)
+--}}}
+
+--{{{ start with bar disabled
 awesome.emit_signal("toggle::bar")
+--}}}
 

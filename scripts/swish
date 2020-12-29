@@ -1,0 +1,13 @@
+#!/bin/sh
+# simple wm interface (for) shellscripting
+# currently only supports awesomeWM but I'll add others once I try them
+
+wm=$XDG_CURRENT_DESKTOP
+[ "$wm" ] || wm="$DESKTOP_SESSION"
+
+case "${wm##*/}" in
+    awesome)
+        $(dirname $0)/awesome-wrapper $@
+        ;;
+esac
+
