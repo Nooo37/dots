@@ -24,7 +24,7 @@ theme.config_path = config_path
 theme.wallpaper = config_path.."wallpaper.png"
 
 theme.corner_radius = dpi(8) --14   8
-theme.border_radius = dpi(8) --14   8
+theme.border_radius = dpi(6) --14   8
 theme.font          = "sans 8"
 
 
@@ -72,6 +72,7 @@ theme.bg_focus      = theme.xcolor0
 theme.bg_urgent     = theme.xcolor9
 theme.bg_minimize   = theme.xcolor8
 theme.bg_systray    = theme.xbg
+theme.systray_icon_spacing = dpi(5)
 
 theme.fg_normal     = theme.xfg
 theme.fg_focus      = theme.xcolor4
@@ -82,9 +83,9 @@ theme.gap_single_client = false
 theme.useless_gap   = dpi(5)
 
 -- borders
-theme.border_width  = dpi(0)
-theme.border_normal = theme.xcolor0
-theme.border_focus  = theme.xcolor1
+theme.border_width  = 0 -- dpi(8)
+theme.border_normal = theme.xbg
+theme.border_focus  = theme.xbg
 theme.border_marked = theme.xcolor10
 
 theme.tooltip_fg = theme.fg_normal
@@ -92,14 +93,14 @@ theme.tooltip_bg = theme.bg_normal
 
 
 -- taglist
-theme.taglist_bg                                = "alpha" --theme.xcolor2
-theme.taglist_bg_focus                          = theme.xcolor5-- theme.xfg
-theme.taglist_fg_focus                          = theme.xfg--theme.xcolor2
-theme.taglist_bg_urgent                         = theme.xcolor2
-theme.taglist_fg_urgent                         = theme.xfg
-theme.taglist_bg_occupied                       = "alpha"-- theme.xcolor5
+theme.taglist_bg                                = "alpha" 
+theme.taglist_bg_focus                          = "alpha" -- theme.xcolor8
+theme.taglist_fg_focus                          = theme.xcolor1
+theme.taglist_bg_urgent                         = "alpha" --theme.xcolor2
+theme.taglist_fg_urgent                         = theme.xcolor2
+theme.taglist_bg_occupied                       = "alpha" --theme.xbg
 theme.taglist_fg_occupied                       = theme.xfg
-theme.taglist_bg_empty                          = "alpha" --theme.xcolor8
+theme.taglist_bg_empty                          = "alpha" --theme.xbg
 theme.taglist_fg_empty                          = theme.xcolor8
 theme.taglist_bg_volatile                       = "#00000000"
 theme.taglist_fg_volatile                       = theme.xcolor15
@@ -113,24 +114,27 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
 
 -- tasklist
 theme.tasklist_bg                                = "alpha"
-theme.tasklist_bg_focus                          = theme.xcolor2
-theme.tasklist_fg_focus                          = theme.xfg
-theme.tasklist_bg_urgent                         = theme.xcolor2
-theme.tasklist_fg_urgent                         = theme.xfg
-theme.tasklist_bg_occupied                       = "alpha"
+theme.tasklist_bg_focus                          = theme.xbg
+theme.tasklist_fg_focus                          = theme.xcolor2
+theme.tasklist_bg_urgent                         = theme.xbg
+theme.tasklist_fg_urgent                         = theme.xcolor1
+theme.tasklist_bg_occupied                       = theme.xbg
 theme.tasklist_fg_occupied                       = theme.xfg
-theme.tasklist_bg_normal                         = "alpha"
-theme.tasklist_fg_normal                         = theme.xcolor8
+theme.tasklist_bg_normal                         = theme.xbg
+theme.tasklist_fg_normal                         = theme.xfg
 theme.tasklist_bg_volatile                       = "#00000000"
 theme.tasklist_fg_volatile                       = theme.xcolor15
 
+theme.tasklist_plain_task_name = true
+theme.tasklist_disable_task_name = false
+
 -- titlebar
 theme.titlebar_fg_normal 	                      = theme.xfg
-theme.titlebar_bg_normal 	                      = theme.xbg
+theme.titlebar_bg_normal 	                      = theme.xcolor0
 theme.titlebar_fg 	                            = theme.xfg
 theme.titlebar_bg 	                            = theme.xbg
 theme.titlebar_fg_focus 	                      = theme.xcolor15
-theme.titlebar_bg_focus 	                      = theme.xcolor0
+theme.titlebar_bg_focus 	                      = theme.xcolor6
 
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]

@@ -10,65 +10,68 @@ local helpers = require("ui.helpers")
 local screen = awful.screen.focused()
 local popup_width = dpi(400)
 local popup_height = dpi(50)
-local popup_border_width      = beautiful.border_width
-local progressbar_fill_color  = beautiful.xfg
-local progressbar_empty_color = beautiful.xcolor8
+local popup_border_width      = 5
+local popup_border_color      = beautiful.xcolor0
+-- local progressbar_fill_color  = beautiful.xfg
+local progressbar_empty_color = beautiful.xcolor0
 local popup_icon_color        = beautiful.xcolor3
 local popup_background        = beautiful.xbg
 local popup_corner_radius     = beautiful.corner_radius or 0
 local popup_timeout           = beautiful.popup_timeout or 8
 
-  -- create the volume_adjust component
-local volume_adjust = wibox({
-   screen = awful.screen.focused(),
-   x = (screen.geometry.width / 2) - (popup_width / 2),
-   y = screen.geometry.height - (popup_height * 1.5),
-   width = popup_width,
-   height = popup_height,
-   shape = helpers.rrect(popup_corner_radius),
-   visible = false,
-   border_width = popup_border_width,
-   border_color = beautiful.xcolor11,
-   bg = popup_background,
-   ontop = true
-})
+local progressbar_active_color = {
+  type = 'linear',
+  from = { 0, 0 },
+  to = { 300, 50 }, -- replace with w,h later
+  stops = {
+    { 0.00, beautiful.xcolor6  },
+    { 0.55, beautiful.xcolor14 },
+  }
+}
 
 
 local icon_textbox = wibox.widget{ -- 🕨🕩🕪
-   font = "Hack 19", --"Hack 19",
+   font = "JetBrainsMono Nerd Font 21", 
    markup = helpers.colorize_text("🕩", popup_icon_color),
    widget = wibox.widget.textbox
 }
 
 awesome.connect_signal("evil::volume", function(percentage, muted)
-  if muted or percentage < 10 then
-    icon_textbox.markup = helpers.colorize_text("🕨", beautiful.xcolor3)
+  if muted then 
+    icon_textbox.markup = helpers.colorize_text("ﱝ", beautiful.xcolor3) -- 🕨
+  elseif percentage < 10 then
+    icon_textbox.markup = helpers.colorize_text("", beautiful.xcolor3) -- 🕨
   elseif percentage < 50 then
-    icon_textbox.markup = helpers.colorize_text("🕩", beautiful.xcolor3)
+    icon_textbox.markup = helpers.colorize_text("", beautiful.xcolor3) -- 🕩
   else
-    icon_textbox.markup = helpers.colorize_text("🕪", beautiful.xcolor3)
+    icon_textbox.markup = helpers.colorize_text("墳", beautiful.xcolor3) -- 🕪
   end
 end)
 
 
--- local vol_slider = require("widgets.vol_slider").create(active_color)
+  -- create the volume_adjust component
+local volume_adjust = wibox({
+   screen = awful.screen.focused(),
+   x = (screen.geometry.width / 2) - (popup_width / 2),
+   y = screen.workarea.height - (popup_height * 1.5),
+   width = popup_width,
+   height = popup_height,
+   shape = helpers.rrect(popup_corner_radius),
+   visible = false,
+   border_width = popup_border_width,
+   border_color = popup_border_color,
+   bg = popup_background,
+   ontop = true
+})
 
-local active_color = {
-  type = 'linear',
-  from = { 0, 0 },
-  to = { 300, 50 }, -- replace with w,h later
-  stops = {
-    { 0.00, beautiful.xcolor3  },
-    { 0.55, beautiful.xcolor11 },
-  }
-}
-vol_slider = require("ui.widget.vol_slider").create(active_color, beautiful.xcolor8)
+local vol_slider = require("ui.widget.vol_slider").create(progressbar_active_color, progressbar_empty_color)
+
 volume_adjust:setup {
   layout = wibox.layout.fixed.horizontal,
-  wibox.container.margin(
-    icon_textbox,
-    dpi(8), dpi(0), dpi(10), dpi(5)
-  ),
+  -- wibox.container.margin(
+  --   icon_textbox,
+  --   dpi(8), dpi(0), dpi(10), dpi(5)
+  -- ),
    wibox.container.margin(
     vol_slider,
     dpi(20), dpi(20), dpi(0), dpi(0)

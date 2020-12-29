@@ -24,7 +24,7 @@ local pad = helpers.pad
 
 local creator = {}
 
-creator.create = function()
+creator.create = function(bar_background)
   local active_color = {
     type = 'linear',
     from = { 0, 0 },
@@ -34,7 +34,7 @@ creator.create = function()
       { 0.55, beautiful.xcolor5  }
     }
   }
-  local mpd_slider = require("ui.widget.mpd_slider").create(active_color, beautiful.xcolor8)
+  local mpd_slider = require("ui.widget.mpd_slider").create(active_color, bar_background)
   -- Set colors
   ------------------------------------------------------------
   local title_color =  beautiful.xcolor3
