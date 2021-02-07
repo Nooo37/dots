@@ -1,0 +1,101 @@
+# sxhkd configuration
+
+# WINDOW MANAGEMENT
+
+super + {w,n,m,b}
+    swish window {close,minimize,maximize,floating}
+
+super + {_, shift +} {h,j,k,l}
+    swish window {focus,swap} {left,down,up,right}
+
+super + alt + {h,l}
+    swish layout masterwidthfact {"-0.05", "0.05"}
+
+super + alt + {j,k}
+    swish layout mastercount {"-1", "1"}
+
+super + {u,i,o}
+    swish tabbing {iter,add,pop}
+
+super + z
+    swish tag toggle
+
+super + {1-9}
+    swish tag focus {1-9}
+
+super + shift + {1-9}
+    TEMP="{1-9}"; swish tag move-window $TEMP; swish tag focus $TEMP
+
+super + {_, shift +} space
+    swish layout {next,prev}
+
+super + {_, shift +} Tab
+    swish window {next,prev}
+
+super + {F8,F9}
+    swish tag {prev,next}
+
+super + {F5,F6,F7} 
+    swish tag {delete,rename,add}
+
+super + {F1,F2} 
+    swish toggle {bar,dash}
+
+# LAUNCH
+    
+super + t
+    swish window launch "alacritty"
+
+super + r 
+    rofi -show run
+
+super + f
+    swish tag toggle "web"
+
+super + shift + f
+    brave
+
+super + e 
+    emacsclient --create-frame
+
+super + d 
+    swish toggle scratchdiscord
+
+super + g
+    swish toggle scratchpad
+
+super + v
+    swish toggle scratchmusic
+
+
+# MUSIC and SOUND
+
+super + {comma,period}
+    amixer sset 'Master' 5%{-,+}
+
+super + alt + q
+    mpc toggle
+
+super + alt + {plus,minus}
+    mpc {prev,next}
+
+super + alt + {comma,period}
+    mpc volume {-,+}5
+
+# MISC
+
+super + shift + s
+    ~/code/dots/scripts/dmenu-screenshot
+
+super + Print
+    ~/code/dots/scripts/dmenu-screenshot "all" "save"
+
+super + a 
+    ~/code/dots/scripts/dmenu-dmenu
+
+super + numbersign
+    swish notifications killall
+
+super + shift + {comma,period}
+    ~/code/dots/scripts/chbrightness {"-0.05","0.05"}
+
