@@ -7,14 +7,14 @@ local dpi   = require("beautiful").xresources.apply_dpi
 local helpers = require("ui.helpers")
 
 local dashboard_width = dpi(400)
-local dashboard_border_color_normal = beautiful.xcolor0
-local dashboard_border_color_focus = beautiful.xcolor6
+local dashboard_border_color_normal = beautiful.xbg
+local dashboard_border_color_focus = beautiful.xbg
 local dashboard_border_width = 5
 local secondary_bg = beautiful.xbg
-local dashboard_bg = beautiful.xbg
+local dashboard_bg = beautiful.xcolor0
 local dashboard_position = "right"
 local small_font = "JetBrainsMono Nerd Font Bold 20"
-local bar_background = beautiful.xcolor0
+local bar_background = beautiful.xcolor8
 
 --{{{ Create dashboard box
 

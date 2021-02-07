@@ -1,9 +1,29 @@
 #!/bin/sh
 
-scriptsel="$(echo "$(ls $(dirname $0) | grep "dmenu-.*" | cut -d'-' -f2)" | rofi -dmenu -i -p "What to do:" | tr -d '\n')"
+auswahl="suspend\nshutdown\nreboot\nquit awesome\nrestart awesome\n$(ls $(dirname $0) | grep "dmenu-.*" | cut -d'-' -f2)"
+scriptsel="$(echo -e "$auswahl"| rofi -dmenu -i -p "What to do:" | tr -d '\n')"
 
 [ "$scriptsel" ] || exit
 
 echo "$scriptsel"
 
-"$(dirname $0)/dmenu-$scriptsel"
+case $scriptsel in 
+    "shutdown")
+        systemctl poweroff
+        ;;
+    "reboot")
+        systemctl reboot
+        ;;
+    "suspend")
+        systemctl suspend
+        ;;
+    "quit awesome")
+        awesome-client "awesome.quit()"
+        ;;
+    "restart awesome")
+        awesome-client "awesome.restart()"
+        ;;
+    *) 
+        "$(dirname $0)/dmenu-$scriptsel" 
+        ;;
+esac

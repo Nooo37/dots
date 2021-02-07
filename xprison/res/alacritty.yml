@@ -3,8 +3,8 @@
 # Padding
 window:
   padding:
-    x: 50
-    y: 35
+    x: 30
+    y: 20
 
 # Disable the visual bell
 bell:
@@ -17,19 +17,29 @@ scrolling:
   history: 10000
   multiplier: 3
 
+# cursor
+cursor:
+    style: Beam # maybe Underline, Block
+    unfocused_hollow: true 
+
 # Fonts
+# Terminus
 font:
   normal:
+    # family: Terminus
     family: JetBrainsMono Nerd Font
     style: Regular
   bold:
-    family: JetBrainsMono Nerd Font 
+    # family: Terminus
+    family: JetBrainsMono Nerd Font
     style: Bold
   italic:
+    # family: Terminus
     family: JetBrainsMono Nerd Font
     style: Italic
   bold_italic:
-    family: monospace
+    # family: Terminus
+    family: JetBrainsMono Nerd Font
     style: Bold Italic
   size: 9.0
   offset:
@@ -39,34 +49,54 @@ font:
 # Colors
 colors:
     primary:
-      background: '@background@'
-      foreground: '@foreground@'
+        background: '@background@'
+        foreground: '@foreground@'
     normal:
-      black:    '@color0@'
-      red:      '@color1@'
-      green:    '@color2@'
-      yellow:   '@color3@'
-      blue:     '@color4@'
-      magenta:  '@color5@'
-      cyan:     '@color6@'
-      white:    '@color7@'
+        black:    '@color0@'
+        red:      '@color1@'
+        green:    '@color2@'
+        yellow:   '@color3@'
+        blue:     '@color4@'
+        magenta:  '@color5@'
+        cyan:     '@color6@'
+        white:    '@color7@'
     bright:
-     black:   '@color8@'
-     red:     '@color9@'
-     green:   '@color10@'
-     yellow:  '@color11@'
-     blue:    '@color12@'
-     magenta: '@color13@'
-     cyan:    '@color14@'
-     white:   '@color15@'
+        black:   '@color8@'
+        red:     '@color9@'
+        green:   '@color10@'
+        yellow:  '@color11@'
+        blue:    '@color12@'
+        magenta: '@color13@'
+        cyan:    '@color14@'
+        white:   '@color15@'
     dim:
-     black:   '@color8@'
-     red:     '@color1@'
-     green:   '@color2@'
-     yellow:  '@color3@'
-     blue:    '@color4@'
-     magenta: '@color5@'
-     cyan:    '@color6@'
-     white:   '@color7@'
+        black:   '@color8@'
+        red:     '@color1@'
+        green:   '@color2@'
+        yellow:  '@color3@'
+        blue:    '@color4@'
+        magenta: '@color5@'
+        cyan:    '@color6@'
+        white:   '@color7@'
 
+key_bindings:     # (Windows, Linux, and BSD only)   
+    - { key: V,        mods: Control|Shift, action: Paste            }   
+    - { key: C,        mods: Control|Shift, action: Copy             }   
+    - { key: Insert,   mods: Shift,         action: PasteSelection   }   
+    - { key: Key0,     mods: Control,       action: ResetFontSize    }   
+    - { key: Equals,   mods: Control,       action: IncreaseFontSize }   
+    - { key: Plus,     mods: Control,       action: IncreaseFontSize }   
+    - { key: Minus,    mods: Control,       action: DecreaseFontSize }   
+    - { key: Minus,    mods: Control,       action: DecreaseFontSize }   
+    - { key: Paste,                    action: Paste                            }   
+    - { key: Copy,                     action: Copy                             }   
+    - { key: L,         mods: Control, action: ClearLogNotice                   }   
+    - { key: L,         mods: Control, chars: "\x0c"                            }   
+    - { key: PageUp,    mods: Shift,   action: ScrollPageUp,   mode: ~Alt       }   
+    - { key: PageDown,  mods: Shift,   action: ScrollPageDown, mode: ~Alt       }   
+    - { key: Home,      mods: Shift,   action: ScrollToTop,    mode: ~Alt       }   
+    - { key: End,       mods: Shift,   action: ScrollToBottom, mode: ~Alt       }
+      # - { key: Left,     mods: Control, chars: "\x1bb"                       }
+      # - { key: Right,    mods: Control, chars: "\x1bf"                       }
+    - { key: Delete,                  chars: "\x1b[3~"     }   
 

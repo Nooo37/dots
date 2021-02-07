@@ -6,8 +6,6 @@ local beautiful = require("beautiful")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 
-local helpers = require("ui.helpers")
-
 local toolbar_position = "bottom"
 local toolbar_size = dpi(40)
 local toolbar_bg = beautiful.xcolor0
@@ -17,21 +15,6 @@ local toolbar_enabled_initially = true
 
 local terminal_has_to_move_after_resizing = {["scratch-term"] = true}
 
-local terminal_has_to_move = true
-
-local spot_toolbar_toggle = function(c)
-    if c.toolbar_enabled then
-        c.toolbar_enabled = false
-        awful.titlebar.hide(c, toolbar_position)
-        c.width = c.width + toolbar_size
-        if terminal_has_to_move then c.x = c.x - toolbar_size end
-    else
-        c.toolbar_enabled = true
-        awful.titlebar.show(c, toolbar_position)
-        c.width = c.width - toolbar_size
-        if terminal_has_to_move then c.x = c.x + toolbar_size end
-    end
-end
 
 local create_scratchpad_titlebar_deco = function(c)
     awful.titlebar(c, {

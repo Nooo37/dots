@@ -16,6 +16,8 @@
 
 (setq-default frame-title-format '("%f [%m]"))
 
+(electric-pair-mode 1)
+
 ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
 ;;       in Emacs and init.el will be generated automatically!
 
@@ -62,6 +64,7 @@
                  meme-mode-hook
                  treemacs-mode-hook
                  neotree-mode-hook
+                 lsp-ui-imenu-mode-hook
                  eshell-mode-hook))
    (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
@@ -133,19 +136,20 @@
 
 (use-package ivy
   :diminish
-  :bind (("C-s" . swiper)
-         :map ivy-minibuffer-map
-         ("TAB" . ivy-alt-done)
-         ("C-l" . ivy-alt-done)
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
-         :map ivy-switch-buffer-map
-         ("C-k" . ivy-previous-line)
-         ("C-l" . ivy-done)
-         ("C-d" . ivy-switch-buffer-kill)
-         :map ivy-reverse-i-search-map
-         ("C-k" . ivy-previous-line)
-         ("C-d" . ivy-reverse-i-search-kill))
+  :after evil
+  :bind (("C-f" . swiper)
+	 :map ivy-minibuffer-map
+	 ("TAB" . ivy-alt-done)
+	 ("C-l" . ivy-alt-done)
+	 ("C-j" . ivy-next-line)
+	 ("C-k" . ivy-previous-line)
+	 :map ivy-switch-buffer-map
+	 ("C-k" . ivy-previous-line)
+	 ("C-l" . ivy-done)
+	 ("C-d" . ivy-switch-buffer-kill)
+	 :map ivy-reverse-i-search-map
+	 ("C-k" . ivy-previous-line)
+	 ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1))
 
@@ -155,10 +159,10 @@
 
 (use-package counsel
   :bind (("C-M-j" . 'counsel-switch-buffer)
-         :map minibuffer-local-map
-         ("C-r" . 'counsel-minibuffer-history))
-  :custom
-  (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history))
+  ;; :custom
+  ;; (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
   :config
   (counsel-mode 1))
 
@@ -192,13 +196,15 @@
 
 (use-package elcord)
 
+(use-package fzf)
+
 (use-package neotree)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 
 (use-package emojify)
   ;; :hook (after-init . global-emojify-mode))
 
-(add-to-list 'load-path "~/.emacs.d/meme")
+(add-to-list 'load-path "~/.config/emacs/meme")
 (require 'meme)
 (autoload 'meme "meme.el" "Create a meme from a collection" t)
 (autoload 'meme-file "meme.el" "Create a meme from a file" t)
@@ -211,58 +217,10 @@
   :config
   (global-undo-tree-mode t)
   (setq undo-tree-auto-save-history t)
-  (push '("." . "~/.emacs.d/undo-tree-history") undo-tree-history-directory-alist))
+  (push '("." . "~/.config/emacs/undo-tree-history") undo-tree-history-directory-alist))
 
 (use-package rainbow-mode
   :hook (after-init . rainbow-mode))
-
-;; Make ESC quit prompts
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
-;; just to quickly get to the emacs config
-(global-set-key (kbd "<f5>") (lambda() (interactive)(find-file "~/.emacs.d/config.org")))
-
-(use-package general
-  :config
-  (general-create-definer namba/leader-keys
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC")
-
-  (namba/leader-keys
-    "t"  '(:ignore t :which-key "toggles")
-    "tr" '(rainbow-delimiters-mode :which-key "toggle rainbow delimiters mode")
-    "td" '(elcord-mode :which-key "toggle discord thingy")
-    "tl" '(:ignore t :which-key "line number toggling")
-    "tlr" '(menu-bar--display-line-numbers-mode-relative :which-key "enable relative line numbers")
-    "tla" '(menu-bar--display-line-numbers-mode-absolute :which-key "enable relative line numbers")
-    "tld" '(display-line-numbers-mode :which-key "enable relative line numbers")
-    "c" '(:ignore t :which-key "programming stuff")
-    "cf" '(yafolding-toggle-element :which-key "toggle folding element")
-    "ca" '(yafolding-toggle-all :which-key "toggle folding all")
-    "tt" '(counsel-load-theme :which-key "choose theme")
-    "tn" '(neotree-toggle :which-key "toggles neotree")
-    "ts" '(hydra-text-scale/body :which-key "scale text"))
-  (namba/leader-keys
-    "o"  '(:ignore t :which-key "open")
-    "ob" '(switch-to-buffer :which-key "switch buffer")
-    "od" '(dired :which-key "open dired")
-    "oo" '(org-agenda :which-key "open dired")
-    "om" '(meme :which-key "open meme generator")
-    "os" '(shell :which-key "open shell"))
-  (namba/leader-keys
-    "i"  '(:ignore t :which-key "insert")
-    "it" '(org-insert-structure-template :which-key "insert structure template")
-    "ie" '(emojify-insert-emoji :which-key "insert emojis")))
-
-  (namba/leader-keys
-    "l"  '(:ignore t :which-key "latex")
-    "ll" '(org-latex-preview :which-key "toggle latex preview")
-    "lp" '(latex-preview-update :which-key "show rendered PDF")
-    "la" '(TeX-command-run-all :which-key "render as PDF"))
-
-  (namba/leader-keys
-    "m"  '(evilnc-comment-or-uncomment-lines :which-key "(un-)comment lines"))
 
 (setq evil-want-keybindings nil)
   (use-package evil
@@ -303,6 +261,72 @@
 	:config
 	(global-evil-surround-mode t))
 
+;; Make ESC quit prompts
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+  ;; just to quickly get to the emacs config
+  (global-set-key (kbd "<f5>") (lambda() (interactive)(find-file "~/.config/emacs/config.org")))
+  (global-set-key (kbd "<f4>") (lambda() (interactive)(find-file "~/.config/awesome/rc.lua")))
+  (global-unset-key (kbd "C-s"))
+  (global-unset-key (kbd "C-z"))
+  (global-set-key (kbd "C-s") 'save-buffer)
+  (global-set-key (kbd "C-z") 'evil-undo)
+
+
+(defun xresources-theme-color (name)
+  "Read the color NAME (e.g. color5) from the X resources."
+    (interactive)
+    (format "%s" (shell-command-to-string (format
+                "xrdb -q | grep \"%s\" | awk '{print $2}' | tr -d \"\\n\""
+                   (concat name ":"))))
+  )
+
+  (global-set-key (kbd "<f3>") (lambda() (interactive)(message (xresources-theme-color "color1"))))
+
+
+  (use-package general
+    :config
+    (general-create-definer namba/leader-keys
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC")
+
+    (namba/leader-keys
+      "t"  '(:ignore t :which-key "toggles")
+      "tr" '(rainbow-delimiters-mode :which-key "toggle rainbow delimiters mode")
+      "td" '(elcord-mode :which-key "toggle discord thingy")
+      "tl" '(:ignore t :which-key "line number toggling")
+      "tlr" '(menu-bar--display-line-numbers-mode-relative :which-key "enable relative line numbers")
+      "tla" '(menu-bar--display-line-numbers-mode-absolute :which-key "enable relative line numbers")
+      "tld" '(display-line-numbers-mode :which-key "enable relative line numbers")
+      "c" '(:ignore t :which-key "programming stuff")
+      "cf" '(yafolding-toggle-element :which-key "toggle folding element")
+      "ca" '(yafolding-toggle-all :which-key "toggle folding all")
+      "ci" '(lsp-ui-imenu :which-key "show lsp imenu")
+      "tt" '(counsel-load-theme :which-key "choose theme")
+      "tn" '(neotree-toggle :which-key "toggles neotree")
+      "ts" '(hydra-text-scale/body :which-key "scale text"))
+    (namba/leader-keys
+      "o"  '(:ignore t :which-key "open")
+      "ob" '(switch-to-buffer :which-key "switch buffer")
+      "od" '(dired :which-key "open dired")
+      "oo" '(org-agenda :which-key "open dired")
+      "om" '(meme :which-key "open meme generator")
+      "os" '(shell :which-key "open shell"))
+    (namba/leader-keys
+      "gp" '(org-publish :which-key "org publish"))
+    (namba/leader-keys
+      "i"  '(:ignore t :which-key "insert")
+      "it" '(org-insert-structure-template :which-key "insert structure template")
+      "ie" '(emojify-insert-emoji :which-key "insert emojis"))
+    (namba/leader-keys
+      "l"  '(:ignore t :which-key "latex")
+      "ll" '(org-latex-preview :which-key "toggle latex preview")
+      "lp" '(latex-preview-update :which-key "show rendered PDF")
+      "la" '(TeX-command-run-all :which-key "render as PDF"))
+    (namba/leader-keys
+      "m"  '(comment-line :which-key "(un-)comment lines")) )
+
 (use-package which-key
   :init (which-key-mode)
   :diminish which-key-mode
@@ -342,138 +366,61 @@
   :config
   (setq TeX-auto-save t))
 
-;;
-;;  (defun org-blog-prepare (project-plist)
-;;    "With help from `https://github.com/howardabrams/dot-files'.
-;;    Touch `index.org' to rebuilt it.
-;;    Argument `PROJECT-PLIST' contains information about the current project."
-;;    (let* ((base-directory (plist-get project-plist :base-directory))
-;;           (buffer (find-file-noselect (expand-file-name "index.org" base-directory) t)))
-;;      (with-current-buffer buffer
-;;        (set-buffer-modified-p t)
-;;        (save-buffer 0))
-;;      (kill-buffer buffer)))
-;;
-;;  (defvar org-blog-head
-;;    "<link rel=\"stylesheet\" type=\"text/css\" href=\"/assets/css/bootstrap.css\"/>
-;;    <link rel=\"stylesheet\" type=\"text/css\" href=\"https://fonts.googleapis.com/css?family=Amaranth|Handlee|Libre+Baskerville|Bree+Serif|Ubuntu+Mono|Pacifico&subset=latin,greek\"/>
-;;    <link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"favicon.ico\">")
-;;
-;;  (defun org-blog-preamble (_plist)
-;;    "Pre-amble for whole blog."
-;;    "<div class=\"banner\">
-;;      <a href=\"/\"> Ramblings from a Corner </a>
-;;    </div>
-;;    <ul class=\"banner-links\">
-;;      <li><a href=\"/\"> About Me </a> </li>
-;;      <li><a href=\"/archive.html\"> Posts </a> </li>
-;;    </ul>
-;;    <hr>")
-;;
-;;  (defun org-blog-postamble (plist)
-;;    "Post-amble for whole blog."
-;;    (concat
-;;    "<footer class=\"footer\">
-;;        <!-- Footer Definition -->
-;;     </footer>
-;;
-;;    <!-- Google Analytics Js -->"
-;;
-;;     ;; Add Disqus if it's a post
-;;     (when (s-contains-p "/posts/" (plist-get plist :input-file))
-;;     "<!-- Disqua JS --> ")))
-;;
-;;  (defun org-blog-sitemap-format-entry (entry _style project)
-;;    "Return string for each ENTRY in PROJECT."
-;;    (when (s-starts-with-p "posts/" entry)
-;;      (format "@@html:<span class=\"archive-item\"><span class=\"archive-date\">@@ %s @@html:</span>@@ [[file:%s][%s]] @@html:</span>@@"
-;;              (format-time-string "%h %d, %Y"
-;;                                  (org-publish-find-date entry project))
-;;              entry
-;;              (org-publish-find-title entry project))))
-;;
-;;  (defun org-blog-sitemap-function (title list)
-;;    "Return sitemap using TITLE and LIST returned by `org-blog-sitemap-format-entry'."
-;;    (concat "#+TITLE: " title "\n\n"
-;;            "\n#+begin_archive\n"
-;;            (mapconcat (lambda (li)
-;;                         (format "@@html:<li>@@ %s @@html:</li>@@" (car li)))
-;;                       (seq-filter #'car (cdr list))
-;;                       "\n")
-;;            "\n#+end_archive\n"))
-;;
-;;  (defun org-blog-publish-to-html (plist filename pub-dir)
-;;    "Same as `org-html-publish-to-html' but modifies html before finishing."
-;;    (let ((file-path (org-html-publish-to-html plist filename pub-dir)))
-;;      (with-current-buffer (find-file-noselect file-path)
-;;        (goto-char (point-min))
-;;        (search-forward "<body>")
-;;        (insert (concat "\n<div class=\"content-wrapper container\">\n "
-;;                        "  <div class=\"row\"> <div class=\"col\"> </div> "
-;;                        "  <div class=\"col-sm-6 col-md-8\"> "))
-;;        (goto-char (point-max))
-;;        (search-backward "</body>")
-;;        (insert "\n</div>\n<div class=\"col\"></div></div>\n</div>\n")
-;;        (save-buffer)
-;;        (kill-buffer))
-;;      file-path))
-;;
-;;  (setq org-publish-project-alist
-;;        `(("orgfiles"
-;;           :base-directory "~/test/"
-;;           :exclude ".*drafts/.*"
-;;           :base-extension "org"
-;;
-;;           :publishing-directory "~/test/"
-;;
-;;           :recursive t
-;;           :preparation-function org-blog-prepare
-;;           :publishing-function org-blog-publish-to-html
-;;
-;;           :with-toc nil
-;;           :with-title t
-;;           :with-date t
-;;           :section-numbers nil
-;;           :html-doctype "html5"
-;;           :html-html5-fancy t
-;;           :html-head-include-default-style nil
-;;           :html-head-include-scripts nil
-;;           :htmlized-source t
-;;           :html-head-extra ,org-blog-head
-;;           :html-preamble org-blog-preamble
-;;           :html-postamble org-blog-postamble
-;;
-;;           :auto-sitemap t
-;;           :sitemap-filename "archive.org"
-;;           :sitemap-title "Blog Posts"
-;;           :sitemap-style list
-;;           :sitemap-sort-files anti-chronologically
-;;           :sitemap-format-entry org-blog-sitemap-format-entry
-;;           :sitemap-function org-blog-sitemap-function)
-;;
-;;          ("assets"
-;;           :base-directory "~/test/src/assets/"
-;;           :base-extension ".*"
-;;           :publishing-directory "~/test/assets/"
-;;           :publishing-function org-publish-attachment
-;;           :recursive t)
-;;
-;;          ;; ("rss"
-;;          ;;  :base-directory "~/test/src/"
-;;          ;;  :base-extension "org"
-;;          ;;  :html-link-home "https://vicarie.in/"
-;;          ;;  :html-link-use-abs-url t
-;;          ;;  :rss-extension "xml"
-;;          ;;  :publishing-directory "~/test/"
-;;          ;;  :publishing-function (org-rss-publish-to-rss)
-;;          ;;  :exclude ".*"
-;;          ;;  :include ("archive.org")
-;;          ;;  :section-numbers nil
-;;          ;;  :table-of-contents nil)
-;;
-;;          ("blog" :components ("orgfiles" "assets" "rss"))))
+(require 'ox-publish)
+  (defvar my-preamble  "<p>PREAMBLE</p>")
+  (defvar my-postamble "<p>PREAMBLE</p>")
 
-(use-package htmlize)
+
+  (defun my-html-preamble (options)
+;;   "<div class='topnav'>
+;;     <ul>
+;;       <li><a href='/blog/index.html'>Home</a></li>
+;;       <li><a href='/blog/remember.html'>Blog</a></li>
+;;       <li class='right feed'><a href='/blog/rss.xml'>RSS</a></li>
+;;     </ul>
+;;   </div>
+
+;;   <div class='foreword'>
+;;     [%d (last updated: %C) Press <kbd>?</kbd> for navigation help]
+;;   </div>"
+"<header>
+        <center>
+        <a class='title' href='https://Nooo37.github.io/webs'>N°37</a>
+        <p class='subtitle'>my blorg</p>
+        </center>
+ </header>")
+
+
+  (setq org-publish-project-alist
+    `(
+      ("org-notes"
+       :base-directory "~/code/git/blog/"
+       :base-extension "org"
+       :publishing-directory "~/code/git/webs/"
+       :recursive t
+       :publishing-function org-html-publish-to-html
+       :headline-levels 4             ; Just the default for this project.
+       ;; :html-head ,my-preamble ; muss noch
+       ;; :auto-preamble nil
+       ;; :auto-postamble nil
+       :html-preamble my-html-preamble
+       ;; :html-postamble ,my-postamble
+     )
+      ("org-static"
+       :base-directory "~/code/git/blog/"
+       :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+       :publishing-directory "~/code/git/webs/"
+       :recursive t
+       :publishing-function org-publish-attachment
+     )
+     ("org" :components ("org-notes" "org-static"))
+    )
+  )
+;; no validate button on the bottom
+(setq org-export-html-validation-link nil)
+(setq org-html-validation-link nil)
+
+(setq org-export-in-background t)
 
 (defun efs/org-font-setup ()
   ;; Replace list hyphen with dot
@@ -631,16 +578,28 @@
 ;; Automatically tangle config.org config file when saved
 (defun efs/org-babel-tangle-config ()
   (when (string-equal (file-name-directory (buffer-file-name))
-                      (expand-file-name "~/.emacs.d/"))
+                      (expand-file-name "~/.config/emacs/"))
     ;; Dynamic scoping to the rescue
     (let ((org-confirm-babel-evaluate nil))
       (org-babel-tangle))))
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
+(setq-default indent-tabs-mode nil)
+
 (use-package yafolding)
 
+(use-package highlight-indent-guides)
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+(setq highlight-indent-guides-method 'character)
+(setq highlight-indent-guides-character #\:)
+(qset 'highlight-indent-guides-odd-face "red")
+(qset 'highlight-indent-guides-even-face "red")
+(qset 'highlight-indent-guides-character-face "red")
+(highlight-indent-guides-auto-set-faces)
+
 (use-package git-gutter)
+(add-hook 'prog-mode-hook 'git-gutter+-mode)
 
 (defun efs/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
@@ -648,7 +607,7 @@
 
 (use-package lsp-mode
   :commands (lsp lsp-deferred)
-  :hook (lsp-mode . efs/lsp-mode-setup)
+  :hook (prog-mode, lsp-mode . efs/lsp-mode-setup)
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
   :config
@@ -658,6 +617,14 @@
   :hook (lsp-mode . lsp-ui-mode)
   :custom
   (lsp-ui-doc-position 'bottom))
+
+(add-hook 'after-init-hook #'lsp-ui-mode)
+
+(use-package lsp-ui-imenu
+  :hook (lsp-mode . lsp-ui-mode))
+
+(use-package lsp-ui-doc
+  :hook (lsp-mode . lsp-ui-mode))
 
 (use-package lsp-treemacs
   :after lsp)
@@ -688,7 +655,13 @@
   :config
   (setq lua-indent-level 4))
 
-(add-to-list 'load-path "~/.emacs.d/lsp")
+(add-hook 'lua-mode-hook #'lsp)
+
+(use-package lsp-java 
+  :config 
+    (add-hook 'java-mode-hook 'lsp))
+
+(add-to-list 'load-path "~/.config/emacs/lsp")
 
 (require 'lsp-latex)
 ;; "texlab" must be located at a directory contained in `exec-path'.
@@ -707,6 +680,13 @@
 ;; For bibtex
 (with-eval-after-load "bibtex"
  (add-hook 'bibtex-mode-hook 'lsp))
+
+(use-package lsp-bash
+  :config 
+    (add-hook 'bash-mode-hook 'lsp))
+
+(use-package kbd-mode
+  :load-path "~/.config/emacs/")
 
 (use-package company
   :after lsp-mode
@@ -732,8 +712,8 @@
   ;; NOTE: Set this to the folder where you keep your Git repos!
   (setq projectile-switch-project-action #'projectile-dired))
 
-(use-package counsel-projectile
-  :config (counsel-projectile-mode))
+;; (use-package counsel-projectile
+  ;; :config (counsel-projectile-mode))
 
 (use-package magit
   :custom

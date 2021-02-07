@@ -3,21 +3,29 @@
 
 SAVE_PATH="$HOME/pics/screenshots/$(date +%y-%m-%d_%H-%M-%S).png"
 
-SELECTION=$(echo -e "all\nby selection\nby active window" | rofi -dmenu -i -p "What area? " | tr -d '\n')
+[ "$1" == "" ] && SELECTION=$(echo -e "all\nby selection\nby active window" | rofi -dmenu -i -p "What area? " | tr -d '\n') || SELECTION="$1"
 [ "$SELECTION" == "" ] && exit
 
-SAVE=$(echo -e "save\ndon't save" | rofi -dmenu -i -p "Save it?" | tr -d '\n')
+[ "$2" == "" ] && SAVE=$(echo -e "save\ndon't save" | rofi -dmenu -i -p "Save it?" | tr -d '\n') || SAVE="$2"
 [ "$SAVE" == "" ] && exit
 
 [ "$SAVE" == "save" ] && TEE_CMD="tee $SAVE_PATH" || TEE_CMD="tee"
 
-sleep 1 # to get through the rofi compositor animation
-
 case $SELECTION in 
-    "all")              maim | $TEE_CMD | xclip -selection clipboard -t image/png ;;
-    "by selection")     maim -s -u | $TEE_CMD | xclip -selection clipboard -t image/png ;;
-    "by active window") maim -i $(xdotool getactivewindow) | $TEE_CMD | xclip -selection clipboard -t image/png ;;
-    "")                 exit ;;
+    "all")
+        sleep 1
+        maim | $TEE_CMD | xclip -selection clipboard -t image/png
+        ;;
+    "by selection")     
+        maim -s -u | $TEE_CMD | xclip -selection clipboard -t image/png 
+        ;;
+    "by active window") 
+        sleep 1
+        maim -i $(xdotool getactivewindow) | $TEE_CMD | xclip -selection clipboard -t image/png 
+        ;;
+    "")                 
+        exit 
+        ;;
 esac
 
 [ "$SAVE" == "save" ] && notify-send "[!] Screenshot taken" "~/pics/screenshots/$TIMESTAMP" --icon="$SAVE_PATH"

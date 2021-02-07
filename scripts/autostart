@@ -1,21 +1,15 @@
 #!/bin/sh
 
-function autostart() {
-    pgrep -u $USER -x $1 > /dev/null || ($1)
-} 
-
 nitrogen --restore
 xrdb -load ~/.config/X/Xresources
 
-# overpowered capslock
-setxkbmap -option caps:super
-xcape -e 'Super_L=Escape'
-
 # all the daemons and background stuff 
 emacs --daemon &
-killall sxhkd; sxhkd &
 mpd &
 greenclip daemon &
 picom &
-autostart aw-qt &
+killall sxhkd; sxhkd $HOME/code/dots/keys/sxhkdrc
+
+$HOME/code/git/ticktack/ticktack stop
+$HOME/code/git/ticktack/ticktack start -m 30
 

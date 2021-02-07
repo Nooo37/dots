@@ -1,5 +1,3 @@
--- TODO finish 
-
 local awful = require('awful')
 local wibox = require('wibox')
 local gears = require('gears')
@@ -8,14 +6,14 @@ local dpi = require('beautiful').xresources.apply_dpi
 
 local helpers = require("ui.helpers")
 local primary_bg = beautiful.xbg -- background of boxes
-local secondary_bg = beautiful.xbg -- background background
+local secondary_bg = beautiful.xcolor0 -- background background
 local bar_height = 35
 local bar_font = "JetBrainsMono Nerd Font 10"
 local bar_position = "bottom"
 
-local border_color_normal = beautiful.xcolor0
-local border_color_focus = beautiful.xcolor6
-local border_width = 3
+local border_color_normal = beautiful.xcolor8
+local border_color_focus = beautiful.xcolor1
+local border_width = 0
 local bar_hopad = 25
 
 local function create_box(widget, forced_width) 
@@ -244,12 +242,22 @@ awful.screen.connect_for_each_screen(function(s)
         opacity = 1
     })
 
+    s.mylayoutbox = awful.widget.layoutbox(s)
+    s.mylayoutbox:buttons(gears.table.join(
+                           awful.button({ }, 1, function () awful.layout.inc( 1) end),
+                           awful.button({ }, 3, function () awful.layout.inc(-1) end),
+                           awful.button({ }, 4, function () awful.layout.inc( 1) end),
+                           awful.button({ }, 5, function () awful.layout.inc(-1) end)))
+    s.mylayoutbox:connect_signal("widget::layout_changed", function() require("naughty").notify({title="asf"}) self:set_image(gears.color.recolor_image(self.image, beautiful.xcolor6)) end)
+    layoutbox = create_box({s.mylayoutbox, margins=5, widget=wibox.container.margin})
+
     -- Add widgets to the wibox
     s.mywibox:setup{
         layout = wibox.layout.align.horizontal,
         expand = "none",
         {
             -- helpers.horizontal_pad(2 * beautiful.useless_gap),
+            layoutbox,
             create_box({helpers.horizontal_pad(bar_hopad), s.mytaglist, helpers.horizontal_pad(bar_hopad), layout=wibox.layout.align.horizontal}),
             diverse_box,
             title_box,
@@ -258,7 +266,7 @@ awful.screen.connect_for_each_screen(function(s)
         time_box,
         {
             mpd_box,
-            systray_box,
+            -- systray_box,
             placeholder_box,
             helpers.horizontal_pad(2 * beautiful.useless_gap),
             layout = wibox.layout.fixed.horizontal

@@ -111,21 +111,22 @@ creator.create = function(bar_background)
   -- Control line
   ------------------------------------------------------------
   local btn_color = beautiful.xcolor15
+  local btn_font = "Hack 25"
   -- playback buttons
   local player_buttons = wibox.layout.fixed.horizontal()
 
   local prev_button = wibox.widget.textbox(helpers.colorize_text(" ⏮ ", beautiful.xcolor6))
-  prev_button.font = "Hack 25"
+  prev_button.font = btn_font
   helpers.add_hover_cursor(prev_button, "hand1")
   player_buttons:add(wibox.container.margin(prev_button, dpi(0), dpi(0), dpi(6), dpi(6)))
 
   local play_button = wibox.widget.textbox(helpers.colorize_text(" ⏵ ", beautiful.xcolor6))
-  play_button.font = "Hack 25"
+  play_button.font = btn_font
   helpers.add_hover_cursor(play_button, "hand1")
   player_buttons:add(wibox.container.margin(play_button, dpi(0), dpi(0), dpi(6), dpi(6)))
 
   local next_button = wibox.widget.textbox(helpers.colorize_text(" ⏭ ", beautiful.xcolor6))
-  next_button.font = "Hack 25"
+  next_button.font = btn_font
   helpers.add_hover_cursor(next_button, "hand1")
   player_buttons:add(wibox.container.margin(next_button, dpi(0), dpi(0), dpi(6), dpi(6)))
   ------------------------------------------------------------
@@ -151,7 +152,7 @@ creator.create = function(bar_background)
   -- align_vertical:set_bottom(wibox.container.constraint(bar, "exact", nil, dpi(8)))
   local area = wibox.layout.fixed.horizontal()
   area:add(image_cont)
-  area:add(wibox.container.margin(align_vertical, dpi(10), dpi(10), 0, 0))
+  area:add(wibox.container.margin(align_vertical, dpi(20), dpi(10), 0, 0))
 
   local complete = wibox.layout.fixed.vertical()
   complete:add(wibox.widget({area, forced_height=dpi(75), forced_width=dpi(200), widget=wibox.container.margin}))

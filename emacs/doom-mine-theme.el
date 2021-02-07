@@ -2,6 +2,17 @@
 
 (require 'doom-themes)
 
+
+(defun xresources-theme-color (name)
+  ;; "Read the color NAME (e.g. color5) from the X resources."
+  ;; (interactive)
+  (format "%s"
+          (shell-command-to-string (format
+                                    "xrdb -q | grep \"%s\" | awk '{print $2}' | tr -d \"\\n\""
+                                    (concat name ":"))))
+  )
+
+
 ;;
 (defgroup doom-mine-theme nil
   "Options for doom-themes"
@@ -37,36 +48,51 @@ determine the exact padding."
     :type 'symbol))
 
 ;;
+
+(defvar xbg     (xresources-theme-color "background"))
+(defvar xfg     (xresources-theme-color "foreground"))
+(defvar xblack  (xresources-theme-color "color0"))
+(defvar xgray   (xresources-theme-color "color8"))
+(defvar xred    (xresources-theme-color "color1"))
+(defvar xyellow (xresources-theme-color "color3"))
+(defvar xgreen  (xresources-theme-color "color2"))
+(defvar xcyan   (xresources-theme-color "color6"))
+(defvar xblue   (xresources-theme-color "color4"))
+(defvar xpurple (xresources-theme-color "color5"))
+
+(message "Gute Wahl")
+
+
 (def-doom-theme doom-mine
   "A dark theme inspired by mine."
 
   ;; name        default   256       16
-  ((bg         '("#1A2026" nil       nil            ))
-   (bg-alt     '("#242D35" nil       nil            ))
-   (base0      '("#242D35" "black"   "black"        ))
-   (base1      '("#292b34" "#1e1e1e" "brightblack"  ))
-   (base2      '("#2C333F" "#2e2e2e" "brightblack"  ))
-   (base3      '("#373E4C" "#262626" "brightblack"  ))
-   (base4      '("#434C5E" "#3f3f3f" "brightblack"  ))
-   (base5      '("#4C566A" "#525252" "brightblack"  ))
-   (base6      '("#9099AB" "#6b6b6b" "brightblack"  ))
-   (base7      '("#D8DEE9" "#979797" "brightblack"  ))
-   (base8      '("#F0F4FC" "#dfdfdf" "white"        ))
-   (fg         '("#ECEFF4" "#ECECEC" "white"        ))
-   (fg-alt     '("#ffffff" "#bfbfbf" "brightwhite"  ))
+  ((bg         `(,xbg      nil       nil            ))
+   (bg-alt     `(,xblack   nil       nil            ))
+   (base0      `(,xblack   "black"   "black"        ))
+   (base1      `(,xblack   "#1e1e1e" "brightblack"  ))
+   (base2      `(,xgray    "#2e2e2e" "brightblack"  ))
+   (base3      `(,xgray    "#262626" "brightblack"  ))
+   (base4      `(,xgray    "#3f3f3f" "brightblack"  ))
+   (base5      `(,xgray    "#525252" "brightblack"  ))
+   (base6      `(,xgray    "#6b6b6b" "brightblack"  ))
+   (base7      `(,xgray    "#979797" "brightblack"  ))
+   (base8      `(,xgray    "#dfdfdf" "white"        ))
+   (fg         `(,xfg      "#ECECEC" "white"        ))
+   (fg-alt     `(,xfg      "#bfbfbf" "brightwhite"  ))
 
    (grey       base4)
-   (red        '("#f9929b" "#ff6655" "red"          )) ;; mine11
-   (orange     '("#fca2aa" "#dd8844" "brightred"    )) ;; mine12
-   (green      '("#7ed491" "#99bb66" "green"        )) ;; mine14
-   (teal       '("#a5d4af" "#44b9b1" "brightgreen"  )) ;; mine7
-   (yellow     '("#fbdf90" "#ECBE7B" "yellow"       )) ;; mine13
-   (blue       '("#bac8ef" "#51afef" "brightblue"   )) ;; mine9
-   (dark-blue  '("#a3b8ef" "#2257A0" "blue"         )) ;; mine10
-   (magenta    '("#ccaced" "#c678dd" "magenta"      )) ;; mine15
-   (violet     '("#d7c1ed" "#a9a1e1" "brightmagenta")) ;; ??
-   (cyan       '("#c7e5d6" "#46D9FF" "brightcyan"   )) ;; mine8
-   (dark-cyan  '("#9ce5c0" "#5699AF" "cyan"         )) ;; ??
+   (red        `(,xred    "#ff6655" "red"          )) ;; mine11
+   (orange     `(,xyellow "#dd8844" "brightred"    )) ;; mine12
+   (green      `(,xgreen  "#99bb66" "green"        )) ;; mine14
+   (teal       `(,xcyan   "#44b9b1" "brightgreen"  )) ;; mine7
+   (yellow     `(,xyellow "#ECBE7B" "yellow"       )) ;; mine13
+   (blue       `(,xblue   "#51afef" "brightblue"   )) ;; mine9
+   (dark-blue  `(,xblue   "#2257A0" "blue"         )) ;; mine10
+   (magenta    `(,xpurple "#c678dd" "magenta"      )) ;; mine15
+   (violet     `(,xpurple "#a9a1e1" "brightmagenta")) ;; ??
+   (cyan       `(,xcyan   "#46D9FF" "brightcyan"   )) ;; mine8
+   (dark-cyan  `(,xcyan   "#5699AF" "cyan"         )) ;; ??
 
    ;; face categories -- required for all themes
    (highlight      blue)
@@ -123,7 +149,7 @@ determine the exact padding."
   ;; --- extra faces ------------------------
   (((region &override) :foreground region-fg)
 
-   ((line-number &override) :foreground (doom-lighten 'base5 0.2))
+   ((line-number &override) :foreground (doom-lighten 'base5 0.2) :background base0)
    ((line-number-current-line &override) :foreground base7)
    ((paren-face-match &override) :foreground red :background base3 :weight 'ultra-bold)
    ((paren-face-mismatch &override) :foreground base3 :background red :weight 'ultra-bold)

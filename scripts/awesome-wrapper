@@ -33,15 +33,15 @@ case "$1" in
                 awesome-client "if not client.focus then return end
                                 client.focus.maximized = not client.focus.maximized"
                 ;;
-	    minimize) # unminimized if there is a minimized window otherwise minimizes current one
-		awesome-client "local minimized_c = require(\"awful\").client.restore()
+            minimize) # unminimized if there is a minimized window otherwise minimizes current one
+                awesome-client "local minimized_c = require(\"awful\").client.restore()
                                 if minimized_c then client.focus = minimized_c; minimized_c:raise()
                                 elseif client.focus then client.focus.minimized = true end"
-		;;
-	    floating)
-		awesome-client "if not client.focus then return end
+                ;;
+            floating)
+                awesome-client "if not client.focus then return end
                                 client.focus.floating = not client.focus.floating"
-		;;
+                                ;;
             launch)
                 shift
                 awesome-client "require(\"awful\").spawn(\"$1\")"
@@ -56,6 +56,21 @@ case "$1" in
         case "$1" in
             next|prev)
                 awesome-client "require(\"awful\").tag.view$1()"
+                ;;
+            switcher) # toggles between the first and second tag
+                awesome-client "local a = require(\"awful\") 
+                                local s = a.screen.focused()
+                                if s.selected_tag.index == 1 then 
+                                    s.tags[2]:view_only()
+                                else
+                                    s.tags[1]:view_only()
+                                end"
+                ;;
+            toggle) # toggles a tag based on its name
+                shift
+                awesome-client "local a = require(\"awful\")
+                                local t = a.tag.find_by_name(a.screen.focused(), \"$1\")
+                                a.tag.viewtoggle(t)"
                 ;;
             focus)
                 shift
@@ -113,6 +128,11 @@ case "$1" in
                 shift
                 awesome-client "require(\"awful\").tag.incnmaster($1)"
                 ;;
+            gap)
+                shift
+                awesome-client "local t = require(\"awful\").screen.focused().selected_tag
+                                t.gap = t.gap + $1"
+                ;;
             *)
                 echo "Couldn't find subcommand '$1' in command 'layout'"
                 ;;
@@ -139,6 +159,12 @@ case "$1" in
                 ;;
             scratchpad)
                 awesome-client "awesome.emit_signal(\"toggle::scratchpad\")"
+                ;;
+            scratchmusic)
+                awesome-client "awesome.emit_signal(\"toggle::scratchmusic\")"
+                ;;
+            scratchdiscord)
+                awesome-client "awesome.emit_signal(\"toggle::scratchdiscord\")"
                 ;;
             *)
                 echo "Couldn't find subcommand '$1' in command 'toggle'"
