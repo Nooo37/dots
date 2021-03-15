@@ -68,6 +68,7 @@ helpers.psquircle = function(rate, delta, tl, tr, br, bl)
 end
 
 helpers.colorize_text = function(text, color)
+   if not text then return '' end
     if color then
         return "<span foreground='"..color.."'>"..text.."</span>"
     else

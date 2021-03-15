@@ -99,8 +99,10 @@ determine the exact padding."
    (vertical-bar   (doom-darken base1 0.2))
    (selection      dark-blue)
    (builtin        blue)
-   (comments       (if doom-mine-brighter-comments dark-cyan (doom-lighten base5 0.2)))
-   (doc-comments   (doom-lighten (if doom-mine-brighter-comments dark-cyan base5) 0.25))
+   ;; (comments       (if doom-mine-brighter-comments dark-cyan (doom-lighten base5 0.2)))
+   (comments       base2)
+   ;; (doc-comments   (doom-lighten (if doom-mine-brighter-comments dark-cyan base5) 0.25))
+   (doc-comments   dark-cyan)
    (constants      blue)
    (functions      teal)
    (keywords       blue)
@@ -108,7 +110,7 @@ determine the exact padding."
    (operators      blue)
    (type           teal)
    (strings        green)
-   (variables      base7)
+   (variables      fg)
    (numbers        magenta)
    (region         (pcase doom-mine-region-highlight
                      (`frost teal)
@@ -149,8 +151,8 @@ determine the exact padding."
   ;; --- extra faces ------------------------
   (((region &override) :foreground region-fg)
 
-   ((line-number &override) :foreground (doom-lighten 'base5 0.2) :background base0)
-   ((line-number-current-line &override) :foreground base7)
+   ((line-number &override) :foreground base2 :background base0)
+   ((line-number-current-line &override) :foreground cyan)
    ((paren-face-match &override) :foreground red :background base3 :weight 'ultra-bold)
    ((paren-face-mismatch &override) :foreground base3 :background red :weight 'ultra-bold)
    ((vimish-fold-overlay &override) :inherit 'font-lock-comment-face :background base3 :weight 'light)

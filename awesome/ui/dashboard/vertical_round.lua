@@ -634,10 +634,10 @@ awful.screen.connect_for_each_screen(function(s)
       mpd_box,
   }
 
-  s.mybar:connect_signal("mouse::leave", function() awesome.emit_signal("toggle::sidebar") end)
+  s.mybar:connect_signal("mouse::leave", function() awesome.emit_signal("toggle::dash") end)
 
   -- shortcut to toggle sidebar
-  awesome.connect_signal("toggle::sidebar", function()
+  awesome.connect_signal("toggle::dash", function()
       -- s.myplacehodler.visible = not s.myplacehodler.visible
       s.mybar.visible = not s.mybar.visible
   end)

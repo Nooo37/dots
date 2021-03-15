@@ -319,7 +319,30 @@ creator.create = function(bar_background)
     )
   end
 
-  update_widget()
+  awesome.connect_signal("bling::playerctl::title_artist", function(title, artist)
+        mpd_title.markup = helpers.colorize_text(title, title_color)
+        mpd_artist.markup = helpers.colorize_text(artist, artist_color)
+  end)
+
+  awesome.connect_signal("bling::playerctl::status", function(playing)
+                            if playing then 
+                               mpd_title.markup = helpers.colorize_text(mpd_title.text, title_color)
+                               mpd_artist.markup = helpers.colorize_text(mpd_artist.text, artist_color)
+                            else
+                               mpd_title.markup = helpers.colorize_text(mpd_title.text, paused_color)
+                               mpd_artist.markup = helpers.colorize_text(mpd_artist.text, paused_color)
+                            end
+  end)
+
+  awesome.connect_signal("bling::playerctl::album", function(cover_path)
+            box_image:set_image(gears.surface.load_uncached_silently(cover_path))
+            box_image:emit_signal("widget::redraw_needed")
+  end)
+
+  -- awesome.connect_signal("bling::playerctl::position", function(interval_sec, length_sec)
+                            -- mpd_title.text = tostring(interval_sec / length_sec)
+  -- end)
+  -- update_widget()
   ------------------------------------------------------------
 
 

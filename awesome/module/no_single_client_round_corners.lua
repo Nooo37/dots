@@ -23,6 +23,19 @@ local function is_maximized(c)
 	return c.maximized or (not c.floating and _fills_screen())
 end
 
+function realogon(cr, width, height)
+   temp = 0
+   if width > height then temp = height else temp = width end
+   cr:move_to(temp/2,0)
+   cr:line_to(temp,temp * 3/11)
+   cr:line_to(temp,temp * 8/11)
+   cr:line_to(temp/2,temp)
+   cr:line_to(0,temp * 8/11)
+   cr:line_to(0,temp * 3/11)
+   cr:close_path()
+end
+
+
 -- No round corners for maximized clients
 -- local up = true
 client.connect_signal("property::geometry", function(c)
@@ -32,7 +45,8 @@ client.connect_signal("property::geometry", function(c)
         end
     else
         c.shape = function(cr,w,h)
-              gears.shape.rounded_rect(cr,w,h, corner_radius)
+           -- realogon(cr,w,h)
+           gears.shape.rounded_rect(cr,w,h, corner_radius)
         end
     end
 end)

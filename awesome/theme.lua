@@ -209,6 +209,7 @@ theme.collision_screen_fg_focus     = theme.xcolor1
 
 
 -- bling
+theme.dont_swallow_classname_list = {"firefox", "Gimp", "Google-chrome", "Thunar"}
 theme.mstab_tabbar_position = "bottom"
 theme.mstab_bar_height = 35
 theme.mstab_font = "JetBrains Mono Nerd Font 10"
@@ -221,10 +222,11 @@ theme.tabbar_bg_normal = theme.xcolor0
 theme.tabbar_fg_normal = theme.xfg
 theme.tabbar_bg_focus = theme.xbg
 theme.tabbar_fg_focus = theme.xcolor4
-theme.tabbar_style = "modern"
+theme.tabbar_style = "boxes"
 theme.tabbed_spawn_in_tab = true
 theme.tabbar_font = "JetBrains Mono Nerd Font 10"
-theme.tabbar_position = "bottom"
+theme.tabbar_position = "top"
+theme.tabbar_AA_radius = 10
 
 -- other
 naughty.config.shape = helpers.rrect(5)

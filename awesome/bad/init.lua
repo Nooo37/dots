@@ -100,7 +100,6 @@ end)
 naughty.connect_signal("added", function(notification)
     if (notification.app_name and notification.app_name == "Brave") or (notification.clients[1] and notification.clients[1].class == "Brave-browser") then 
         naughty.destroy_all_notifications(awful.screen.focused(), naughty.notificationClosedReason.dismissedByUser)
-        naughty.notify({title="KILLED Brave bloat!"})
     end
 end)
 

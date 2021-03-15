@@ -312,12 +312,6 @@ Make it ranger-like:
 (use-package elcord)
 #+end_src
 
-** fzf
-
-#+begin_src emacs-lisp
-(use-package fzf)
-#+end_src
-
 ** neotree 
 
 Load neotree, add toggle keybind, use colorschemes colors for the icons.
@@ -339,10 +333,12 @@ Emoji picker 😉
 ** memes
 
 #+begin_src emacs-lisp
-(add-to-list 'load-path "~/.config/emacs/meme")
-(require 'meme)
-(autoload 'meme "meme.el" "Create a meme from a collection" t)
-(autoload 'meme-file "meme.el" "Create a meme from a file" t)
+  ;; (add-to-list 'load-path "~/.config/emacs/meme")
+  ;; (require 'meme)
+  ;; (
+  ;;  autoload 'meme "meme.el" "Create a meme from a collection" t)
+  ;; (
+   ;; autoload 'meme-file "meme.el" "Create a meme from a file" t)
 #+end_src
 
 "Start page" is a org-mode scratch buffer
@@ -423,71 +419,72 @@ The evil package adds vim keybindings.
 
 #+begin_src emacs-lisp
 
-  ;; Make ESC quit prompts
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+    ;; Make ESC quit prompts
+    (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-  ;; just to quickly get to the emacs config
-  (global-set-key (kbd "<f5>") (lambda() (interactive)(find-file "~/.config/emacs/config.org")))
-  (global-set-key (kbd "<f4>") (lambda() (interactive)(find-file "~/.config/awesome/rc.lua")))
-  (global-unset-key (kbd "C-s"))
-  (global-unset-key (kbd "C-z"))
-  (global-set-key (kbd "C-s") 'save-buffer)
-  (global-set-key (kbd "C-z") 'evil-undo)
-
-
-(defun xresources-theme-color (name)
-  "Read the color NAME (e.g. color5) from the X resources."
-    (interactive)
-    (format "%s" (shell-command-to-string (format
-                "xrdb -q | grep \"%s\" | awk '{print $2}' | tr -d \"\\n\""
-                   (concat name ":"))))
-  )
-
-  (global-set-key (kbd "<f3>") (lambda() (interactive)(message (xresources-theme-color "color1"))))
+    ;; just to quickly get to the emacs config
+    (global-set-key (kbd "<f5>") (lambda() (interactive)(find-file "~/.config/emacs/config.org")))
+    (global-set-key (kbd "<f4>") (lambda() (interactive)(find-file "~/.config/awesome/rc.lua")))
+    (global-unset-key (kbd "C-s"))
+    (global-unset-key (kbd "C-z"))
+    (global-set-key (kbd "C-s") 'save-buffer)
+    (global-set-key (kbd "C-z") 'evil-undo)
 
 
-  (use-package general
-    :config
-    (general-create-definer namba/leader-keys
-      :keymaps '(normal insert visual emacs)
-      :prefix "SPC"
-      :global-prefix "C-SPC")
+  (defun xresources-theme-color (name)
+    "Read the color NAME (e.g. color5) from the X resources."
+      (interactive)
+      (format "%s" (shell-command-to-string (format
+                  "xrdb -q | grep \"%s\" | awk '{print $2}' | tr -d \"\\n\""
+                     (concat name ":"))))
+    )
 
-    (namba/leader-keys
-      "t"  '(:ignore t :which-key "toggles")
-      "tr" '(rainbow-delimiters-mode :which-key "toggle rainbow delimiters mode")
-      "td" '(elcord-mode :which-key "toggle discord thingy")
-      "tl" '(:ignore t :which-key "line number toggling")
-      "tlr" '(menu-bar--display-line-numbers-mode-relative :which-key "enable relative line numbers")
-      "tla" '(menu-bar--display-line-numbers-mode-absolute :which-key "enable relative line numbers")
-      "tld" '(display-line-numbers-mode :which-key "enable relative line numbers")
-      "c" '(:ignore t :which-key "programming stuff")
-      "cf" '(yafolding-toggle-element :which-key "toggle folding element")
-      "ca" '(yafolding-toggle-all :which-key "toggle folding all")
-      "ci" '(lsp-ui-imenu :which-key "show lsp imenu")
-      "tt" '(counsel-load-theme :which-key "choose theme")
-      "tn" '(neotree-toggle :which-key "toggles neotree")
-      "ts" '(hydra-text-scale/body :which-key "scale text"))
-    (namba/leader-keys
-      "o"  '(:ignore t :which-key "open")
-      "ob" '(switch-to-buffer :which-key "switch buffer")
-      "od" '(dired :which-key "open dired")
-      "oo" '(org-agenda :which-key "open dired")
-      "om" '(meme :which-key "open meme generator")
-      "os" '(shell :which-key "open shell"))
-    (namba/leader-keys
-      "gp" '(org-publish :which-key "org publish"))
-    (namba/leader-keys
-      "i"  '(:ignore t :which-key "insert")
-      "it" '(org-insert-structure-template :which-key "insert structure template")
-      "ie" '(emojify-insert-emoji :which-key "insert emojis"))
-    (namba/leader-keys
-      "l"  '(:ignore t :which-key "latex")
-      "ll" '(org-latex-preview :which-key "toggle latex preview")
-      "lp" '(latex-preview-update :which-key "show rendered PDF")
-      "la" '(TeX-command-run-all :which-key "render as PDF"))
-    (namba/leader-keys
-      "m"  '(comment-line :which-key "(un-)comment lines")) )
+    (global-set-key (kbd "<f3>") (lambda() (interactive)(message (xresources-theme-color "color1"))))
+
+
+    (use-package general
+      :config
+      (general-create-definer namba/leader-keys
+        :keymaps '(normal insert visual emacs)
+        :prefix "SPC"
+        :global-prefix "C-SPC")
+
+      (namba/leader-keys
+        "t"  '(:ignore t :which-key "toggles")
+        "tr" '(rainbow-delimiters-mode :which-key "toggle rainbow delimiters mode")
+        "td" '(elcord-mode :which-key "toggle discord thingy")
+        "tl" '(:ignore t :which-key "line number toggling")
+        "tlr" '(menu-bar--display-line-numbers-mode-relative :which-key "enable relative line numbers")
+        "tla" '(menu-bar--display-line-numbers-mode-absolute :which-key "enable relative line numbers")
+        "tld" '(display-line-numbers-mode :which-key "enable relative line numbers")
+        "c" '(:ignore t :which-key "programming stuff")
+        "cf" '(yafolding-toggle-element :which-key "toggle folding element")
+        "ca" '(yafolding-toggle-all :which-key "toggle folding all")
+        "ci" '(lsp-ui-imenu :which-key "show lsp imenu")
+        "cg" '(git-gutter :which-key "enable git gutter")
+        "tt" '(counsel-load-theme :which-key "choose theme")
+        "tn" '(neotree-toggle :which-key "toggles neotree")
+        "ts" '(hydra-text-scale/body :which-key "scale text"))
+      (namba/leader-keys
+        "o"  '(:ignore t :which-key "open")
+        "ob" '(switch-to-buffer :which-key "switch buffer")
+        "od" '(dired :which-key "open dired")
+        "oo" '(org-agenda :which-key "open dired")
+        "om" '(meme :which-key "open meme generator")
+        "os" '(shell :which-key "open shell"))
+      (namba/leader-keys
+        "gp" '(org-publish :which-key "org publish"))
+      (namba/leader-keys
+        "i"  '(:ignore t :which-key "insert")
+        "it" '(org-insert-structure-template :which-key "insert structure template")
+        "ie" '(emojify-insert-emoji :which-key "insert emojis"))
+      (namba/leader-keys
+        "l"  '(:ignore t :which-key "latex")
+        "ll" '(org-latex-preview :which-key "toggle latex preview")
+        "lp" '(latex-preview-update :which-key "show rendered PDF")
+        "la" '(TeX-command-run-all :which-key "render as PDF"))
+      (namba/leader-keys
+        "m"  '(comment-line :which-key "(un-)comment lines")) )
 #+end_src
 
 ** which key
@@ -847,14 +844,14 @@ Inserting templates (mostly for text blocks).
 Highlight indent
 
 #+begin_src emacs-lisp
-(use-package highlight-indent-guides)
-(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-(setq highlight-indent-guides-method 'character)
-(setq highlight-indent-guides-character #\:)
-(qset 'highlight-indent-guides-odd-face "red")
-(qset 'highlight-indent-guides-even-face "red")
-(qset 'highlight-indent-guides-character-face "red")
-(highlight-indent-guides-auto-set-faces)
+  (use-package highlight-indent-guides)
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  (setq highlight-indent-guides-method 'character)
+  ;; (setq highlight-indent-guides-character #\:)
+  ;; (qset 'highlight-indent-guides-odd-face "red")
+  ;; (qset 'highlight-indent-guides-even-face "red")
+  ;; (qset 'highlight-indent-guides-character-face "red")
+  ;; (highlight-indent-guides-auto-set-faces)
 #+end_src
 
 ** git gutter
@@ -883,7 +880,9 @@ The =which-key= integration adds helpful descriptions of the various keys so you
 
   (use-package lsp-mode
     :commands (lsp lsp-deferred)
-    :hook (prog-mode, lsp-mode . efs/lsp-mode-setup)
+    :hook ((lua-mode . lsp)
+           (bash-mode . lsp)
+         (lsp-mode . lsp-enable-which-key-integration))
     :init
     (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
     :config
@@ -904,11 +903,11 @@ The =which-key= integration adds helpful descriptions of the various keys so you
 
   (add-hook 'after-init-hook #'lsp-ui-mode)
 
-  (use-package lsp-ui-imenu
-    :hook (lsp-mode . lsp-ui-mode))
-    
-  (use-package lsp-ui-doc
-    :hook (lsp-mode . lsp-ui-mode))
+  ;; (use-package lsp-ui-imenu
+    ;; :hook (lsp-mode . lsp-ui-mode))
+
+  ;; (use-package lsp-ui-doc
+    ;; :hook (lsp-mode . lsp-ui-mode))
 #+end_src
 
 **** lsp-treemacs
@@ -996,46 +995,50 @@ https://emacs-lsp.github.io/lsp-mode/page/lsp-emmy-lua/
       (add-hook 'java-mode-hook 'lsp))
 #+end_src
 
+*** Rust
+
+#+begin_src emacs-lisp
+(use-package toml-mode)
+
+(use-package rustic
+  :hook (rust-mode . lsp))
+ 
+(use-package flycheck-rust
+  :config (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+
+#+end_src
+
 *** Latex
 
 
 #+begin_src emacs-lisp
-(add-to-list 'load-path "~/.config/emacs/lsp")
+  ;; (add-to-list 'load-path "~/.config/emacs/lsp")
 
-(require 'lsp-latex)
-;; "texlab" must be located at a directory contained in `exec-path'.
-;; If you want to put "texlab" somewhere else,
-;; you can specify the path to "texlab" as follows:
-;; (setq lsp-latex-texlab-executable "/path/to/texlab")
+  ;; (require 'lsp-latex)
+  ;; ;
+                                          ; "texlab" must be located at a directory contained in `exec-path'.
+  ;; If you want to put "texlab" somewhere else,
+  ;; you can specify the path to "texlab" as follows:
+  ;; (setq lsp-latex-texlab-executable "/path/to/texlab")
 
-(with-eval-after-load "tex-mode"
- (add-hook 'tex-mode-hook 'lsp)
- (add-hook 'latex-mode-hook 'lsp))
+  (with-eval-after-load "tex-mode"
+   (add-hook 'tex-mode-hook 'lsp)
+   (add-hook 'latex-mode-hook 'lsp))
 
-;; For YaTeX
-(with-eval-after-load "yatex"
- (add-hook 'yatex-mode-hook 'lsp))
+  ;; For YaTeX
+  (with-eval-after-load "yatex"
+   (add-hook 'yatex-mode-hook 'lsp))
 
-;; For bibtex
-(with-eval-after-load "bibtex"
- (add-hook 'bibtex-mode-hook 'lsp))
-#+end_src
-
-*** Shello
-
-Making shell highlight less awful
-
-#+begin_src emacs-lisp
-  (use-package lsp-bash
-    :config 
-      (add-hook 'bash-mode-hook 'lsp))
+  ;; For bibtex
+  (with-eval-after-load "bibtex"
+   (add-hook 'bibtex-mode-hook 'lsp))
 #+end_src
 
 *** Kmonad
 
 #+begin_src emacs-lisp
-(use-package kbd-mode
-  :load-path "~/.config/emacs/")
+  ;; (use-package kbd-mode
+    ;; :load-path "~/.config/emacs/")
 #+end_src
 
 ** company mode
