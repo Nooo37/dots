@@ -1,24 +1,23 @@
 # sxhkd configuration
 
 # WINDOW MANAGEMENT
+# w for closing: analogue to browser bindings, super+alt+c is pain
+# h,j,k,l for movement, resizing, focus etc: more intuitive than 'tab'bing 
+# b,n,m for toggleing window properties
+# z for switching between two tags: I only use two tags most times 
+# F keys for various things that I want to have around but don't need as often
 
 super + {w,n,m,b}
     swish window {close,minimize,maximize,floating}
 
-super + {_, shift +} {h,j,k,l}
-    swish window {focus,swap} {left,down,up,right}
-
-super + alt + {h,l}
-    swish layout masterwidthfact {"-0.05", "0.05"}
-
-super + alt + {j,k}
-    swish layout mastercount {"-1", "1"}
+super + {_,shift,alt} + {h,j,k,l}
+    swish window {focus,drag,resize} {left,down,up,right}
 
 super + {u,i,o}
     swish tabbing {iter,add,pop}
 
 super + z
-    swish tag toggle
+    swish tag switcher 
 
 super + {1-9}
     swish tag focus {1-9}
@@ -30,62 +29,49 @@ super + {_, shift +} space
     swish layout {next,prev}
 
 super + {_, shift +} Tab
-    swish window {next,prev}
+    swish window focus {next,prev}
 
-super + {F8,F9}
-    swish tag {prev,next}
-
-super + {F5,F6,F7} 
-    swish tag {delete,rename,add}
+super + {F5,F6,F7,F8,F9} 
+    swish tag {delete,rename,add,prev,next}
 
 super + {F1,F2} 
     swish toggle {bar,dash}
 
 # LAUNCH
-    
+# t for terminal: analogous to browser bindings, mod+enter doesn't make any sense
+# e for emacs and r for run/rofi: standard and also creates a launch cluster together with mod+t
+# d,f,g,v for various scratchpads, they are way more comfy than you might think. Extends launch cluster
+
 super + t
-    swish window launch "alacritty"
+    alacritty
 
 super + r 
-    rofi -show run
-
-super + f
-    swish tag toggle "web"
-
-super + shift + f
-    brave
+    rofi -show drun -show-icons
 
 super + e 
-    emacsclient --create-frame
+    emacsclient -ca false -e '(delete-frame)' && emacsclient --create-frame || emacs -eval '(server-mode)'
 
-super + d 
-    swish toggle scratchdiscord
-
-super + g
-    swish toggle scratchpad
-
-super + v
-    swish toggle scratchmusic
+super + {d,g,v,f} 
+    swish toggle {discord,scratchpad,music,webs} 
 
 
-# MUSIC and SOUND
+# MUSIC AND MISC
+# a for Various things that used to have their own keybinds are now hidden under the meta dmenu of mod+a
+
+super + {q,plus,minus}
+    playerctl {play-pause,next,prev} 
+
+super + alt + {q,plus,minus}
+    mpc {toggle,next,prev}
 
 super + {comma,period}
     amixer sset 'Master' 5%{-,+}
 
-super + alt + q
-    mpc toggle
-
-super + alt + {plus,minus}
-    mpc {prev,next}
-
 super + alt + {comma,period}
     mpc volume {-,+}5
 
-# MISC
-
-super + shift + s
-    ~/code/dots/scripts/dmenu-screenshot
+super + shift + {comma,period}
+    ~/code/dots/scripts/chbrightness {"-0.05","0.05"}
 
 super + Print
     ~/code/dots/scripts/dmenu-screenshot "all" "save"
@@ -93,9 +79,9 @@ super + Print
 super + a 
     ~/code/dots/scripts/dmenu-dmenu
 
-super + numbersign
+super + x
     swish notifications killall
 
-super + shift + {comma,period}
-    ~/code/dots/scripts/chbrightness {"-0.05","0.05"}
+super + Escape
+    pkill -USR1 -x sxhkd
 

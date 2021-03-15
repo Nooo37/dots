@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # awesomewm wrapper utility
 
 case "$1" in
@@ -19,13 +19,6 @@ case "$1" in
     window)
         shift
         case "$1" in
-            focus|swap)
-                awesome-client "require(\"awful\").client.$1.global_bydirection(\"$2\")"
-                ;;
-            next|prev)
-                [ "$1" == "next" ] && STEP="1" || STEP="-1"
-                awesome-client "require(\"awful\").client.focus.byidx($STEP)"
-                ;;
             close)
                 awesome-client "client.focus:kill()"
                 ;;
@@ -33,7 +26,7 @@ case "$1" in
                 awesome-client "if not client.focus then return end
                                 client.focus.maximized = not client.focus.maximized"
                 ;;
-            minimize) # unminimized if there is a minimized window otherwise minimizes current one
+            minimize) # unminimized if there is a minimized window otherwise minimizes the current one
                 awesome-client "local minimized_c = require(\"awful\").client.restore()
                                 if minimized_c then client.focus = minimized_c; minimized_c:raise()
                                 elseif client.focus then client.focus.minimized = true end"
@@ -46,6 +39,91 @@ case "$1" in
                 shift
                 awesome-client "require(\"awful\").spawn(\"$1\")"
                 ;;
+            swap)
+                shift
+                awesome-client "local a = require(\"awful\")
+                                local c = client.focus
+                                if c and not c.floating then 
+                                   a.client.swap.global_bydirection(\"$1\")
+                                end"
+                ;;
+            move)
+                shift
+                awesome-client "local a = require(\"awful\")
+                               local c = client.focus
+                               local gap = 20
+                               local direction = \"$1\"
+                               if direction == \"left\" then 
+                                   c:relative_move(-gap, 0, 0, 0)
+                               elseif direction == \"right\" then 
+                                   c:relative_move(gap, 0, 0, 0)
+                               elseif direction == \"up\" then 
+                                   c:relative_move(0, -gap, 0, 0)
+                               elseif direction == \"down\" then 
+                                   c:relative_move(0, gap, 0, 0)
+                               end"
+                ;;
+            scale) 
+                shift
+                awesome-client "local a = require(\"awful\")
+                               local c = client.focus
+                               local gap = -20
+                               if \"$1\" == \"up\" then gap = 20 end
+                               if not c then return end
+                               c:relative_move(-gap/2, -gap/2, gap, gap)"
+                ;;
+            is) # exits with error code 0 if true else it is false
+                shift
+                case "$1" in
+                    floating)
+                        awesome-client "return client.focus.floating" | grep "true" || exit 1
+                        ;;
+                    *)
+                        echo "Couldn't find subcommand '$1' in command 'window is'"
+                        ;;
+                esac
+                ;;
+            exists)
+                shift
+                awesome-client "for _, c in ipairs(client.get()) do
+                                    if c.class == \"$1\" then 
+                                       return true
+                                    end
+                                end
+                                return false" | grep "true" || exit 1
+                ;;
+            # the following two check whether a window is floating or not first, and act accordingly
+            drag) 
+                shift
+                swish window is floating && swish window move "$1" || swish window swap "$1"
+                ;;
+            resize)
+                shift
+                if [ "$1" == "left" ]; then
+                    swish window is floating && swish window scale down || swish layout masterwidthfact "-0.05"
+                elif [ "$1" == "right" ]; then
+                    swish window is floating && swish window scale up || swish layout masterwidthfact "0.05"
+                elif [ "$1" == "down" ]; then
+                    swish window is floating && swish window scale down || swish layout slavewidthfact "-0.05"
+                elif [ "$1" == "up" ]; then
+                    swish window is floating && swish window scale up || swish layout slavewidthfact "0.05"
+                fi
+                ;;
+            focus)
+                shift
+                case "$1" in
+                    next|prev)
+                        [ "$1" == "next" ] && STEP="1" || STEP="-1"
+                        awesome-client "require(\"awful\").client.focus.byidx($STEP)"
+                        ;;
+                    left|right|up|down)
+                        awesome-client "require(\"awful\").client.focus.global_bydirection(\"$1\")"
+                        ;;
+                    *)
+                        echo "Couldn't find subcommand '$1' in command 'window'"
+                        ;;
+                esac
+                ;;
             *)
                 echo "Couldn't find subcommand '$1' in command 'window'"
                 ;;
@@ -54,9 +132,6 @@ case "$1" in
     tag)
         shift
         case "$1" in
-            next|prev)
-                awesome-client "require(\"awful\").tag.view$1()"
-                ;;
             switcher) # toggles between the first and second tag
                 awesome-client "local a = require(\"awful\") 
                                 local s = a.screen.focused()
@@ -65,6 +140,9 @@ case "$1" in
                                 else
                                     s.tags[1]:view_only()
                                 end"
+                ;;
+            next|prev)
+                awesome-client "require(\"awful\").tag.view$1()"
                 ;;
             toggle) # toggles a tag based on its name
                 shift
@@ -124,6 +202,10 @@ case "$1" in
                 shift
                 awesome-client "require(\"awful\").tag.incmwfact($1)"
                 ;;
+            slavewidthfact)
+                shift
+                awesome-client "require(\"awful\").client.incwfact($1)"
+                ;;
             mastercount)
                 shift
                 awesome-client "require(\"awful\").tag.incnmaster($1)"
@@ -150,26 +232,7 @@ case "$1" in
     # from here on commands are likely to not work in other awesomewm configs
     toggle)
         shift
-        case "$1" in
-            bar)
-                awesome-client "awesome.emit_signal(\"toggle::bar\")"
-                ;;
-            dash)
-                awesome-client "awesome.emit_signal(\"toggle::sidebar\")"
-                ;;
-            scratchpad)
-                awesome-client "awesome.emit_signal(\"toggle::scratchpad\")"
-                ;;
-            scratchmusic)
-                awesome-client "awesome.emit_signal(\"toggle::scratchmusic\")"
-                ;;
-            scratchdiscord)
-                awesome-client "awesome.emit_signal(\"toggle::scratchdiscord\")"
-                ;;
-            *)
-                echo "Couldn't find subcommand '$1' in command 'toggle'"
-                ;;
-        esac
+        awesome-client "awesome.emit_signal(\"toggle::$1\")"
         ;;
     tabbing)
         shift

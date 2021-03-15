@@ -1,7 +1,8 @@
 #!/bin/sh
 # comfy dmenu for taking screenshots
 
-SAVE_PATH="$HOME/pics/screenshots/$(date +%y-%m-%d_%H-%M-%S).png"
+TIMESTAMP="$(date +%y-%m-%d_%H-%M-%S)"
+SAVE_PATH="$HOME/pics/screenshots/$TIMESTAMP.png"
 
 [ "$1" == "" ] && SELECTION=$(echo -e "all\nby selection\nby active window" | rofi -dmenu -i -p "What area? " | tr -d '\n') || SELECTION="$1"
 [ "$SELECTION" == "" ] && exit
@@ -28,5 +29,5 @@ case $SELECTION in
         ;;
 esac
 
-[ "$SAVE" == "save" ] && notify-send "[!] Screenshot taken" "~/pics/screenshots/$TIMESTAMP" --icon="$SAVE_PATH"
+[ "$SAVE" == "save" ] && notify-send "[!] Screenshot taken" "~/pics/screenshots/$TIMESTAMP.png" --icon="$SAVE_PATH"
 

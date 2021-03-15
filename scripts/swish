@@ -7,7 +7,7 @@ wm=$XDG_CURRENT_DESKTOP
 
 case "${wm##*/}" in
     awesome)
-        $(dirname $0)/awesome-wrapper $@
+        $(dirname $0)/wrapper-awesome $@
         ;;
 esac
 
