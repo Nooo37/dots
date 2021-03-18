@@ -1,7 +1,8 @@
 ;; Config file for kmonad
 
 (defcfg
-  input  (device-file "/dev/input/by-id/usb-Logitech_USB_Keyboard-event-kbd")
+  ;; input  (device-file "/dev/input/by-id/usb-Logitech_USB_Keyboard-event-kbd")
+  input  (device-file "/dev/input/event16")
   output (uinput-sink "KMonad output" "/bin/sleep 1 && /bin/setxkbmap us -option compose:ralt")
 
   fallthrough true

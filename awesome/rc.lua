@@ -43,12 +43,25 @@ bling.module.flash_focus.enable()
 bling.signal.playerctl.enable()
 bling.module.window_swallowing.start()
 
--- bling.module.wallpaper.setup {                             
---     change_timer = 1000,                      
+awful.screen.connect_for_each_screen(function(s)  -- that way the wallpaper is applied to every screen
+    bling.module.tiled_wallpaper("", s, {        -- call the actual function ("x" is the string that will be tiled)
+        fg = beautiful.xbg,  -- define the foreground color
+        bg = beautiful.xcolor0,  -- define the background color
+        offset_y = 25,   -- set a y offset
+        offset_x = 25,   -- set a x offset
+        font = "JetBrainsMono NF",   -- set the font (without the size)
+        font_size = 30,  -- set the font size
+        padding = 100,   -- set padding (default is 100)
+        zickzack = true  -- rectangular pattern or criss cross
+    })
+end)
+
+-- bling.module.wallpaper.setup {
+--     change_timer = 1000,
 --     set_function = bling.module.wallpaper.setters.random,
---     wallpaper = { "~/pics/wallpapers/" },  
---     recursive = false, 
---     position = "maximized",                   
+--     wallpaper = { "~/pics/wallpapers/" },
+--     recursive = false,
+--     position = "maximized",
 -- }
 
 ---}}}
@@ -69,8 +82,8 @@ awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
 
 ---{{{ require
 require("signal")({"volume", "mpd", "temp", "cpu", "ram", "newsboat",
-                   "disk", "weather", "brightness_desktop"})
-require("ui.bar.fragmented")
+                   "disk", "weather", "brightness_desktop", "battery"})
+require("ui.bar.vertical_endgame")
 require("ui.dashboard.vertical_round")
 require("ui.popup.layout_box")
 require("ui.popup.volume_adjust")
@@ -120,7 +133,7 @@ awful.rules.rules = {
     {
         rule_any = { type = {"normal", "dialog"} },
         properties = { ontop = true }
-    },          
+    },
 
     {
         rule_any = { instance = { "spad" } },
@@ -143,11 +156,11 @@ awful.rules.rules = {
 client.connect_signal("manage",function(c)
     if c.class == "aw-qt" then -- close that weird aw-qt window for me please
         c:kill()
-    end 
+    end
 end)
 ---}}}
 
----{{{ borders but not on maximized clients
+---{{{ borders but not on maximized
 local border_width  = beautiful.border_width  or 2
 local border_normal = beautiful.border_normal or "#cccccc"
 local border_focus  = beautiful.border_focus  or "#ff0000"
@@ -169,8 +182,6 @@ end
 ---}}}
 
 ---{{{ rounded corners but not on maximized clienta
-local corner_radius = beautiful.corner_radius or 0
-
 local function is_maximized(c)
     local function _fills_screen()
         local wa = c.screen.workarea
@@ -180,17 +191,18 @@ local function is_maximized(c)
     return c.maximized or (not c.floating and _fills_screen())
 end
 
--- client.connect_signal("property::geometry", function(c)
---     if is_maximized(c) then
---         c.shape = function(cr,w,h)
---             gears.shape.rounded_rect(cr,w,h,0)
---         end
---     else
---         c.shape = function(cr,w,h)
---            gears.shape.rounded_rect(cr,w,h, corner_radius)
---         end
---     end
--- end)
+
+client.connect_signal("property::geometry", function(c)
+    if is_maximized(c) then
+        c.shape = function(cr,w,h)
+            gears.shape.rounded_rect(cr,w,h,0)
+        end
+    else
+        c.shape = function(cr,w,h)
+           gears.shape.rounded_rect(cr,w,h, beautiful.border_radius or 0)
+        end
+    end
+end)
 ---}}}
 
 ---{{{ Notify when cpu temp rises above 65°C
@@ -202,7 +214,7 @@ end)
 ---}}}
 
 ---{{{ needed doing scratchpad and "launch or focus" for sxhkd keybinds
-local scratchpad = require("module.scratchpad")
+local scratchpad = require("scratchpad")
 
 awesome.connect_signal("toggle::scratchpad", function()
                           scratchpad.toggle("alacritty --class spad", {instance = "spad"},
@@ -232,13 +244,13 @@ local function launch_or_focus(application)
         return awful.rules.match(c, {instance = application}) or awful.rules.match(c, {class = application})
     end
     for c in awful.client.iterate(is_app) do
-        if c.first_tag then 
+        if c.first_tag then
             c.minimized = false
             c.first_tag:view_only()
             client.focus = c
             c:raise()
             return
-        elseif c.bling_tabbed then 
+        elseif c.bling_tabbed then
             local tabobj = c.bling_tabbed
             local tag = tabobj.clients[tabobj.focused_idx].first_tag
             tag:view_only()
@@ -269,107 +281,6 @@ local globalkeys = my_table.join(
 
 root.keys(globalkeys)
 ---}}}
-
----{{{ start with bar disabled
-awesome.emit_signal("toggle::bar")
----}}}
-
-
---{{{ Experimenting with stuff
--- local function create_icon(icon, fg) 
---     local btn_thing = wibox.widget.textbox("")
---     btn_thing.align = "center"
---     btn_thing.valign = "center"
---     btn_thing.font = "JetBrainsMono Nerd Font 8"
---     btn_thing.markup = helpers.colorize_text(icon, fg)
---     return btn_thing
--- end
-
--- local function create_btn(icon, fg, bg)
---    local btn_icon = create_icon(icon, fg)
-   
--- end
-
--- client.connect_signal("manage", function(c)
---     if c.class ~= "Alacritty" or not c.floating then return end
---     local btn_radius = 15
-
---     local btn_minimize = wibox({
---           screen = awful.screen.focused(),
---           x = c.x,
---           y = c.y,
---           width = 2 * btn_radius,
---           height = 2 * btn_radius,
---           shape = gears.shape.circle,
---           bg = beautiful.xcolor0,
---           ontop = true,
---           visible = true
---     })
-
---     local btn_maximize = wibox({
---           screen = awful.screen.focused(),
---           x = c.x,
---           y = c.y,
---           width = 2 * btn_radius,
---           height = 2 * btn_radius,
---           shape = gears.shape.circle,
---           bg = beautiful.xcolor0,
---           ontop = true,
---           visible = true
---     })
-
---     local btn_close = wibox({
---           screen = awful.screen.focused(),
---           x = c.x,
---           y = c.y,
---           width = 2 * btn_radius,
---           height = 2 * btn_radius,
---           shape = gears.shape.circle,
---           bg = beautiful.xcolor0,
---           ontop = true,
---           visible = true
---     })
-
---     local icon_minimize = create_icon("絛", beautiful.xcolor3)
---     local icon_maximize = create_icon("", beautiful.xcolor4)
---     local icon_close    = create_icon("", beautiful.xcolor1)
-    
---     btn_minimize:setup { layout = wibox.layout.align.vertical, nil, icon_minimize, nil }
---     btn_maximize:setup { layout = wibox.layout.align.vertical, nil, icon_maximize, nil }
---     btn_close:setup    { layout = wibox.layout.align.vertical, nil, icon_close, nil }
-
---     function adjust_titlebox()
---        btn_minimize.x = c.x + c.width - 9 * btn_radius
---        btn_minimize.y = c.y - 0.75 * btn_radius
---        btn_maximize.x = c.x + c.width - 6 * btn_radius
---        btn_maximize.y = c.y - 0.75 * btn_radius
---        btn_close.x = c.x + c.width - 3 * btn_radius
---        btn_close.y = c.y - 0.75 * btn_radius
---     end
-
---     adjust_titlebox()
-    
---     c:connect_signal("property::position", adjust_titlebox)
---     c:connect_signal("property::size", adjust_titlebox)
-
---     c:connect_signal("unfocus", function()
---                         btn_minimize.visible = false
---                         btn_maximize.visible = false
---                         btn_close.visible = false
---     end)
---     c:connect_signal("focus", function()
---                         btn_minimize.visible = true
---                         btn_maximize.visible = true
---                         btn_close.visible = true
---     end)
---     c:connect_signal("unmanage", function()
---                         btn_minimize.visible = false
---                         btn_minimize = nil
---                         btn_maximize = nil
---                         btn_close = nil
---     end)
--- end)
--- --}}}
 
 --{{{ sloppy focus
 client.connect_signal("mouse::enter", function(c)

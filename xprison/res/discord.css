@@ -14,7 +14,7 @@
   --button: @color8@;
   /*  ----  */
   --fg1: @foreground@;
-  --fg2: @color15@;
+  --fg2: @foreground@;
   --disabled: @color8@;
   /*  ----  */
   --accent: @color1@;
@@ -50,8 +50,8 @@
   --background-tertiary: var(--bg1);
   --background-accent: var(--accent);
   --background-floating: var(--bg1);
-  --background-modifier-hover: rgba(79, 84, 92, 0.16);
-  --background-modifier-active: rgba(79, 84, 92, 0.24);
+  --background-modifier-hover: @color8@;
+  --background-modifier-active: @color8@;
   /*--background-modifier-accent: hsla(0, 0%, 100%, 0.06);*/
   --background-modifier-accent: rgba(0, 0, 0, 0);
   --elevation-high: 0 8px 16px rgba(0, 0, 0, 0.24);
@@ -80,6 +80,10 @@
 
 /* sections */
 
+[class*="colorBrand"] {
+    color: var(--green)
+}
+
 [class*="peopleColumn"] {
   background-color: var(--bg2);
 }
@@ -87,6 +91,16 @@
 [class*="section"] {
   background-color: var(--bg3);
 }
+
+[class*="navButtonActive"] {
+    background-color: unset;
+    color: var(--fg2);
+}
+
+[class*="input"]:focus {
+    border-color: var(--green);
+}
+
 [class*="sidebar"] [class*="container"] [class*="header"] {
   background-color: var(--bg1) !important;
   box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
@@ -117,7 +131,7 @@
 [class*="textAreaSlate"] {
   background-color: var(--bg3);
   border-radius: 13px;
-  color: var(--fg-2);
+  color: var(--fg2);
   box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -140,32 +154,12 @@ button[class*="lookLink"] {
   color: var(--fg1) !important;
 }
 
-[class*="sprite"] {
-  filter: brightness(80%) sepia(0%) saturate(60%) !important;
-}
-[class*="username"] {
-  filter: sepia(30%) !important;
-  transition: filter 0.2s;
-}
-[class*="username"]:hover {
-  filter: sepia(20%) !important;
-}
-
 [class*="newMessagesBar-"] {
   background-color: var(--accent);
   opacity: 1;
 }
 [class*="newMessagesBar-"] button {
   color: var(--bg1) !important;
-}
-
-img[class*="avatar"] {
-  filter: sepia(30%) !important;
-  transition: filter 0.1s, transform 0.1s ease-in-out;
-}
-img[class*="avatar"]:hover {
-  filter: sepia(0%) !important;
-  transform: scale(1.05);
 }
 
 [class*="pictureInPictureWindow"] {
@@ -231,4 +225,21 @@ div[class*="chat"] div[class*="root"] {
 
 div[class*="chat"] div[class*="root"] canvas {
   /*border-radius: 20px;*/
+}
+
+/* display info about code blocks  */
+code.hljs:not(.inline)::before {
+  content: attr(class) !important;
+  float: right;
+  display: block;
+  width: auto;
+  max-width: 100px;
+  text-align: right;
+  min-width: auto;
+  margin-top: -107px;
+  line-height: 20px;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  color: var(--fg2);
+  opacity: 0.6;
 }

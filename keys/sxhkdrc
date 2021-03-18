@@ -2,9 +2,9 @@
 
 # WINDOW MANAGEMENT
 # w for closing: analogue to browser bindings, super+alt+c is pain
-# h,j,k,l for movement, resizing, focus etc: more intuitive than 'tab'bing 
+# h,j,k,l for movement, resizing, focus etc: more intuitive than 'tab'bing
 # b,n,m for toggleing window properties
-# z for switching between two tags: I only use two tags most times 
+# z for switching between two tags: I only use two tags most times
 # F keys for various things that I want to have around but don't need as often
 
 super + {w,n,m,b}
@@ -17,7 +17,7 @@ super + {u,i,o}
     swish tabbing {iter,add,pop}
 
 super + z
-    swish tag switcher 
+    swish tag switcher
 
 super + {1-9}
     swish tag focus {1-9}
@@ -31,10 +31,10 @@ super + {_, shift +} space
 super + {_, shift +} Tab
     swish window focus {next,prev}
 
-super + {F5,F6,F7,F8,F9} 
+super + {F5,F6,F7,F8,F9}
     swish tag {delete,rename,add,prev,next}
 
-super + {F1,F2} 
+super + {F1,F2}
     swish toggle {bar,dash}
 
 # LAUNCH
@@ -45,21 +45,21 @@ super + {F1,F2}
 super + t
     alacritty
 
-super + r 
+super + r
     rofi -show drun -show-icons
 
-super + e 
+super + e
     emacsclient -ca false -e '(delete-frame)' && emacsclient --create-frame || emacs -eval '(server-mode)'
 
-super + {d,g,v,f} 
-    swish toggle {discord,scratchpad,music,webs} 
+super + {d,g,v,f}
+    swish toggle {discord,scratchpad,music,webs}
 
 
 # MUSIC AND MISC
 # a for Various things that used to have their own keybinds are now hidden under the meta dmenu of mod+a
 
 super + {q,plus,minus}
-    playerctl {play-pause,next,prev} 
+    playerctl {play-pause,next,prev}
 
 super + alt + {q,plus,minus}
     mpc {toggle,next,prev}
@@ -76,7 +76,7 @@ super + shift + {comma,period}
 super + Print
     ~/code/dots/scripts/dmenu-screenshot "all" "save"
 
-super + a 
+super + a
     ~/code/dots/scripts/dmenu-dmenu
 
 super + x
@@ -85,3 +85,14 @@ super + x
 super + Escape
     pkill -USR1 -x sxhkd
 
+# LAPTOP
+# all the weird keys that I only really need on my laptop
+
+{XF86AudioLowerVolume,XF86AudioRaiseVolume}
+    amixer sset 'Master' 5%{-,+}
+
+{XF86MonBrightnessDown,XF86MonBrightnessUp}
+    brightnessctl set 5%{-,+}
+
+{XF86AudioPrev,XF86AudioNext,XF86AudioPlay}
+    playerctl {previous,next,play-pause}

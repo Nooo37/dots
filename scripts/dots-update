@@ -48,7 +48,7 @@ for dotfile in $PATHXPRISON/res/*; do
     new_dotfile=`echo "$new_dotfile" | sed "s/@color15@/$color15/g"`
     case "$dotfile" in 
         *"alacritty.yml") echo "$new_dotfile" > "$HOME/.config/alacritty/alacritty.yml" ;;
-        *"firefox.css")   echo "$new_dotfile" > "$HOME/.mozilla/firefox/vwjwx9c6.default-release/chrome/userChrome.css" ;;
+        *"ffelko.css")   echo "$new_dotfile" > "$HOME/.mozilla/firefox/vwjwx9c6.default-release/chrome/userChrome.css" ;;
         *"zathura.txt")   echo "$new_dotfile" > "$HOME/.config/zathura/zathurarc" ;;
         *"rofi.rasi")     echo "$new_dotfile" > "$HOME/.config/rofi/mytheme.rasi" ;;
         *"discord.css")   echo "$new_dotfile" > "$HOME/.config/EnhancedDiscord/plugins/style.css" ;;

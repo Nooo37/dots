@@ -27,19 +27,19 @@ cursor:
 font:
   normal:
     # family: Terminus
-    family: JetBrainsMono Nerd Font
+    family: JetBrainsMono NF
     style: Regular
   bold:
     # family: Terminus
-    family: JetBrainsMono Nerd Font
+    family: JetBrainsMono NF
     style: Bold
   italic:
     # family: Terminus
-    family: JetBrainsMono Nerd Font
+    family: JetBrainsMono NF
     style: Italic
   bold_italic:
     # family: Terminus
-    family: JetBrainsMono Nerd Font
+    family: JetBrainsMono NF
     style: Bold Italic
   size: 9.0
   offset:

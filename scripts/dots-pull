@@ -4,8 +4,10 @@
 BASEDIR=$(dirname $0)
 
 # emacs config 
-cp -f $HOME/.config/emacs/config.org $BASEDIR/../emacs/config.org
-cp -f $HOME/.config/emacs/init.el $BASEDIR/../emacs/init.el
-cp -f $HOME/.config/emacs/doom-mine-theme.el $BASEDIR/../emacs/doom-mine-theme.el
+rsync -rH $HOME/.emacs.d/visuals $BASEDIR/../emacs
+rsync -rH $HOME/.emacs.d/packages $BASEDIR/../emacs
+cp -f $HOME/.emacs.d/other.el $BASEDIR/../emacs/other.el
+cp -f $HOME/.emacs.d/init.el $BASEDIR/../emacs/init.el
+cp -f $HOME/.emacs.d/early-init.el $BASEDIR/../emacs/early-init.el
 
 rsync -rH $HOME/.config/awesome $BASEDIR/..
