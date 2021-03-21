@@ -1,7 +1,9 @@
 (require 'xresources-theme)
 
-
 (global-set-key (kbd "<f5>") (lambda() (interactive)(find-file "~/code/rust/mampf/src/util.rs")))
+(global-set-key (kbd "<f4>") (lambda() (interactive)(find-file "~/.emacs.d/visuals/xresources-theme.el")))
+(global-set-key (kbd "C-s") (lambda() (interactive)(save-buffer)))
+(global-set-key (kbd "C-f") (lambda() (interactive)(swiper)))
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit) 
 
 (use-package kakoune

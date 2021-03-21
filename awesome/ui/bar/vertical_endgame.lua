@@ -20,8 +20,8 @@ local function format_progress_bar(bar)
     return bar
 end
 
-local function format_entry(wid, inner_pad)
-    return {
+local function format_entry(wid, inner_pad, outter_pad)
+    return wibox.widget {
                     {
                         {
                             wid,
@@ -53,7 +53,7 @@ minutetextbox.align = "center"
 minutetextbox.valign = "center"
 
 hourtextbox:connect_signal("widget::redraw_needed", function()
-  hourtextbox.markup = helpers.colorize_text(hourtextbox.text, beautiful.xcolor3)
+  hourtextbox.markup = helpers.colorize_text(hourtextbox.text, beautiful.xcolor6)
 end)
 
 -- hourtextbox:emit_signal("widget::redraw_needed")
@@ -75,16 +75,14 @@ local clockbox = wibox.widget {
 }
 
 local datetooltip = awful.tooltip {};
-datetooltip.shape = helpers.prrect(beautiful.border_radius - 3, true, true,
-                                       false, false)
+datetooltip.shape = helpers.prrect(beautiful.border_radius - 3, false, true, true, false)
 datetooltip.preferred_alignments = {"middle", "front", "back"}
 datetooltip.mode = "outside"
 datetooltip:add_to_object(clockbox)
-datetooltip.text = os.date("%d.%m.%y")
-
+datetooltip.text = os.date("%d.%m.%y") -- dont stay up long enough for that to change 
 ---}}}
 
----{{{
+---{{{ battery widget, stolen from https://github.com/JavaCafe01/
 local battery_bar = wibox.widget {
     max_value = 100,
     value = 70,
@@ -108,8 +106,7 @@ local battery_bar = wibox.widget {
 }
 
 local battery_tooltip = awful.tooltip {}
-battery_tooltip.shape = helpers.prrect(beautiful.border_radius - 3, true, true,
-                                       false, false)
+battery_tooltip.shape = helpers.prrect(beautiful.border_radius - 3, false, true, true, false)
 battery_tooltip.preferred_alignments = {"middle", "front", "back"}
 battery_tooltip.mode = "outside"
 battery_tooltip:add_to_object(battery_bar)
@@ -163,6 +160,44 @@ awesome.connect_signal("evil::battery", function(value)
             "</span>" .. value .. '% '
 end)
 
+-- Timer for charging animation
+local q = 0
+local g = gears.timer {
+    timeout = 0.03,
+    call_now = false,
+    autostart = false,
+    callback = function()
+        if q >= 100 then q = 0 end
+        q = q + 1
+        battery_bar.value = q
+        battery_bar.color = {
+            type = 'linear',
+            from = {0, 0},
+            to = {75 - (100 - q), 20},
+            stops = {
+                {1 + (q) / 100, beautiful.xcolor10},
+                {0.75 - (q / 100), beautiful.xcolor1},
+                {1 - (q) / 100, beautiful.xcolor10}
+            }
+        }
+    end
+}
+
+-- The charging animation
+local running = false
+awesome.connect_signal("evil::charger", function(plugged)
+    if plugged then
+        g:start()
+        running = true
+    else
+        if running then
+            g:stop()
+            running = false
+        end
+    end
+end)
+
+
 ---}}}
 
 ---{{{ taglist buttons
@@ -183,6 +218,68 @@ local taglist_buttons = gears.table.join(
                     awful.button({ }, 5, function(t) awful.tag.viewnext(t.screen) end)
                 )
 ---}}}
+
+
+---{{{ tasklist buttons
+local tasklist_buttons = gears.table.join(
+    awful.button({ }, 1, function (c)
+	    if c == client.focus then
+		c.minimized = true
+	    else
+		c:emit_signal(
+		    "request::activate",
+		    "tasklist",
+		    {raise = true}
+		)
+	    end
+    end),
+    awful.button({ }, 3, function()
+	    awful.menu.client_list({ theme = { width = 250 } })
+    end),
+    awful.button({ }, 4, function ()
+	    awful.client.focus.byidx(1)
+    end),
+    awful.button({ }, 5, function ()
+	    awful.client.focus.byidx(-1)
+end))
+---}}}
+
+---{{{ music
+local album_art = wibox.widget.imagebox {}
+local music = format_entry(album_art, 0, 0)
+music.visible = false
+
+local musictooltip = awful.tooltip {}
+musictooltip.shape = helpers.prrect(beautiful.border_radius - 3, false, true, true, false)
+musictooltip.preferred_alignments = {"middle", "front", "back"}
+musictooltip.mode = "outside"
+musictooltip:add_to_object(music)
+musictooltip.text = "Not updated"
+
+awesome.connect_signal("bling::playerctl::status", function(playing)
+                           music.visible = playing
+end)
+awesome.connect_signal("bling::playerctl::player_stopped", function() music.visible = false end)
+awesome.connect_signal("bling::playerctl::title_artist_album", function(title, artist, album_path)
+                           musictooltip.markup = tostring(title) .. " - " .. tostring(artist)
+                           music.visible = true
+                           album_art:set_image(gears.surface.load_uncached_silently(album_path))
+                           album_art:emit_signal("widget::redraw_needed")
+end)
+album_art:buttons(gears.table.join(
+                  awful.button({}, 1, function()
+                          awful.spawn("playerctl play-pause")
+                  end),
+                  awful.button({}, 4, function()
+                          awful.spawn("playerctl next")
+                  end),
+                  awful.button({}, 5, function()
+                          awful.spawn("playerctl previous")
+                  end)
+))
+---}}}
+
+--- the important connect
 
 awful.screen.connect_for_each_screen(function(s)
 
@@ -231,6 +328,55 @@ awful.screen.connect_for_each_screen(function(s)
        buttons = taglist_buttons
    }
 
+   s.mytasklist = awful.widget.tasklist {
+       screen  = s,
+       filter   = awful.widget.tasklist.filter.currenttags,
+       style   = {
+           shape = gears.shape.rectangle,
+           font  = statusbar_font
+       },
+       layout   = {
+           spacing = 0,
+           spacing_widget = {
+               shape  = gears.shape.rectangle,
+               widget = wibox.widget.separator,
+           },
+           layout  = wibox.layout.fixed.vertical
+       },
+       widget_template = {
+           {
+	       {
+                   {
+                       {
+                           id = "icon_role",
+                           widget = wibox.widget.imagebox,
+                       },
+                       margins = dpi(inner_pad or 5),
+                       widget = wibox.container.margin
+                   },
+                   id = "background_role",
+                   shape = helpers.rrect(beautiful.border_radius - 3),
+                   widget = wibox.container.background
+               },
+               margins = dpi(5),
+               widget = wibox.container.margin
+           },
+           visible = true,
+           layout = wibox.layout.fixed.vertical
+       },
+       buttons = tasklist_buttons,
+   }
+
+
+   --- One client on the tasklist looks so lonely so I'd rather have it only show up by 2 or more clients
+   local function update_tasklist_visibilty(t)
+       s.mytasklist.visible = (#t:clients() > 1)
+   end
+
+   tag.connect_signal("tagged", update_tasklist_visibilty)
+   tag.connect_signal("untagged", update_tasklist_visibilty)
+   tag.connect_signal("property::selected", update_tasklist_visibilty)
+
 
    s.mylayoutbox = awful.widget.layoutbox(s)
    s.mylayoutbox:buttons(gears.table.join(
@@ -263,16 +409,21 @@ awful.screen.connect_for_each_screen(function(s)
 
    s.mywibox:setup {
        layout = wibox.layout.align.vertical,
-       -- expand = "none",
+       expand = "none",
        { -- Top widgets
            layout = wibox.layout.fixed.vertical,
-           helpers.vertical_pad(10),
+           helpers.vertical_pad(6),
            format_entry(s.mytaglist),
+           -- helpers.vertical_pad(8),
+           s.mytasklist,
        },
-       nil, -- Middle widgets
+       { -- Middle widgets
+	   layout = wibox.layout.fixed.vertical,
+	   nil
+       }, 
        { -- Bottom widgets
            layout = wibox.layout.fixed.vertical,
-           helpers.vertical_pad(8),
+	   music,
            battery,
            format_entry(clockbox),
            format_entry(s.mylayoutbox),
@@ -305,7 +456,7 @@ awful.screen.connect_for_each_screen(function(s)
            s.mywibox.y = 2*beautiful.useless_gap
        end
    end
-
+   
    -- connect all important signals
    tag.connect_signal("tagged", function(t, c) update_bar(t, c) end)
    tag.connect_signal("untagged", function(t, c) update_bar(t, c) end)

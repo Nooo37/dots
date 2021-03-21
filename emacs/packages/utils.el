@@ -52,6 +52,8 @@
 (use-package rainbow-delimiters                   ; `Elegant' weapons for a more civilized age
   :hook (prog-mode . rainbow-delimiters-mode))
 
+(rainbow-delimiters-mode t)
+
 (use-package git-gutter)
   ; :hook (prog-mode . git-gutter-mode))
 
@@ -95,8 +97,8 @@
          (setq ivy-initial-inputs-alist nil)
          (counsel-mode 1)
    :bind
-   ("C-f" . swiper)
-   ("C-s" . save-buffer)
+;;   ("C-f" . swiper)
+;;   ("C-s" . save-buffer)
    ("M-x" . counsel-M-x)
    ("C-c r" . counsel-recentf)
    ("C-c b" . counsel-bookmark)
@@ -127,5 +129,6 @@
 
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 
+(setq undo-tree-visualizer-diff t)
 
 (provide 'utils)

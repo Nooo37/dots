@@ -66,7 +66,7 @@
 (defun sumibi-modeline-compose (status name primary secondary &optional pad)
   "Compose a string with provided information"
   (let* ((status-face-rw `(:foreground ,background 
-						   :background ,blue))
+						   :background ,cyan))
 		 (status-face-ro `(:foreground ,foreground
 						   :background ,background))
 		 (status-face-** `(:foreground ,foreground
@@ -342,13 +342,14 @@
 (defun sumibi-modeline-update-windows ()
   "Modify the mode line depending on the presence of a window below."
 
+  ;; change the two strings "%" here to something like "%-" to change the line at the bottom accordingly
   (dolist (window (window-list))
 	(with-selected-window window
 	  (if (or (one-window-p t)
 		  (eq (window-in-direction 'below) (minibuffer-window))
 		  (not (window-in-direction 'below)))
 		  (with-current-buffer (window-buffer window)
-			(setq mode-line-format "%-"))
+			(setq mode-line-format "%"))
 		(with-current-buffer (window-buffer window)
 		  (setq mode-line-format nil)))
 ;;      (if (window-in-direction 'above)
@@ -357,7 +358,7 @@
 	  )))
 (add-hook 'window-configuration-change-hook 'sumibi-modeline-update-windows)
 
-(setq-default mode-line-format "%-")
+(setq-default mode-line-format "%")
 (sumibi-modeline)
 
 (provide 'sumibi-modeline)

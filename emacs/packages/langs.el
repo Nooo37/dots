@@ -75,7 +75,8 @@
   (interactive)
   (cider-repl-set-ns "user"))
 
-;; -- Common Lisp - the "standard" Lisp
+(use-package racket-mode)
+
 
 ; -- SLY specifics
 (use-package sly

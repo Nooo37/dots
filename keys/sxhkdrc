@@ -43,7 +43,7 @@ super + {F1,F2}
 # d,f,g,v for various scratchpads, they are way more comfy than you might think. Extends launch cluster
 
 super + t
-    alacritty
+    wezterm start
 
 super + r
     rofi -show drun -show-icons
@@ -58,17 +58,14 @@ super + {d,g,v,f}
 # MUSIC AND MISC
 # a for Various things that used to have their own keybinds are now hidden under the meta dmenu of mod+a
 
-super + {q,plus,minus}
-    playerctl {play-pause,next,prev}
+super + {minus,plus,q}
+    playerctl {prev,next,play-pause}
 
-super + alt + {q,plus,minus}
-    mpc {toggle,next,prev}
+super + alt + {comma,period}
+    playerctl volume 0.05{-,+}
 
 super + {comma,period}
     amixer sset 'Master' 5%{-,+}
-
-super + alt + {comma,period}
-    mpc volume {-,+}5
 
 super + shift + {comma,period}
     ~/code/dots/scripts/chbrightness {"-0.05","0.05"}
@@ -78,6 +75,9 @@ super + Print
 
 super + a
     ~/code/dots/scripts/dmenu-dmenu
+
+super + s
+    ~/code/dots/scripts/dmenu-screenshot
 
 super + x
     swish notifications killall

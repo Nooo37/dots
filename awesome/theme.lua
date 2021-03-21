@@ -16,6 +16,7 @@ local theme = dofile("/usr/share/awesome/themes/default/theme.lua")
 
 theme.weather_city = "Regensburg"
 
+theme.is_on_pc = true 
 theme.terminal = "alacritty"
 theme.browser  = "Firefox"
 theme.editor   = "emacsclient --create-frame"
@@ -95,13 +96,13 @@ theme.tooltip_bg = theme.bg_normal
 -- taglist
 theme.taglist_bg                                = "alpha"
 theme.taglist_bg_focus                          = "alpha"
-theme.taglist_fg_focus                          = theme.xcolor4
+theme.taglist_fg_focus                          = theme.xcolor6
 theme.taglist_bg_urgent                         = "alpha"
 theme.taglist_fg_urgent                         = theme.xcolor1
 theme.taglist_bg_occupied                       = "alpha"
 theme.taglist_fg_occupied                       = theme.xfg
 theme.taglist_bg_empty                          = "alpha"
-theme.taglist_fg_empty                          = theme.xcolor8
+theme.taglist_fg_empty                          = theme.xfg
 theme.taglist_bg_volatile                       = "#00000000"
 theme.taglist_fg_volatile                       = theme.xcolor15
 
@@ -113,17 +114,14 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
 
 
 -- tasklist
-theme.tasklist_bg                                = "alpha"
-theme.tasklist_bg_focus                          = theme.xbg
+theme.tasklist_bg_focus                          = theme.xcolor0
 theme.tasklist_fg_focus                          = theme.xcolor2
-theme.tasklist_bg_urgent                         = theme.xbg
+theme.tasklist_bg_urgent                         = theme.xcolor8
 theme.tasklist_fg_urgent                         = theme.xcolor1
-theme.tasklist_bg_occupied                       = theme.xbg
-theme.tasklist_fg_occupied                       = theme.xfg
-theme.tasklist_bg_normal                         = theme.xbg
+theme.tasklist_bg_normal                         = theme.xcolor0
 theme.tasklist_fg_normal                         = theme.xfg
-theme.tasklist_bg_volatile                       = "#00000000"
-theme.tasklist_fg_volatile                       = theme.xcolor15
+theme.tasklist_bg_minimize                       = theme.xbg
+theme.tasklist_fg_minimize                       = theme.xbg
 
 theme.tasklist_plain_task_name = true
 theme.tasklist_disable_task_name = false

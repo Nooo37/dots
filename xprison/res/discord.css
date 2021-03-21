@@ -17,7 +17,7 @@
   --fg2: @foreground@;
   --disabled: @color8@;
   /*  ----  */
-  --accent: @color1@;
+  --accent: @color6@;
   --accent2: @color2@;
   --contrast: @color4@;
   /*  ----  */
@@ -81,7 +81,7 @@
 /* sections */
 
 [class*="colorBrand"] {
-    color: var(--green)
+    color: var(--fg2)
 }
 
 [class*="peopleColumn"] {
@@ -170,22 +170,22 @@ button[class*="lookLink"] {
   border-color: var(--bg3);
 }
 [class*="divider"][class*="isUnread"]{
-  border-color: var(--red) !important;
+  border-color: var(--cyan) !important;
 }
 
 [class*="unreadPill-"] {
-  backgroundcolor: var(--red);
+  background-color: var(--cyan);
 }
 
 [class*="unreadPillCap"] {
-  fill: var(--red);
+  fill: var(--cyan);
 }
 button[class*="lookFilled"] {
   color: var(--fg1) !important;
 }
 
 [class*="live"][class*="textBadge"] {
-  background-color: var(--red) !important;
+  background-color: var(--cyan) !important;
   color: var(--fg1);
 }
 

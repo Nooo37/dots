@@ -1,16 +1,16 @@
 #!/bin/sh
 
 nitrogen --restore
-xrdb -load ~/.config/X/Xresources
+xrdb -load ~/.Xresources
 xset r rate 200 60
 
 # all the daemons and background stuff 
 # emacs --daemon &
-mpd &
-killall mpd-mpris; mpd-mpris &
+# mpd &
+# killall mpd-mpris; mpd-mpris &
 greenclip daemon &
 picom &
-killall sxhkd; sxhkd $HOME/code/dots/keys/sxhkdrc
+killall sxhkd; sxhkd $HOME/code/dots/keys/sxhkdrc &
 
 $HOME/code/git/ticktack/ticktack stop
 $HOME/code/git/ticktack/ticktack start -m 30 &

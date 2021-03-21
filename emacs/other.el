@@ -1,4 +1,4 @@
-;; all sort of tweaks
+;;; all sort of tweaks
 
 ;; whoami
 (setq user-full-name "namba")
@@ -8,9 +8,9 @@
 (load custom-file)
 
 ;; autocomplete parentesis
-(electric-pair-mode 1)
+(electric-pair-mode t)
 ;; show matching parenthesis
-(show-paren-mode 1)                               
+(show-paren-mode t)
 
 ;; raise undo-limit, autosave
 (setq undo-limit 80000000
@@ -25,5 +25,7 @@
 ;; title format
 (setq-default frame-title-format '("%f [%m]"))
 
+;; stop creating ~ files
+(setq make-backup-files nil)
 
 (provide 'other)

@@ -34,14 +34,17 @@ do
         in_error = false
     end)
 end
-
 ---}}}
 
 ---{{{ bling
 local bling = require("bling")
 bling.module.flash_focus.enable()
 bling.signal.playerctl.enable()
-bling.module.window_swallowing.start()
+-- bling.module.window_swallowing.start()
+
+awesome.connect_signal("bling::playerctl::title_artist_album", function(title, artist, album)
+                           naughty.notify({title=tostring(title), text=tostring(artist), icon=tostring(album)})
+end)
 
 awful.screen.connect_for_each_screen(function(s)  -- that way the wallpaper is applied to every screen
     bling.module.tiled_wallpaper("", s, {        -- call the actual function ("x" is the string that will be tiled)
@@ -68,13 +71,16 @@ end)
 
 ---{{{ Layouts
 awful.layout.layouts = {
+    -- normal suit.tile but if there is only one emacs or alacritty window open,
+    -- it doesn't full screen it, but centeres it neatly (stole the sick equalarea icon)
+    require("huhu"),
     awful.layout.suit.tile,
     bling.layout.mstab,
     bling.layout.centered,
     -- bling.layout.horizontal,
     bling.layout.vertical,
     bling.layout.equalarea,
-    -- awful.layout.suit.floating,
+    awful.layout.suit.floating,
     awful.layout.suit.max
 }
 awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
@@ -117,7 +123,6 @@ awful.rules.rules = {
             -- border_width = beautiful.border_width or 0,
              -- border_color = beautiful.border_normal or "#000000",
              focus = awful.client.focus.filter,
-
              raise = true,
              keys = clientkeys,
              buttons = clientbuttons,
@@ -127,14 +132,11 @@ awful.rules.rules = {
         },
         callback = awful.client.setslave
     },
-
     -- {rule_any = {type = {"normal"}}, properties = {titlebars_enabled = true}},
-
     {
         rule_any = { type = {"normal", "dialog"} },
         properties = { ontop = true }
     },
-
     {
         rule_any = { instance = { "spad" } },
         properties = { floating = true, placement = awful.placement.centered },
@@ -142,6 +144,10 @@ awful.rules.rules = {
     },
     {
         rule_any = { instance = { "smusic" } },
+        properties = { floating = true, x = 460, y = 750, height = 300, width = 1000 },
+    },
+    {
+        rule_any = { instance = { "deadbeef" } },
         properties = { floating = true, x = 460, y = 750, height = 300, width = 1000 },
     },
     -- {
@@ -223,8 +229,8 @@ awesome.connect_signal("toggle::scratchpad", function()
 end)
 
 awesome.connect_signal("toggle::music", function()
-                          scratchpad.toggle("alacritty --class smusic -e $HOME/.config/ncmpcpp/ncmpcpp-ueberzug/ncmpcpp-ueberzug",
-                                            {instance = "smusic"}, {sticky=true, autoclose=true})
+                          scratchpad.toggle("deadbeef",
+                                            {instance = "deadbeef"}, {sticky=true, autoclose=true})
 end)
 
 awesome.connect_signal("toggle::discord", function()
@@ -268,15 +274,15 @@ end
 awesome.connect_signal("launch_or_focus", launch_or_focus)
 ---}}}
 
----{{{ Essentially just backup keybinds, should sxhkd fails
+---{{{ Essentially just backup keybinds, should sxhkd fail
 local my_table      = awful.util.table or gears.table -- 4.{0,1} compatibility
-local hotkeys_popup = require("awful.hotkeys_popup").widget
+-- local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 local globalkeys = my_table.join(
    awful.key({ modkey,           }, "p", function() awful.util.spawn(beautiful.terminal:lower() or "xterm") end,
-              {description = "launch terminal", group = "launch"}),
-   awful.key({ modkey,           }, "s", hotkeys_popup.show_help,
-              {description = "show help", group="awesome"})
+              {description = "launch terminal", group = "launch"})
+   --awful.key({ modkey,           }, "s", hotkeys_popup.show_help,
+   --           {description = "show help", group="awesome"})
 )
 
 root.keys(globalkeys)

@@ -97,6 +97,10 @@
    `(compilation-mode-line-fail ((t (:foreground ,red :weight bold))))
    `(compilation-mode-line-run ((t (:foreground ,yellow :weight bold))))
 
+   ;; show parens match
+   `(show-paren-match  ((t (:foreground ,foreground :weight bold :background ,black))))
+   `(show-paren-match-expression ((t (:foreground ,foreground :weight bold :background ,black))))
+
 
    ;; grep
    `(grep-context-face ((t (:foreground ,foreground))))
@@ -129,27 +133,53 @@
    `(vertical-border ((t (:foreground ,foreground))))
 
    ;; font lock
-   `(font-lock-builtin-face ((t (:foreground ,foreground :weight bold))))
+   `(font-lock-builtin-face ((t (:foreground ,magenta :weight bold))))
    `(font-lock-comment-face ((t (:foreground ,light-gray))))
    `(font-lock-comment-delimiter-face ((t (:foreground ,green))))
    `(font-lock-constant-face ((t (:foreground ,foreground))))
    `(font-lock-doc-face ((t (:foreground ,foreground))))
-   `(font-lock-function-name-face ((t (:foreground ,cyan))))
-   `(font-lock-keyword-face ((t (:foreground ,blue :weight bold))))
+   `(font-lock-function-name-face ((t (:foreground ,magenta))))
+   `(font-lock-keyword-face ((t (:foreground ,cyan :weight bold))))
    `(font-lock-negation-char-face ((t (:foreground ,yellow :weight bold))))
    `(font-lock-preprocessor-face ((t (:foreground ,blue))))
    `(font-lock-regexp-grouping-construct ((t (:foreground ,yellow :weight bold))))
    `(font-lock-regexp-grouping-backslash ((t (:foreground ,foreground :weight bold))))
    `(font-lock-string-face ((t (:foreground ,green))))
-   `(font-lock-type-face ((t (:foreground ,cyan))))
+   `(font-lock-type-face ((t (:foreground ,blue))))
    `(font-lock-variable-name-face ((t (:foreground ,foreground))))
    `(font-lock-warning-face ((t (:foreground ,yellow :weight bold))))
    `(c-annotation-face ((t (:inherit font-lock-constant-face))))
+
+   ;; flycheck
+   `(flycheck-error ((t (:foreground ,red :weight bold :underline t))))
+
 
    ;; which-function-mode
    `(which-func ((t (:foreground ,blue))))
 
    ;; Third-party
+
+   ;; ivy
+   `(ivy-current-match ((t (:foreground ,cyan :weight bold))))
+   `(ivy-minibuffer-match-face-2 ((t (:foreground ,foreground :weight bold :background ,black))))
+   `(ivy-minibuffer-match-face-2 ((t (:foreground ,foreground :weight bold :background ,black))))
+   `(ivy-minibuffer-match-face-3 ((t (:foreground ,foreground :weight bold :background ,black))))
+   `(ivy-minibuffer-match-face-4 ((t (:foreground ,foreground :weight bold :background ,black))))
+   `(ivy-minibuffer-match-highlight ((t (:foreground ,blue))))
+   `(ivy-modified-buffer ((t (:foreground ,red))))
+   `(ivy-modified-outside-buffer ((t (:foreground: ,red))))
+   `(ivy-org ((t (:foreground ,cyan))))
+   `(ivy-prompt-match ((t (:foreground ,cyan))))
+
+   ;; indent guide
+   ;;`(highlight-indent-guides-character-face ((t (:foreground ,cyan))))
+
+   ;; rustic compile
+   `(rustic-compilation-column ((t (:foreground ,cyan :weight bold))))
+   `(rustic-compilation-line ((t (:foreground ,blue))))
+   `(rustic-compilation-error ((t (:foreground ,red :weight bold))))
+   `(rustic-compilation-yellow ((t (:foreground ,yellow))))
+   `(rustic-compilation-info ((t (:foreground ,blue))))
 
    ;; ace-jump
    `(ace-jump-face-background
