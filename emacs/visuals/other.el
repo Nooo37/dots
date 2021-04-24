@@ -4,7 +4,7 @@
 (setq frame-resize-pixelwise t)
 
 ;; font
-(set-frame-font "JetBrainsMono NF 9" nil t)
+(set-frame-font "FiraCode NF 11" nil t)
 
 ;; callback on all open frames for padding
 (defun ns/apply-frames (action)
@@ -41,3 +41,4 @@
 (setq-default cursor-type 'bar)
 
 (provide 'other)
+

@@ -1,17 +1,19 @@
 local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
+local naughty = require("naughty")
 local dpi   = require("beautiful").xresources.apply_dpi
 local beautiful = require("beautiful")
 
-
+local bling = require("bling")
 local helpers = require("ui.helpers")
 
 local statusbar_font = "JetBrainsMono NF Bold 9"
 local highlight_width = 5
 
 local statusbar_width = dpi(35)
-
+local statusbar_bg = beautiful.xcolor0
+local statusbar_second_bg = beautiful.xbg
 
 local function format_progress_bar(bar)
     bar.shape = helpers.rrect(beautiful.border_radius - 3)
@@ -28,7 +30,7 @@ local function format_entry(wid, inner_pad, outter_pad)
                             margins = dpi(inner_pad or 5),
                             widget = wibox.container.margin
                         },
-                        bg = beautiful.xcolor0,
+                        bg = statusbar_second_bg,
                         shape = helpers.rrect(beautiful.border_radius - 3),
                         widget = wibox.container.background
                     },
@@ -37,9 +39,38 @@ local function format_entry(wid, inner_pad, outter_pad)
     }
 end
 
+---{{{ Systray
+local mysystray = wibox.widget.systray()
+mysystray:set_horizontal(false)
+mysystray:set_base_size(nil)
+---}}}
+
+---{{{ Notificationbox
+local icon = wibox.widget.textbox("")
+icon.font = "JetBrainsMono NF 15"
+icon.align = "center"
+icon.valign = "center"
+naughty.connect_signal("property::suspended", function(suspended)
+                           local color = beautiful.xcolor5
+                           local icon_txt = "F"
+                           if suspended then icon_txt = "" else icon_txt = "" end
+                           icon.markup = helpers.colorize_text(icon_txt, color)
+end)
+icon:buttons {awful.button({}, 1, function() naughty.suspended = not naughty.suspended end)}
+
+local mysystray = wibox.widget.systray()
+mysystray:set_horizontal(false)
+mysystray:set_base_size(nil)
+
+local icon_box = wibox.widget {
+    layout = wibox.layout.fixed.vertical,
+    mysystray,
+    helpers.vertical_pad(2),
+    icon,
+}
+---}}}
+
 --{{{ Clock
-
-
 local hourtextbox = wibox.widget.textclock("%H") -- old:  %a, %d %b %R
 hourtextbox.font = statusbar_font
 hourtextbox.markup = helpers.colorize_text(hourtextbox.text, beautiful.xcolor4)
@@ -70,7 +101,7 @@ local clockbox = wibox.widget {
         bottom = 5,
         widget = wibox.container.margin
     },
-    bg = beautiful.xcolor0,
+    bg = beautiful.xcolor0 .. "00",
     widget = wibox.container.background
 }
 
@@ -208,7 +239,7 @@ local taglist_buttons = gears.table.join(
                                                   client.focus:move_to_tag(t)
                                               end
                                           end),
-                    awful.button({ }, 3, awful.tag.viewtoggle),
+                    awful.button({ }, 3, function(t) t:delete() end),
                     awful.button({ modkey }, 3, function(t)
                                               if client.focus then
                                                   client.focus:toggle_tag(t)
@@ -246,8 +277,8 @@ end))
 
 ---{{{ music
 local album_art = wibox.widget.imagebox {}
-local music = format_entry(album_art, 0, 0)
-music.visible = false
+local music = format_entry(album_art, 0)
+music.visible = true
 
 local musictooltip = awful.tooltip {}
 musictooltip.shape = helpers.prrect(beautiful.border_radius - 3, false, true, true, false)
@@ -256,9 +287,7 @@ musictooltip.mode = "outside"
 musictooltip:add_to_object(music)
 musictooltip.text = "Not updated"
 
-awesome.connect_signal("bling::playerctl::status", function(playing)
-                           music.visible = playing
-end)
+awesome.connect_signal("bling::playerctl::status", function(playing) music.visible = playing end)
 awesome.connect_signal("bling::playerctl::player_stopped", function() music.visible = false end)
 awesome.connect_signal("bling::playerctl::title_artist_album", function(title, artist, album_path)
                            musictooltip.markup = tostring(title) .. " - " .. tostring(artist)
@@ -279,60 +308,81 @@ album_art:buttons(gears.table.join(
 ))
 ---}}}
 
+---{{{ Add tag
+local plus_sign = wibox.widget.textbox()
+plus_sign.font = statusbar_font
+plus_sign.markup = helpers.colorize_text(" ", beautiful.xcolor3)
+local add_tag_box = format_entry(wibox.widget {
+                                     plus_sign,
+                                     layout = wibox.layout.fixed.horizontal
+})
+---}}}
+
+---{{{ enable the tag previewer
+local margin_edge = 10
+bling.widget.tag_preview.enable {
+    show_client_content = true, 
+    x = statusbar_width + margin_edge,
+    y = margin_edge,
+    scale = 0.2,
+    honor_padding = false,
+    honor_workarea = true
+}   
+---}}}
+
 --- the important connect
 
 awful.screen.connect_for_each_screen(function(s)
 
-   -- Create a custom taglist widget
+   s.mypromptbox = awful.widget.prompt()
+
    s.mytaglist = awful.widget.taglist {
        screen  = s,
        filter  = awful.widget.taglist.filter.all,
        style   = {
            shape = gears.shape.rectangle,
-           font  = statusbar_font
+           font = statusbar_font
        },
        layout   = {
            spacing = 0,
-           spacing_widget = {
-               shape  = gears.shape.rectangle,
-               widget = wibox.widget.separator,
-           },
            layout  = wibox.layout.fixed.vertical
        },
        widget_template = {
-                      nil,
-                      {
-                         {
-                              nil,
-                             {
-                                {
-                                  id     = 'text_role',
-                                  align  = "center",
-                                  valign = "center",
-                                  widget = wibox.widget.textbox,
-                                },
-                                top = 5,
-                                bottom = 5,
-                                widget = wibox.container.margin
-                              },
-                              nil,
-                              layout = wibox.layout.align.horizontal,
-                         },
-                         id = 'background_role',
-                         forced_width = highlight_width,
-                         widget  = wibox.container.background,
-                      },
-                      nil,
-                      layout = wibox.layout.align.horizontal,
+           {
+               {
+                   {
+                       id = 'text_role',
+                       align = 'center',
+                       valign = 'center',
+                       widget = wibox.widget.textbox,
+                   },
+                   layout = wibox.layout.fixed.vertical,
+               },
+               top = 5,
+               bottom = 5,
+               widget = wibox.container.margin
+           },
+           id     = 'background_role',
+           widget = wibox.container.background,
+           create_callback = function(self, c3, index, objects) 
+               self:connect_signal('mouse::enter', function()
+                                       awesome.emit_signal("bling::tag_preview::update", c3)
+                                       awesome.emit_signal("bling::tag_preview::visibility", s, true)
+               end)
+               self:connect_signal('mouse::leave', function()
+                                       awesome.emit_signal("bling::tag_preview::visibility", s, false)
+               end)
+           end,
        },
        buttons = taglist_buttons
    }
+        
 
    s.mytasklist = awful.widget.tasklist {
        screen  = s,
        filter   = awful.widget.tasklist.filter.currenttags,
        style   = {
-           shape = gears.shape.rectangle,
+           shape = helpers.rrect(beautiful.border_radius - 3),
            font  = statusbar_font
        },
        layout   = {
@@ -345,7 +395,7 @@ awful.screen.connect_for_each_screen(function(s)
        },
        widget_template = {
            {
-	       {
+               {
                    {
                        {
                            id = "icon_role",
@@ -355,7 +405,6 @@ awful.screen.connect_for_each_screen(function(s)
                        widget = wibox.container.margin
                    },
                    id = "background_role",
-                   shape = helpers.rrect(beautiful.border_radius - 3),
                    widget = wibox.container.background
                },
                margins = dpi(5),
@@ -401,10 +450,9 @@ awful.screen.connect_for_each_screen(function(s)
        height = s.geometry.height - 4*beautiful.useless_gap,
        x = 0,
        y = 2 * beautiful.useless_gap,
-       ontop = true,
        visible = true,
        shape = helpers.prrect(beautiful.border_radius, false, true, true, false),
-       bg = beautiful.xbg,
+       bg = statusbar_bg,
    }
 
    s.mywibox:setup {
@@ -414,7 +462,7 @@ awful.screen.connect_for_each_screen(function(s)
            layout = wibox.layout.fixed.vertical,
            helpers.vertical_pad(6),
            format_entry(s.mytaglist),
-           -- helpers.vertical_pad(8),
+           -- add_tag_box,
            s.mytasklist,
        },
        { -- Middle widgets
@@ -423,9 +471,10 @@ awful.screen.connect_for_each_screen(function(s)
        }, 
        { -- Bottom widgets
            layout = wibox.layout.fixed.vertical,
-	   music,
+           music,
            battery,
            format_entry(clockbox),
+           format_entry(icon_box),
            format_entry(s.mylayoutbox),
            helpers.vertical_pad(6),
        },
@@ -437,7 +486,8 @@ awful.screen.connect_for_each_screen(function(s)
    end)
 
    -- helper function to update the bar
-   -- should be "solid" when only one client is on the selected tag and "floating with rounded corners" if there are multiple
+   -- should be "solid" when only one client is on the selected tag and
+   -- "floating with rounded corners" if there are multiple
    local function update_bar(t, c)
        local clients = t:clients()
        local client_count = 0
@@ -446,7 +496,9 @@ awful.screen.connect_for_each_screen(function(s)
                client_count = client_count + 1
            end
        end
-       if client_count == 1 or t.layout.name == "max" then
+       local is_full = client_count == 1 or t.layout.name == "max"
+       local is_full = is_full and t.layout ~= "floating"
+       if is_full then
            s.mywibox.shape = helpers.rrect(0)
            s.mywibox.height = s.geometry.height
            s.mywibox.y = 0
@@ -455,14 +507,19 @@ awful.screen.connect_for_each_screen(function(s)
            s.mywibox.height = s.geometry.height - 4*beautiful.useless_gap
            s.mywibox.y = 2*beautiful.useless_gap
        end
+       if c then 
+           s.mywibar.visible = not c.maximized
+           s.mywibox.visible = not c.maximized
+       end
    end
-   
-   -- connect all important signals
-   tag.connect_signal("tagged", function(t, c) update_bar(t, c) end)
-   tag.connect_signal("untagged", function(t, c) update_bar(t, c) end)
-   tag.connect_signal("property::selected", function(t) update_bar(t) end)
-   client.connect_signal("property::minimized", function(c) local t = c.first_tag update_bar(t) end)
 
+   -- connect all important signals
+   tag.connect_signal("tagged", update_bar)
+   tag.connect_signal("untagged", update_bar)
+   tag.connect_signal("property::layout", update_bar)
+   tag.connect_signal("property::selected", function(t) update_bar(t, nil) end)
+   client.connect_signal("property::minimized", function(c) update_bar(c.first_tag, c) end)
+   client.connect_signal("property::maximized", function(c) update_bar(c.first_tag, c) end)
 
 end)
 

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+mpv \
+    --ontop \
+    --on-all-workspaces \
+    --x11-name="consoom" \
+    --title="consoom" \
+    --autofit=450 \
+    "$(xclip -o)" \
+    >/dev/null

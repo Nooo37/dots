@@ -67,9 +67,9 @@
   "Compose a string with provided information"
   (let* ((status-face-rw `(:foreground ,background 
 						   :background ,cyan))
-		 (status-face-ro `(:foreground ,foreground
-						   :background ,background))
-		 (status-face-** `(:foreground ,foreground
+		 (status-face-ro `(:foreground ,background
+						   :background ,yellow))
+		 (status-face-** `(:foreground ,background
 						   :background ,red))
 		 (pad            (or pad 1))
 		 (space-up       +0.15)

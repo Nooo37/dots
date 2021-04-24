@@ -12,8 +12,9 @@ greenclip daemon &
 picom &
 killall sxhkd; sxhkd $HOME/code/dots/keys/sxhkdrc &
 
-$HOME/code/git/ticktack/ticktack stop
-$HOME/code/git/ticktack/ticktack start -m 30 &
+$HOME/.local/bin/ticktack stop
+killall ticktack
+$HOME/.local/bin/ticktack start -m 30 &
 
 kmonad $HOME/code/dots/keys/kmonad.kbd &
 

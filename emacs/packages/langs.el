@@ -5,6 +5,17 @@
 ;;; Code:
 (require 'straight)
 
+;;
+(use-package lsp-java :config (add-hook 'java-mode-hook 'lsp))
+
+;; python
+(use-package lsp-python-ms
+  :ensure t
+  :init (setq lsp-python-ms-auto-install-server t)
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-python-ms)
+                          (lsp))))  ; or lsp-deferred
+
 ;; -- LaTeX
 (use-package auctex
   :defer t

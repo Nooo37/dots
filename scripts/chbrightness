@@ -1,12 +1,22 @@
 #!/bin/sh
 # changes the brightness of my screen relative to its current brightness (without backlighting)
 
-current_brightness="$(xrandr --verbose | grep -i brightness | awk '{ print $2 }')"
-new_brightness="$(echo "$current_brightness + $1" | bc)"
+if [ "$(cat /sys/class/dmi/id/chassis_type)" -eq 3 ]; then
+    # if on PC
+    current_brightness="$(xrandr --verbose | grep -i brightness | awk '{ print $2 }')"
+    new_brightness="$(echo "$current_brightness + $1" | bc)"
+    echo "$new_brightness"
 
-(( $(echo "$new_brightness > 1.0" | bc -l) )) && exit
-(( $(echo "$new_brightness < 0.2" | bc -l) )) && exit
+    (( $(echo "$new_brightness > 1.0" | bc -l) )) && exit
+    (( $(echo "$new_brightness < 0.2" | bc -l) )) && exit
+    
+    xrandr --output DisplayPort-0 --brightness "$new_brightness"
+else
+    # if on laptop
+    current_brightness="$(brightnessctl get)"
+    max_brightness="$(brightnessctl max)"
+    new_brightness="$(echo "$current_brightness + $1 * $max_brightness" | bc)"
+    echo "$(echo "$new_brightness / max_brightness" | bc)"
+    brightnessctl set "$new_brightness"
+fi
 
-xrandr --output DisplayPort-0 --brightness "$new_brightness"
-
-echo "$new_brightness"

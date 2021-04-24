@@ -1,6 +1,6 @@
 #!/bin/sh
 
-auswahl="suspend\nshutdown\nreboot\nquit awesome\nrestart awesome\nchange color\n$(ls $(dirname $0) | grep "dmenu-.*" | cut -d'-' -f2)"
+auswahl="suspend\nshutdown\nreboot\nquit awesome\nrestart awesome\nchcolor\nconsoom\n$(ls $(dirname $0) | grep "dmenu-.*" | cut -d'-' -f2)"
 scriptsel="$(echo -e "$auswahl"| rofi -dmenu -i -p "What to do:" | tr -d '\n')"
 
 [ "$scriptsel" ] || exit
@@ -25,6 +25,9 @@ case $scriptsel in
         ;;
     "change color")
         "$(dirname $0)/chcolor"
+        ;;
+    "consoom")
+        "$(dirname $0)/consoom"
         ;;
     *) 
         "$(dirname $0)/dmenu-$scriptsel" 

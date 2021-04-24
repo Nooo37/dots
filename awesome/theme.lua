@@ -1,3 +1,4 @@
+local awful = require("awful")
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
 local naughty = require("naughty")
@@ -16,8 +17,11 @@ local theme = dofile("/usr/share/awesome/themes/default/theme.lua")
 
 theme.weather_city = "Regensburg"
 
-theme.is_on_pc = true 
-theme.terminal = "alacritty"
+local handle = io.popen("cat /sys/class/dmi/id/chassis_type")
+    
+theme.is_on_pc = tonumber(handle:read("*a")) == 3 -- 3 is for desktop PCs
+
+theme.terminal = "wizterm"
 theme.browser  = "Firefox"
 theme.editor   = "emacsclient --create-frame"
 
@@ -27,8 +31,6 @@ theme.wallpaper = config_path.."wallpaper.png"
 theme.corner_radius = dpi(8) --14   8
 theme.border_radius = dpi(6) --14   8
 theme.font          = "sans 8"
-
-
 
 -- Variables set for theming the menu:
 theme.menu_submenu_icon = config_path.."default/submenu.png" --TODO wtf
@@ -114,14 +116,14 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
 
 
 -- tasklist
-theme.tasklist_bg_focus                          = theme.xcolor0
+theme.tasklist_bg_focus                          = theme.xbg
 theme.tasklist_fg_focus                          = theme.xcolor2
 theme.tasklist_bg_urgent                         = theme.xcolor8
 theme.tasklist_fg_urgent                         = theme.xcolor1
-theme.tasklist_bg_normal                         = theme.xcolor0
+theme.tasklist_bg_normal                         = theme.xbg
 theme.tasklist_fg_normal                         = theme.xfg
-theme.tasklist_bg_minimize                       = theme.xbg
-theme.tasklist_fg_minimize                       = theme.xbg
+theme.tasklist_bg_minimize                       = theme.xcolor0
+theme.tasklist_fg_minimize                       = theme.xcolor0
 
 theme.tasklist_plain_task_name = true
 theme.tasklist_disable_task_name = false
@@ -220,11 +222,22 @@ theme.tabbar_bg_normal = theme.xcolor0
 theme.tabbar_fg_normal = theme.xfg
 theme.tabbar_bg_focus = theme.xbg
 theme.tabbar_fg_focus = theme.xcolor4
-theme.tabbar_style = "mine"
+theme.tabbar_style = "boxes"
 theme.tabbed_spawn_in_tab = true
 theme.tabbar_font = "JetBrains Mono Nerd Font 10"
 theme.tabbar_position = "right"
 theme.tabbar_AA_radius = 10
+
+theme.tag_preview_widget_border_radius = 0
+theme.tag_preview_client_border_radius = 0
+theme.tag_preview_client_opacity = 1   
+theme.tag_preview_client_bg = "#000000"
+theme.tag_preview_client_border_color = theme.xcolor0
+theme.tag_preview_client_border_width = 2
+theme.tag_preview_widget_bg = theme.xcolor0
+theme.tag_preview_widget_border_color = theme.xbg
+theme.tag_preview_widget_border_width = 2
+theme.tag_preview_widget_margin = 2
 
 -- other
 naughty.config.shape = helpers.rrect(5)

@@ -81,22 +81,6 @@
    `(success ((t (:foreground ,green :weight bold))))
    `(warning ((t (:foreground ,red :weight bold))))
 
-   ;; compilation
-   `(compilation-column-face ((t (:foreground ,yellow))))
-   `(compilation-enter-directory-face ((t (:foreground ,green))))
-   `(compilation-error-face ((t (:foreground ,red :weight bold :underline t))))
-   `(compilation-face ((t (:foreground ,foreground))))
-   `(compilation-info-face ((t (:foreground ,blue))))
-   `(compilation-info ((t (:foreground ,green :underline t))))
-   `(compilation-leave-directory-face ((t (:foreground ,green))))
-   `(compilation-line-face ((t (:foreground ,yellow))))
-   `(compilation-line-number ((t (:foreground ,yellow))))
-   `(compilation-message-face ((t (:foreground ,blue))))
-   `(compilation-warning-face ((t (:foreground ,red :weight bold :underline t))))
-   `(compilation-mode-line-exit ((t (:foreground ,green :weight bold))))
-   `(compilation-mode-line-fail ((t (:foreground ,red :weight bold))))
-   `(compilation-mode-line-run ((t (:foreground ,yellow :weight bold))))
-
    ;; show parens match
    `(show-paren-match  ((t (:foreground ,foreground :weight bold :background ,black))))
    `(show-paren-match-expression ((t (:foreground ,foreground :weight bold :background ,black))))
@@ -136,7 +120,7 @@
    `(font-lock-builtin-face ((t (:foreground ,magenta :weight bold))))
    `(font-lock-comment-face ((t (:foreground ,light-gray))))
    `(font-lock-comment-delimiter-face ((t (:foreground ,green))))
-   `(font-lock-constant-face ((t (:foreground ,foreground))))
+   `(font-lock-constant-face ((t (:foreground ,blue :weight bold))))
    `(font-lock-doc-face ((t (:foreground ,foreground))))
    `(font-lock-function-name-face ((t (:foreground ,magenta))))
    `(font-lock-keyword-face ((t (:foreground ,cyan :weight bold))))
@@ -150,14 +134,53 @@
    `(font-lock-warning-face ((t (:foreground ,yellow :weight bold))))
    `(c-annotation-face ((t (:inherit font-lock-constant-face))))
 
-   ;; flycheck
-   `(flycheck-error ((t (:foreground ,red :weight bold :underline t))))
-
-
    ;; which-function-mode
    `(which-func ((t (:foreground ,blue))))
 
    ;; Third-party
+
+   ;; flycheck
+   `(flycheck-error ((t (:foreground ,red :weight bold :underline t))))
+
+   ;; compilation
+   `(compilation-column-face ((t (:foreground ,yellow))))
+   `(compilation-enter-directory-face ((t (:foreground ,green))))
+   `(compilation-error-face ((t (:foreground ,red :weight bold :underline t))))
+   `(compilation-face ((t (:foreground ,foreground))))
+   `(compilation-info-face ((t (:foreground ,blue))))
+   `(compilation-info ((t (:foreground ,green :underline t))))
+   `(compilation-leave-directory-face ((t (:foreground ,green))))
+   `(compilation-line-face ((t (:foreground ,yellow))))
+   `(compilation-line-number ((t (:foreground ,yellow))))
+   `(compilation-message-face ((t (:foreground ,blue))))
+   `(compilation-warning-face ((t (:foreground ,red :weight bold :underline t))))
+   `(compilation-mode-line-exit ((t (:foreground ,green :weight bold))))
+   `(compilation-mode-line-fail ((t (:foreground ,red :weight bold))))
+   `(compilation-mode-line-run ((t (:foreground ,yellow :weight bold))))
+
+   ;; elfeed
+   `(elfeed-log-date-face ((t (:foreground ,blue))))
+   `(elfeed-log-debug-level-face ((t (:foreground ,red))))
+   `(elfeed-log-error-level-face ((t (:foreground ,red))))
+   `(elfeed-log-info-level-face ((t (:foreground ,blue))))
+   `(elfeed-log-warn-level-face ((t (:foreground ,yellow))))
+   `(elfeed-search-date-face ((t (:foreground ,magenta))))
+   `(elfeed-search-feed-face ((t (:foreground ,yellow))))
+   `(elfeed-search-filter-face ((t (:foreground ,yellow))))
+   `(elfeed-search-last-update-face ((t (:foreground ,blue))))
+   `(elfeed-search-tag-face ((t (:foreground ,foreground))))
+   `(elfeed-search-title-face ((t (:foreground ,magenta))))
+   `(elfeed-search-unread-count-face ((t (:foreground ,magenta))))
+   `(elfeed-search-unread-title-face ((t (:foreground ,cyan))))
+
+
+   `(message-header-cc ((t (:foreground ,cyan))))
+   `(message-header-name ((t (:foreground ,foreground))))
+   `(message-header-newsgroups ((t (:foreground ,magenta))))
+   `(message-header-other ((t (:foreground ,blue))))
+   `(message-header-subject ((t (:foreground ,red :weight bold))))
+   `(message-header-to ((t (:foreground ,green))))
+
 
    ;; ivy
    `(ivy-current-match ((t (:foreground ,cyan :weight bold))))
@@ -436,6 +459,7 @@
    `(org-checkbox ((t (:background ,background :foreground ,foreground
                                    :box (:line-width 1 :style released-button)))))
    `(org-date ((t (:foreground ,blue :underline t))))
+   `(org-blog ((t (:foreground ,foreground))))
    `(org-deadline-announce ((t (:foreground ,red))))
    `(org-done ((t (:bold t :weight bold :foreground ,green))))
    `(org-formula ((t (:foreground ,yellow))))
@@ -485,9 +509,9 @@
    `(powerline-inactive2 ((t (:background ,background :inherit mode-line-inactive))))
 
    ;; rainbow-delimiters
-   `(rainbow-delimiters-depth-1-face ((t (:foreground ,foreground))))
-   `(rainbow-delimiters-depth-2-face ((t (:foreground ,green))))
-   `(rainbow-delimiters-depth-3-face ((t (:foreground ,yellow))))
+   `(rainbow-delimiters-depth-1-face ((t (:foreground ,yellow))))
+   `(rainbow-delimiters-depth-2-face ((t (:foreground ,blue))))
+   `(rainbow-delimiters-depth-3-face ((t (:foreground ,red))))
    `(rainbow-delimiters-depth-4-face ((t (:foreground ,cyan))))
    `(rainbow-delimiters-depth-5-face ((t (:foreground ,green))))
    `(rainbow-delimiters-depth-6-face ((t (:foreground ,blue))))

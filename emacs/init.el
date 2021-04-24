@@ -35,4 +35,9 @@
 
 (setq-default indent-tabs-mode nil) ;; don't do tabs
 
+(setq inhibit-splash-screen t
+      initial-scratch-message ""
+      initial-major-mode 'org-mode)
+
 (server-mode t)
+

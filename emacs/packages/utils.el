@@ -2,7 +2,6 @@
 ;;
 ;;; Code:
 (require 'straight)
-;; (require 'colors)
 
 ;;; PACKAGES
 
@@ -16,12 +15,6 @@
 ;; -- Good to have packages
 (use-package transient)
 (use-package posframe)
-
-(use-package which-key                            ; It is useful to know `which-key' to use
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 0.25)
-  (which-key-mode +1))
 
 ;; -- Flycheck -- unused for now :(
 (use-package flycheck
@@ -97,8 +90,6 @@
          (setq ivy-initial-inputs-alist nil)
          (counsel-mode 1)
    :bind
-;;   ("C-f" . swiper)
-;;   ("C-s" . save-buffer)
    ("M-x" . counsel-M-x)
    ("C-c r" . counsel-recentf)
    ("C-c b" . counsel-bookmark)
@@ -130,5 +121,34 @@
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
 
 (setq undo-tree-visualizer-diff t)
+
+;; https://github.com/mickeynp/ligature.el/wiki
+(require 'ligature)
+
+(ligature-set-ligatures 'prog-mode '("-|" "-~" "---" "-<<" "-<" "--" "->" "->>" "-->" "///" "/=" "/=="
+                                      "/>" "//" "/*" "*>" "***" "*/" "<-" "<<-" "<=>" "<=" "<|" "<||"
+                                      "<|||" "<|>" "<:" "<>" "<-<" "<<<" "<==" "<<=" "<=<" "<==>" "<-|"
+                                      "<<" "<~>" "<=|" "<~~" "<~" "<$>" "<$" "<+>" "<+" "</>" "</" "<*"
+                                      "<*>" "<->" "<!--" ":>" ":<" ":::" "::" ":?" ":?>" ":=" "::=" "=>>"
+                                      "==>" "=/=" "=!=" "=>" "===" "=:=" "==" "!==" "!!" "!=" ">]" ">:"
+                                      ">>-" ">>=" ">=>" ">>>" ">-" ">=" "&&&" "&&" "|||>" "||>" "|>" "|]"
+                                      "|}" "|=>" "|->" "|=" "||-" "|-" "||=" "||" ".." ".?" ".=" ".-" "..<"
+                                      "..." "+++" "+>" "++" "[||]" "[<" "[|" "{|" "??" "?." "?=" "?:" "##"
+                                      "###" "####" "#[" "#{" "#=" "#!" "#:" "#_(" "#_" "#?" "#(" ";;" "_|_"
+                                      "__" "~~" "~~>" "~>" "~-" "~@" "$>" "^=" "]#"))
+  ;; Enables ligature checks globally in all buffers. You can also do it
+  ;; per mode with `ligature-mode'.
+  (global-ligature-mode t)
+
+(use-package elfeed
+  :ensure t)
+
+(use-package anki-editor)
+(use-package tsv-mode)
+
+(setf url-queue-timeout 30)
+
+;; you don't want to see that one
+(require 'feeds)
 
 (provide 'utils)

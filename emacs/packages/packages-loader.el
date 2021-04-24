@@ -1,5 +1,8 @@
 (require 'straight-setup)
 
+;;; currently mostly kakoune.el + some global binds
+(require 'keys)
+
 ;;; various things
 (require 'utils)
 
@@ -12,7 +15,6 @@
 ;;; discord rich presence (off by default)
 (require 'elcord)
 
-;;; currently mostly kakoune.el + some global binds
-(require 'keys)
+(require 'my-mode)
 
 (provide 'packages-loader)
