@@ -1,0 +1,19 @@
+! rose-pine dawn
+*.foreground:  #575279
+*.background:  #faf4ed
+*.color0:      #eee4d9
+*.color8:      #9893a5
+*.color1:      #d7827e
+*.color9:      #d7827e
+*.color2:      #56949f
+*.color10:     #56949f
+*.color3:      #ea9d34
+*.color11:     #ea9d34
+*.color4:      #286983
+*.color12:     #286983
+*.color5:      #907aa9
+*.color13:     #907aa9
+*.color6:      #b4637a
+*.color14:     #b4637a
+*.color7:      #6e6a86
+*.color15:     #9893a5

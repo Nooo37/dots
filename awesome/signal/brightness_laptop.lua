@@ -1,5 +1,5 @@
 -- Provides:
--- ears::brightness
+-- evil::brightness
 --      percentage (integer)
 
 -- Requires: inotify-tools, xbacklight
@@ -21,7 +21,7 @@ local emit_brightness_info = function()
     awful.spawn.with_line_callback(brightness_script, {
         stdout = function(line)
             percentage = math.floor(tonumber(line))
-            awesome.emit_signal("ears::brightness", percentage)
+            awesome.emit_signal("evil::brightness", percentage)
         end
     })
 end

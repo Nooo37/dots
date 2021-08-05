@@ -14,6 +14,9 @@ super + {_,shift,alt} + {h,j,k,l}
 super + {u,i,o}
     swish tabbing {iter,add,pop}
 
+super + control + {h,j,k,l}
+    swish tabbing pick {left,down,up,right}
+
 super + {_,shift} + {1-9}
     swish tag {focus,move-window} {1-9}
 
@@ -61,6 +64,9 @@ super + a
 
 super + s
     ~/code/dots/scripts/dmenu-screenshot
+
+super + z
+    ~/code/dots/scripts/panic
 
 super + x
     swish notifications killall

@@ -1,5 +1,5 @@
 -- Provides:
--- ears::brightness
+-- evil::brightness
 --      percentage (integer)
 local awful = require("awful")
 

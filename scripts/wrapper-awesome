@@ -246,14 +246,14 @@ case "$1" in
             pop)
                 awesome-client "require(\"bling\").module.tabbed.pop()"
                 ;;
+            pick)
+                shift
+                awesome-client "require(\"bling\").module.tabbed.pick_by_direction(\"$1\")"
+                ;;
             *)
                 echo "Couldn't find subcommand '$1' in command 'tabbing'"
                 ;;
         esac
-        ;;
-    launch-or-focus)
-        shift
-        awesome-client "awesome.emit_signal(\"launch_or_focus\", \"$1\")"
         ;;
     wallpaper)
         awesome-client "local b = require(\"beautiful\")

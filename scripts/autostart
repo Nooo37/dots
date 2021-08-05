@@ -1,20 +1,21 @@
 #!/bin/sh
 
-nitrogen --restore
+# nitrogen --restore
 xrdb -load ~/.Xresources
 xset r rate 200 60
+setxkbmap us
 
-# all the daemons and background stuff 
-# emacs --daemon &
-# mpd &
-# killall mpd-mpris; mpd-mpris &
-greenclip daemon &
-picom &
+picom --experimental-backends &
+gromit-mpx &
 killall sxhkd; sxhkd $HOME/code/dots/keys/sxhkdrc &
 
 $HOME/.local/bin/ticktack stop
 killall ticktack
 $HOME/.local/bin/ticktack start -m 30 &
 
-kmonad $HOME/code/dots/keys/kmonad.kbd &
+if [ "$(cat /sys/class/dmi/id/chassis_type)" -eq 3 ]; then
+        exit
+else
+        kmonad $HOME/code/dots/keys/kmonad.kbd &
+fi
 

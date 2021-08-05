@@ -1,13 +1,7 @@
 #!/bin/sh
-# pulls and pushes the actual config from wherever it lies on the system or to wherever it should be
+# pulls the actual config from wherever it lies on the system to this dir
 
 BASEDIR=$(dirname $0)
 
-# emacs config 
-rsync -rH $HOME/.emacs.d/visuals $BASEDIR/../emacs
-rsync -rH $HOME/.emacs.d/packages $BASEDIR/../emacs
-cp -f $HOME/.emacs.d/other.el $BASEDIR/../emacs/other.el
-cp -f $HOME/.emacs.d/init.el $BASEDIR/../emacs/init.el
-cp -f $HOME/.emacs.d/early-init.el $BASEDIR/../emacs/early-init.el
-
+rsync -rH $HOME/.config/nvim $BASEDIR/..
 rsync -rH $HOME/.config/awesome $BASEDIR/..

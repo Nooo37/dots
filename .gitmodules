@@ -1,5 +1,5 @@
 [submodule "bling"]
-    path = awesome/bling
+    path = awesome/module/bling
     url = https://github.com/Nooo37/bling.git
     branch = master
 
