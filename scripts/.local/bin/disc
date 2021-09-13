@@ -1,0 +1,13 @@
+#!/bin/sh
+# running discord in braves chromium thingy
+
+brave \
+    --no-sandbox \
+    --disable-background-networking \
+    --disable-background-timer-throttling \
+    --disable-backing-store-limit \
+    --disable-blink-features \
+    --disable-breakpad \
+    --app=https://discord.com/app \
+    --class=discord \
+    $@ >/dev/null 2>&1 &

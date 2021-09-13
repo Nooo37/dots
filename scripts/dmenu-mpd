@@ -1,8 +1,0 @@
-#!/bin/sh
-# Lets you choose from all songs in the playlist and plays the song you select (in mpd)
-
-song=$(mpc playlist | rofi -dmenu -i -p "Select a song: ")
-[ "$song" == "" ] && exit
-tracknum=$(mpc playlist | grep -n "$song" | grep -o "[^:]*" | head -n1 | tr -d ':')
-mpc play "$tracknum" 
-

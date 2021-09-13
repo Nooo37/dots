@@ -1,0 +1,6 @@
+#!/bin/sh
+# download a youtube video as an mp3 to ~/music/new (as mentioned in the config file)
+# usage: ytd <url_of_yt_video>
+
+youtube-dl --add-metadata -f bestaudio[ext=m4a] -o "~/music/new/%(title)s.%(ext)s" "$@"
+

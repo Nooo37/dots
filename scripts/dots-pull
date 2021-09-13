@@ -1,7 +1,0 @@
-#!/bin/sh
-# pulls the actual config from wherever it lies on the system to this dir
-
-BASEDIR=$(dirname $0)
-
-rsync -rH $HOME/.config/nvim $BASEDIR/..
-rsync -rH $HOME/.config/awesome $BASEDIR/..

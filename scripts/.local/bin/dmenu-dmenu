@@ -1,0 +1,35 @@
+#!/bin/sh
+
+auswahl="suspend\nshutdown\nreboot\nquit awesome\nrestart awesome\nchcolor\nconsoom\n$(ls $(dirname $0) | grep "dmenu-.*" | cut -d'-' -f2)"
+scriptsel="$(echo -e "$auswahl"| rofi -dmenu -i -p "What to do:" | tr -d '\n')"
+
+[ "$scriptsel" ] || exit
+
+echo "$scriptsel"
+
+case $scriptsel in 
+    "shutdown")
+        systemctl poweroff
+        ;;
+    "reboot")
+        systemctl reboot
+        ;;
+    "suspend")
+        systemctl suspend
+        ;;
+    "quit awesome")
+        awesome-client "awesome.quit()"
+        ;;
+    "restart awesome")
+        awesome-client "awesome.restart()"
+        ;;
+    "chcolor")
+        "$(dirname $0)/chcolor"
+        ;;
+    "consoom")
+        "$(dirname $0)/consoom"
+        ;;
+    *) 
+        "$(dirname $0)/dmenu-$scriptsel" 
+        ;;
+esac

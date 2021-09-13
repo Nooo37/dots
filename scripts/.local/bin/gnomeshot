@@ -1,0 +1,95 @@
+#!/bin/bash
+
+DEST="$HOME/test.png"
+FLASH="true"
+FRAME="true"
+CURSOR="true"
+
+function screencast_call()
+{
+    NAME=$1 #first argument is method name
+    shift
+    RAW_RETURN=$(dbus-send \
+        --session \
+        --print-reply \
+        --dest=org.gnome.Shell.Screencast \
+        /org/gnome/Shell/Screencast \
+        org.gnome.Shell.Screencast.$NAME \
+        $@) # all other arguments are dbus args
+    echo "$RAW_RETURN"
+}
+
+function screenshot_call()
+{
+    NAME=$1 #first argument is method name
+    shift
+    RAW_RETURN=$(dbus-send \
+        --session \
+        --print-reply \
+        --dest=org.gnome.Shell.Screenshot \
+        /org/gnome/Shell/Screenshot \
+        org.gnome.Shell.Screenshot.$NAME \
+        $@) # all other arguments are dbus args
+    echo "$RAW_RETURN"
+}
+
+function screenshot_area()
+{
+    RAW_AREA=$(screenshot_call "SelectArea")
+
+    AREA=$(echo "$RAW_AREA" | tail -n 4 | awk '{print $2}')
+    X=$(echo "$AREA" | sed '1q;d')
+    Y=$(echo "$AREA" | sed '2q;d')
+    WIDTH=$(echo "$AREA" | sed '3q;d')
+    HEIGHT=$(echo "$AREA" | sed '4q;d')
+
+    screenshot_call "ScreenshotArea" "int32:$X" "int32:$Y" "int32:$WIDTH" \
+        "int32:$HEIGHT" "boolean:$FLASH" "string:$DEST"
+}
+
+function screenshot_all()
+{
+    screenshot_call "Screenshot" "boolean:$CURSOR" "boolean:$FLASH" "string:$DEST"
+}
+
+function screenshot_window()
+{
+    screenshot_call "ScreenshotWindow" "boolean:$FRAME" "boolean:$CURSOR" "boolean:$FLASH" "string:$DEST"
+}
+
+function screencast_all()
+{
+    screencast_call "Screencast" "string:$DEST" "[]"
+}
+
+function screencast_stop()
+{
+    screencast_call "StopScreencast"
+}
+
+select_area=false
+while [[ "$1" == -* ]]; do
+    case "$1" in
+        -u|--hidecursor)
+            CURSOR="false"
+            ;;
+        -s|--select)
+            select_area=true
+            ;;
+        -*)
+            echo "The flag '$1' is not supported" 1>&2
+            ;;
+    esac
+    shift
+done
+
+
+if [ "$select_area" == true ]; then
+    screenshot_area
+else
+    screenshot_window
+fi
+
+# screencast_all
+# read
+# screencast_stop

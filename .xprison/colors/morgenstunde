@@ -1,0 +1,20 @@
+! mine
+*.foreground:  #1d1b17
+*.background:  #dad3c1
+*.color8:      #918b7d
+! *.color0:      #bab29e
+*.color0:      #c4bba5
+*.color1:      #793e44
+*.color9:      #bf616a
+*.color2:      #3e7946
+*.color10:     #61bf77
+*.color3:      #9c9c54
+*.color11:     #bfbf61
+*.color4:      #3e5579
+*.color12:     #6190bf
+*.color5:      #693e79
+*.color13:     #9d61bf
+*.color6:      #3e7975
+*.color14:     #61bdbf
+*.color7:      #1d1b17
+*.color15:     #1d1b17

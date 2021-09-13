@@ -1,0 +1,57 @@
+add_newline = false
+
+format = '''
+╭─-\[ ($username)@($hostname) \]--\[ ($directory)\]$status $git_branch$git_status
+╰─-> 
+'''
+
+[line_break]
+disabled = true
+
+[character]
+use_symbol_for_status = true
+success_symbol = "[>](bold green)"
+error_symbol = "[✗](bold red)"
+
+[username]
+disabled = false
+show_always = true
+style_user = "bold yellow"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = false
+disabled = false
+style = "bold red"
+format = "[$hostname]($style)"
+
+[directory]
+truncation_length = 7
+truncation_symbol = "…/"
+truncate_to_repo = true
+style = "bold blue"
+
+[status]
+style = "red"
+symbol = "💥"
+format = '--[\[$symbol$status\]]($style)'
+disabled = false
+
+[git_branch]
+symbol = "🌱 "
+
+[git_status]
+ahead = "⇡🏎💨${count}"
+diverged = "⇕⇡😵${ahead_count}⇣${behind_count}"
+behind = "⇣😰${count}"
+conflicted = "🏳"
+untracked = "🤷‍"
+stashed = "📦"
+modified = "📝"
+staged = '[++\($count\)](green)'
+renamed = "👅"
+deleted = "🗑"
+
+[cmd_duration]
+disabled = true
+

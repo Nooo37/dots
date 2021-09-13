@@ -1,0 +1,31 @@
+#!/bin/sh
+# stolen from javacafe
+# Wrapper for amazing software giph by phisch
+
+file="$HOME/pics/screenrecords/$(date '+%y-%m-%d_%H-%M-%S')"
+
+case $1 in
+    "sel")
+        giph -y -s -b 2 -c '0.61,0.9,0.75,1' -p 22 "$file.gif"
+        ;;
+
+    "selnp")
+        giph -y -s -b 2 -c '0.61,0.9,0.75,1' -p -2 "$file.gif"
+        ;;
+
+    "selmp4")
+        giph -y -s -f 30 -b 2 -c '0.61,0.9,0.75,1' -p 22 -a "$file.mp4"
+        ;;
+    
+    "selnpmp4")
+        giph -y -s -f 30 -b 2 -c '0.61,0.9,0.75,1' -p -2 -a "$file.mp4"
+        ;;
+
+    "mp4")
+        giph -y -g "1920x1080+0+0" -f 30 -a "$file.mp4" 
+        ;;
+
+    *)
+        giph -y -g "1920x1080+0+0" "$file.gif"
+        ;;
+esac

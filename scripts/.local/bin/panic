@@ -1,0 +1,5 @@
+#!/bin/sh
+
+awesome-client "for _, t in ipairs(require('awful').screen.focused().selected_tags) do for _, c in ipairs(t:clients()) do c.minimized = true end end"
+
+playerctl -a pause

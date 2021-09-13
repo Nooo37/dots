@@ -1,0 +1,113 @@
+# sxhkd configuration
+
+# WINDOW MANAGEMENT
+# w for closing: analogue to browser bindings
+# h,j,k,l for movement, resizing, focus 
+# b,n,m for toggleing window properties
+
+super + {w,n,m,b}
+    swish window {close,minimize,maximize,floating}
+
+super + {_,shift,alt} + {h,j,k,l}
+    swish window {focus,drag,resize} {left,down,up,right}
+
+super + {u,i,o}
+    swish tabbing {iter,add,pop}
+
+super + control + {h,j,k,l}
+    swish tabbing pick {left,down,up,right}
+
+super + {_,shift} + {1-9}
+    swish tag {focus,move-window} {1-9}
+
+super + {_, shift +} space
+    swish layout {next,prev}
+
+super + {_, shift +} Tab
+    swish window focus {next,prev}
+
+super + {F1,F2}
+    swish toggle {bar,dash}
+
+
+# LAUNCH
+# r for a run prompt
+# e(macs), t(erminal), f(irefox), d(iscord), g(usic) scratchpads
+#
+super + shift + r
+    awesome-client "awesome.emit_signal('bling::window_switcher::visibility', mouse.screen)"
+
+super + r
+    rofi -show drun -show-icons
+
+super + {d,t,g,f}
+    swish toggle {discord,scratchpad,music,webs}
+
+super + e
+    $HOME/code/clones/idea-IC-212.4746.92/bin/idea.sh
+
+
+# MUSIC AND MISC
+# a opens a dmenu for various things 
+
+super + {Left,Right,q,Q}
+    playerctl {previous,next,play-pause,-a pause}
+
+super + {Down,Up}
+    playerctl volume 0.05{-,+}
+
+super + {comma,period}
+    amixer sset 'Master' 5%{-,+}
+
+super + shift + {comma,period}
+    ~/code/dots/scripts/chbrightness {"-0.05","0.05"}
+
+super + Print
+    ~/code/dots/scripts/dmenu-screenshot "all" "save"
+
+super + a
+    ~/code/dots/scripts/dmenu-dmenu
+
+super + s
+    maim -s -u | \
+    pinsel -o "$HOME/pics/screenshots/$(date +%y-%m-%d_%H-%M-%S).png" | \
+    xclip -selection clipboard -t image/png
+
+super + z
+    ~/code/dots/scripts/panic
+
+super + x
+    swish notifications killall
+
+super + Escape
+    pkill -USR1 -x sxhkd
+
+
+# LAPTOP
+# all the weird keys that I only really need on my laptop
+
+{XF86AudioLowerVolume,XF86AudioRaiseVolume}
+    amixer sset 'Master' 5%{-,+}
+
+{XF86MonBrightnessDown,XF86MonBrightnessUp}
+    ~/code/dots/scripts/chbrightness {"-0.05","0.05"}
+
+{XF86AudioPrev,XF86AudioNext,XF86AudioPlay,XF86AudioMute}
+    playerctl {previous,next,play-pause,-a pause}
+
+
+# UMLAUTE
+# was würde ich ohne nur machen
+
+alt + {_,shift} + u
+    xdotool keyup u key --clearmodifiers {_,shift+}udiaeresis
+
+alt + {_,shift} + a
+    xdotool keyup a key --clearmodifiers {_,shift+}adiaeresis
+
+alt + {_,shift} + o
+    xdotool keyup o key --clearmodifiers {_,shift+}odiaeresis
+
+alt + {_,shift} + s
+    xdotool keyup s key --clearmodifiers {_,shift+}ssharp
+

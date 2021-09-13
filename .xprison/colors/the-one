@@ -1,0 +1,20 @@
+! obliviousofcraps https://github.com/obliviousofcraps/mf-dots
+*.foreground:  #e3e3e3
+!*.background:  #181b22
+*.background:  #20242d
+*.color0:      #272C38
+*.color8:      #585e74
+*.color1:      #fc8993
+*.color9:      #fb9199
+*.color2:      #89e19c
+*.color10:     #8de19f
+*.color3:      #fbdf90
+*.color11:     #ffe28e
+*.color4:      #a7bdfb
+*.color12:     #afc3fb
+*.color5:      #d990cd
+*.color13:     #df95d3
+*.color6:      #81d4ee
+*.color14:     #81d4ee
+*.color7:      #e3e3e3
+*.color15:     #e3e3e3

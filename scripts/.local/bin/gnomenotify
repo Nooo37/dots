@@ -1,0 +1,15 @@
+#!/bin/sh
+
+gdbus call --session \
+           --dest org.freedesktop.Notifications \
+           --object-path /org/freedesktop/Notifications \
+           --method org.freedesktop.Notifications.Notify \
+           my_app_name \
+           42 \
+           gtk-dialog-info \
+           "The Summary" \
+           "Here's the body of the notification" \
+           '[ "test", "test", "huhu", "huhu"]' \
+           '{ }' \
+           0 # don't disappear until acted
+
