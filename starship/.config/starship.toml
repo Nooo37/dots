@@ -1,16 +1,14 @@
 add_newline = false
 
 format = '''
-╭─-\[ ($username)@($hostname) \]--\[ ($directory)\]$status $git_branch$git_status
-╰─-> 
+($hostname)($directory)($git_branch)($status)($character)
 '''
 
 [line_break]
 disabled = true
 
 [character]
-use_symbol_for_status = true
-success_symbol = "[>](bold green)"
+success_symbol = "[>](bold red)"
 error_symbol = "[✗](bold red)"
 
 [username]
@@ -20,21 +18,22 @@ style_user = "bold yellow"
 format = "[$user]($style)"
 
 [hostname]
-ssh_only = false
+ssh_only = true
 disabled = false
 style = "bold red"
-format = "[$hostname]($style)"
+format = "[$hostname]($style) "
 
 [directory]
 truncation_length = 7
 truncation_symbol = "…/"
 truncate_to_repo = true
 style = "bold blue"
+#format = "[$directory]($style) "
 
 [status]
 style = "red"
 symbol = "💥"
-format = '--[\[$symbol$status\]]($style)'
+format = '[$symbol$status]($style) '
 disabled = false
 
 [git_branch]

@@ -1,0 +1,55 @@
+#!/bin/env bash
+
+CURRENT="${@: -1}"
+
+COLUMNS="$(tput cols)"
+CELLPIXELWIDTH=7
+((DEFAULT_WIDTH=COLUMNS*CELLPIXELWIDTH)) # max current terminal width
+
+INVERT=false
+TEMPDIR="/tmp/ccat"
+
+show_image() {
+    TEMPFILE="${TEMPDIR}/tmp.png"
+    [ "$INVERT" = "true" ] \
+        && convert "$1" -negate "$TEMPFILE" \
+        || cp "$1" "$TEMPFILE"
+    convert "$TEMPFILE" -geometry "${DEFAULT_WIDTH}x" sixel:-
+}
+
+mkdir -p "$TEMPDIR"
+while [[ "$1" == -* ]]; do
+    case "$1" in
+        -n) INVERT=true ;;
+        -c) COPY=true ;;
+    esac
+    shift
+done
+
+
+# CURRENT is a directory -> do ls
+if [ -d "$CURRENT" ]; then
+    exa $@
+    exit 0
+fi
+
+# CURRENT is a file -> check what filetype by extension
+EXT="${CURRENT##*.}"
+
+case "$EXT" in
+    png|jpg|jpeg|bmp)
+        show_image "$CURRENT"
+        ;;
+    pdf)
+        mkdir -p "$TEMPDIR"
+        pdftoppm "$CURRENT" "${TEMPDIR}/tmp" -png
+        for tempfile in "${TEMPDIR}/tmp"*.png; do
+            show_image "$tempfile"
+        done
+        ;;
+    *)
+        highlight $CURRENT --out-form=ansi
+        ;;
+esac
+
+rm -rf "$TEMPDIR"

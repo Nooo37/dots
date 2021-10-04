@@ -4,6 +4,7 @@ local mappings = {
    -- General
    { "n", "<C-s>", [[:w <CR>]],          nil }, -- save on C-s, why not
    { "n", "<C-f>", [[/]],                nil }, -- search on C-f, why not
+   { "n",  "<C-m>", [[:CommentToggle<CR>]], nil},  -- Commenter Keybinding
    { "",  "j",     [[v:count ? "j" : "gj"]], {expr = true}}, -- Move wrapped lines normally
    { "",  "k",     [[v:count ? "k" : "gk"]], {expr = true}}, -- Move wrapped lines normally
    { "n", "<Esc>", [[:noh<CR>]], nil}, -- use ESC in normal to turn off highlights
@@ -14,6 +15,13 @@ local mappings = {
    { "n", "<Leader>h",    [[:lua vim.lsp.buf.hover()<CR>]], lsp_opts},
    { "n", "<Leader>c",    [[:lua vim.lsp.buf.code_action()<CR>]], lsp_opts},
    { "n", "<Leader>x",    [[:lua vim.lsp.stop_client(vim.lsp.get_active_clients())<CR>]], lsp_opts},
+
+   -- Hop
+   { "n", "<Leader>hl",    [[:HopLine<CR>]], nil},
+   { "n", "<Leader>hw",    [[:HopWord<CR>]], nil},
+   { "n", "<Leader>hp",    [[:HopPattern<CR>]], nil},
+   { "n", "<Leader>h1",    [[:HopChar1<CR>]], nil},
+   { "n", "<Leader>h2",    [[:HopChar2<CR>]], nil},
 
    -- Telescope
    { "n", "<Leader>f",    [[:Telescope find_files<CR>]], nil},

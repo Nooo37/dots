@@ -32,7 +32,9 @@ return require('packer').startup(function(use)
     -- Nvim Built in LSP configs
     use {
         "neovim/nvim-lspconfig",
-        config = function() require 'plugins.lsp' end
+        config = function()
+            require("plugins.lsp")
+        end
     }
 
     -- Nvim LSP extensions and completion
@@ -46,15 +48,23 @@ return require('packer').startup(function(use)
     -- commenting out
     use "terrortylor/nvim-comment"
 
+    -- hopping to lines/words
+    use {
+        "phaazon/hop.nvim",
+        as = "hop",
+        config = function()
+            require("hop").setup { keys = "qwertyasdfghjkl" }
+        end
+    }
+
     -- Auto complete stuff
     use "nvim-treesitter/completion-treesitter"
 
     -- .editorconfig support
     use "editorconfig/editorconfig-vim"
 
-
     -- pug highlight
-    -- use "digitaltoad/vim-pug"
+    use "digitaltoad/vim-pug"
 
     -- VISUALS
 
