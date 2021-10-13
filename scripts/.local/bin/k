@@ -2,11 +2,15 @@
 
 CURRENT="${@: -1}"
 
+MAX_WIDTH=1000
 COLUMNS="$(tput cols)"
 CELLPIXELWIDTH=7
 ((DEFAULT_WIDTH=COLUMNS*CELLPIXELWIDTH)) # max current terminal width
+[ $DEFAULT_WIDTH -gt $MAX_WIDTH ] && DEFAULT_WIDTH=$MAX_WIDTH
 
 INVERT=false
+SHOW_ONLY=false
+SHOW_IDX=0
 TEMPDIR="/tmp/ccat"
 
 show_image() {
@@ -20,8 +24,17 @@ show_image() {
 mkdir -p "$TEMPDIR"
 while [[ "$1" == -* ]]; do
     case "$1" in
-        -n) INVERT=true ;;
-        -c) COPY=true ;;
+        -n)
+            INVERT=true
+            ;;
+        -c)
+            COPY=true
+            ;;
+        -o)
+            shift
+            SHOW_ONLY=true
+            SHOW_IDX="$1"
+            ;;
     esac
     shift
 done
@@ -43,9 +56,13 @@ case "$EXT" in
     pdf)
         mkdir -p "$TEMPDIR"
         pdftoppm "$CURRENT" "${TEMPDIR}/tmp" -png
-        for tempfile in "${TEMPDIR}/tmp"*.png; do
-            show_image "$tempfile"
-        done
+        if [ "$SHOW_ONLY" = "true" ]; then
+            show_image "${TEMPDIR}/tmp-${SHOW_IDX}.png"
+        else
+            for tempfile in "${TEMPDIR}/tmp"*.png; do
+                show_image "$tempfile"
+            done
+        fi
         ;;
     *)
         highlight $CURRENT --out-form=ansi

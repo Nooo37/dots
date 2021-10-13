@@ -3,7 +3,8 @@
 # currently only supports awesomeWM but I'll add others once I try them
 
 wm=$XDG_CURRENT_DESKTOP
-[ "$wm" ] || wm="$DESKTOP_SESSION"
+#[ "$wm" ] || 
+wm="$DESKTOP_SESSION"
 
 case "${wm##*/}" in
     awesome)

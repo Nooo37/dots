@@ -1,10 +1,16 @@
 #!/bin/sh
 
+if [ "$XDG_SESSION_TYPE" = "x11" ]; then
+    URL="$(xclip -o)"
+else
+    URL="$(wl-paste)"
+fi
+
 mpv \
     --ontop \
     --on-all-workspaces \
     --x11-name="consoom" \
     --title="consoom" \
     --autofit=450 \
-    "$(xclip -o)" \
+    "$URL" \
     >/dev/null

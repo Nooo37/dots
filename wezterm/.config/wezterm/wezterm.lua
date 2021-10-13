@@ -2,34 +2,34 @@ local wezterm = require("wezterm");
 local c = require("color")
 
 local keys = {
-        -- browser like tabbing
-        { key="t", mods="CTRL", action=wezterm.action{SpawnTab="CurrentPaneDomain"} },
-        { key="w", mods="CTRL", action=wezterm.action{CloseCurrentTab={confirm=true}} },
-        { key="PageUp", mods="CTRL|SHIFT", action=wezterm.action{MoveTabRelative=-1} },
-        { key="PageDown", mods="CTRL|SHIFT", action=wezterm.action{MoveTabRelative=1} },
-        { key="PageUp", mods="CTRL", action=wezterm.action{ActivateTabRelative=-1} },
-        { key="PageDown", mods="CTRL", action=wezterm.action{ActivateTabRelative=1} },
-        -- scrolling
-        { key="UpArrow", mods="CTRL|SHIFT", action=wezterm.action{ScrollByLine=-1} },
-        { key="DownArrow", mods="CTRL|SHIFT", action=wezterm.action{ScrollByLine=1} },
-        -- multiplexing
-        { key="g", mods="CTRL|SHIFT", action=wezterm.action{SplitHorizontal={domain="CurrentPaneDomain"}} },
-        { key="f", mods="CTRL|SHIFT", action=wezterm.action{SplitVertical={domain="CurrentPaneDomain"}} },
-        --{ key="x", mods="CTRL|SHIFT", action=wezterm.action{CloseCurrentPane={confirm=true}} },
-        { key="h", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Left"} },
-        { key="l", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Right"} },
-        { key="k", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Up"} },
-        { key="j", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Down"} },
-        { key="Tab", mods="CTRL|SHIFT", action=wezterm.action{ActivateTabRelative=1} },
-        -- standard copy/paste
-        { key="c", mods="CTRL|SHIFT", action=wezterm.action{CopyTo="Clipboard"} },
-        { key="v", mods="CTRL|SHIFT", action=wezterm.action{PasteFrom="Clipboard"} },
-        { key="Insert", mods="SHIFT", action=wezterm.action{PasteFrom="Clipboard"} },
-        -- font size
-        { key="+", mods="CTRL", action="IncreaseFontSize" },
-        { key="-", mods="CTRL", action="DecreaseFontSize" },
-        -- copymode
-        { key="x", mods="CTRL", action="ActivateCopyMode" },
+    -- browser like tabbing
+    { key="t", mods="CTRL", action=wezterm.action{SpawnTab="CurrentPaneDomain"} },
+    { key="w", mods="CTRL", action=wezterm.action{CloseCurrentTab={confirm=true}} },
+    { key="PageUp", mods="CTRL|SHIFT", action=wezterm.action{MoveTabRelative=-1} },
+    { key="PageDown", mods="CTRL|SHIFT", action=wezterm.action{MoveTabRelative=1} },
+    { key="PageUp", mods="CTRL", action=wezterm.action{ActivateTabRelative=-1} },
+    { key="PageDown", mods="CTRL", action=wezterm.action{ActivateTabRelative=1} },
+    -- scrolling
+    { key="UpArrow", mods="CTRL|SHIFT", action=wezterm.action{ScrollByLine=-1} },
+    { key="DownArrow", mods="CTRL|SHIFT", action=wezterm.action{ScrollByLine=1} },
+    -- multiplexing
+    { key="g", mods="CTRL|SHIFT", action=wezterm.action{SplitHorizontal={domain="CurrentPaneDomain"}} },
+    { key="f", mods="CTRL|SHIFT", action=wezterm.action{SplitVertical={domain="CurrentPaneDomain"}} },
+    { key="x", mods="CTRL|SHIFT", action=wezterm.action{CloseCurrentPane={confirm=true}} },
+    { key="h", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Left"} },
+    { key="l", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Right"} },
+    { key="k", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Up"} },
+    { key="j", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Down"} },
+    { key="Tab", mods="CTRL|SHIFT", action=wezterm.action{ActivateTabRelative=1} },
+    -- standard copy/paste
+    { key="c", mods="CTRL|SHIFT", action=wezterm.action{CopyTo="Clipboard"} },
+    { key="v", mods="CTRL|SHIFT", action=wezterm.action{PasteFrom="Clipboard"} },
+    { key="Insert", mods="SHIFT", action=wezterm.action{PasteFrom="Clipboard"} },
+    -- font size
+    { key="+", mods="CTRL", action="IncreaseFontSize" },
+    { key="-", mods="CTRL", action="DecreaseFontSize" },
+    -- copymode
+    { key="x", mods="CTRL", action="ActivateCopyMode" },
 }
 
 -- browser like eg ctrl-3 for focusing the third tab

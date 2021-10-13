@@ -74,6 +74,16 @@ precmd() {
     printf '\033]0;%s\007' "$(dirs)"
 }
 
+# epic fzf history on Control+r
+fzf-history() {
+    $(fzf --height=20% --prompt='> ' --pointer='>' --preview='echo {}' \
+        --color=fg:4,bg:-1,bg+:-1,info:7,prompt:10,pointer:10 \
+        < "$HISTFILE")
+}
+
+zle -N fzf-history
+bindkey '^R' fzf-history
+
 # start in home dir
 cd $HOME
 

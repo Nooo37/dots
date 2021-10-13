@@ -1,7 +1,7 @@
 add_newline = false
 
 format = '''
-($hostname)($directory)($git_branch)($status)($character)
+($hostname)($directory)($git_branch)($python)($status)($character)
 '''
 
 [line_break]
@@ -53,4 +53,8 @@ deleted = "🗑"
 
 [cmd_duration]
 disabled = true
+
+[python]
+symbol = "👾 "
+pyenv_version_name = true
 
