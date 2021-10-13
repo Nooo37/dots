@@ -1,0 +1,13 @@
+{
+    "name": "altpanel",
+    "description": "Creates a phrame style alternative panel",
+    "shell-version": [
+        "3.34",
+        "3.36",
+        "3.38",
+        "40"
+    ],
+    "url": "",
+    "uuid": "no37-panel@test.org",
+    "version": 1
+}

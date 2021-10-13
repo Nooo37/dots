@@ -1,0 +1,11 @@
+{
+  "name": "Scratchpads",
+  "description": "Keyboard shortcuts to bring windows into focus",
+  "uuid": "no37-scratchpads@test.org",
+  "shell-version": [
+    "3.34",
+    "3.36",
+    "3.38",
+    "40"
+  ]
+}
