@@ -1,36 +1,62 @@
 local wezterm = require("wezterm");
 local c = require("color")
 
-local keys = {
+local cpd = "CurrentPaneDomain"
+local spawn_tab = wezterm.action{SpawnTab=cpd}
+local close_tab = wezterm.action{CloseCurrentTab={confirm=true}}
+local move_tab_left = wezterm.action{MoveTabRelative=-1}
+local move_tab_right = wezterm.action{MoveTabRelative=1}
+local prev_tab = wezterm.action{ActivateTabRelative=-1}
+local next_tab = wezterm.action{ActivateTabRelative=1}
+local scroll_up = wezterm.action{ScrollByLine=-1}
+local scroll_down = wezterm.action{ScrollByLine=1}
+local split_horizontal = wezterm.action{SplitHorizontal={domain=cpd}}
+local split_vertical = wezterm.action{SplitVertical={domain=cpd}}
+local close_pane = wezterm.action{CloseCurrentPane={confirm=true}}
+local pane_left = wezterm.action{ActivatePaneDirection="Left"}
+local pane_right = wezterm.action{ActivatePaneDirection="Right"}
+local pane_up = wezterm.action{ActivatePaneDirection="Up"}
+local pane_down = wezterm.action{ActivatePaneDirection="Down"}
+local copy = wezterm.action{CopyTo="Clipboard"}
+local paste = wezterm.action{PasteFrom="Clipboard"}
+
+local my_keys = {
     -- browser like tabbing
-    { key="t", mods="CTRL", action=wezterm.action{SpawnTab="CurrentPaneDomain"} },
-    { key="w", mods="CTRL", action=wezterm.action{CloseCurrentTab={confirm=true}} },
-    { key="PageUp", mods="CTRL|SHIFT", action=wezterm.action{MoveTabRelative=-1} },
-    { key="PageDown", mods="CTRL|SHIFT", action=wezterm.action{MoveTabRelative=1} },
-    { key="PageUp", mods="CTRL", action=wezterm.action{ActivateTabRelative=-1} },
-    { key="PageDown", mods="CTRL", action=wezterm.action{ActivateTabRelative=1} },
+    { "t",         "CTRL|SHIFT", spawn_tab },
+    { "w",         "CTRL|SHIFT", close_tab },
+    { "PageUp",    "CTRL|SHIFT", prev_tab },
+    { "PageDown",  "CTRL|SHIFT", next_tab },
     -- scrolling
-    { key="UpArrow", mods="CTRL|SHIFT", action=wezterm.action{ScrollByLine=-1} },
-    { key="DownArrow", mods="CTRL|SHIFT", action=wezterm.action{ScrollByLine=1} },
+    { "UpArrow",   "CTRL|SHIFT", scroll_up },
+    { "DownArrow", "CTRL|SHIFT", scroll_down },
     -- multiplexing
-    { key="g", mods="CTRL|SHIFT", action=wezterm.action{SplitHorizontal={domain="CurrentPaneDomain"}} },
-    { key="f", mods="CTRL|SHIFT", action=wezterm.action{SplitVertical={domain="CurrentPaneDomain"}} },
-    { key="x", mods="CTRL|SHIFT", action=wezterm.action{CloseCurrentPane={confirm=true}} },
-    { key="h", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Left"} },
-    { key="l", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Right"} },
-    { key="k", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Up"} },
-    { key="j", mods="CTRL|SHIFT", action=wezterm.action{ActivatePaneDirection="Down"} },
-    { key="Tab", mods="CTRL|SHIFT", action=wezterm.action{ActivateTabRelative=1} },
+    { "g",         "CTRL|SHIFT", split_horizontal },
+    { "f",         "CTRL|SHIFT", split_vertical },
+    { "x",         "CTRL|SHIFT", close_pane },
+    { "h",         "CTRL|SHIFT", pane_left },
+    { "l",         "CTRL|SHIFT", pane_right },
+    { "k",         "CTRL|SHIFT", pane_up },
+    { "j",         "CTRL|SHIFT", pane_down },
+    { "Tab",       "CTRL|SHIFT", next_tab },
     -- standard copy/paste
-    { key="c", mods="CTRL|SHIFT", action=wezterm.action{CopyTo="Clipboard"} },
-    { key="v", mods="CTRL|SHIFT", action=wezterm.action{PasteFrom="Clipboard"} },
-    { key="Insert", mods="SHIFT", action=wezterm.action{PasteFrom="Clipboard"} },
+    { "c",         "CTRL|SHIFT", copy },
+    { "v",         "CTRL|SHIFT", paste },
+    { "Insert",    "SHIFT",      paste },
     -- font size
-    { key="+", mods="CTRL", action="IncreaseFontSize" },
-    { key="-", mods="CTRL", action="DecreaseFontSize" },
+    { "+",         "CTRL",       "IncreaseFontSize" },
+    { "-",         "CTRL",       "DecreaseFontSize" },
     -- copymode
-    { key="x", mods="CTRL", action="ActivateCopyMode" },
+    { "x",         "CTRL",       "ActivateCopyMode" },
 }
+
+local keys = {}
+for _, my_key in ipairs(my_keys) do
+    table.insert(keys, { 
+        key = my_key[1],
+        mods = my_key[2],
+        action = my_key[3]
+    })
+end
 
 -- browser like eg ctrl-3 for focusing the third tab
 for i = 1, 8 do
@@ -42,17 +68,21 @@ for i = 1, 8 do
 end
 
 return {
-    font = wezterm.font("JetBrainsMono NF"),
+    -- fonts
+    font = wezterm.font("JetBrains Mono"),
     font_size = 9.0,
     line_height = 1.0,
+    -- gui
     enable_tab_bar = true,
     hide_tab_bar_if_only_one_tab = true,
-    scrollback_lines = 3500,
     enable_scroll_bar = false,
+    inactive_pane_hsb = { hue = 1.0, saturation = 1.0, brightness = 1.0 },
+    -- other
+    enable_wayland = true,
+    scrollback_lines = 3500,
+    cursor_blink_rate = 800,
     default_cursor_style = "SteadyUnderline",
     check_for_updates = false,
-    inactive_pane_hsb = { hue = 1.0, saturation = 1.0, brightness = 1.0 },
-
     -- keys
     keys = keys,
     disable_default_key_bindings = true,
@@ -94,6 +124,15 @@ return {
             inactive_tab_hover = {
                 bg_color = c.bg,
                 fg_color = c.fg,
+                italic = true,
+            },
+            new_tab = {
+                bg_color = c.black,
+                fg_color = c.fg,
+            },
+            new_tab_hover = {
+                bg_color = c.green,
+                fg_color = c.bg,
                 italic = true,
             },
         },

@@ -84,6 +84,9 @@ fzf-history() {
 zle -N fzf-history
 bindkey '^R' fzf-history
 
+# ~/.local/bin is where I keep scripts but it isn't in PATH by default on some distros
+export PATH="$HOME/.local/bin:$PATH"
+
 # start in home dir
 cd $HOME
 
