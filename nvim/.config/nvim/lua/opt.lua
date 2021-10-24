@@ -50,4 +50,3 @@ cmd [[highlight Comment gui=italic]]
 cmd [[autocmd FileType lua nnoremap <buffer> <c-p> :call LuaFormat()<cr>]]
 cmd [[autocmd BufWrite *.lua call LuaFormat()]]
 vim.o.background = "dark"
-cmd [[colorscheme xresources]]

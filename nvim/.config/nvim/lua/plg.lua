@@ -17,6 +17,13 @@ return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
     use 'norcalli/nvim.lua'
 
+    -- colorscheme
+    use {
+        "norcalli/nvim-base16.lua",
+        config = function()
+        end
+    }
+
     -- epic telescope navigation
     use {
         'nvim-telescope/telescope.nvim',

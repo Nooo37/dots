@@ -12,3 +12,8 @@
     path = wezterm/.config/wezterm/farbig
     url = https://github.com/Nooo37/farbig.git
     branch = master
+
+[submodule "farbig"]
+    path = nvim/.config/nvim/lua/farbig
+    url = https://github.com/Nooo37/farbig.git
+    branch = master

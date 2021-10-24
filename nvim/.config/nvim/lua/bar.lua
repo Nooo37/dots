@@ -4,7 +4,8 @@ local gls = gl.section
 local condition = require('galaxyline.condition')
 gl.short_line_list = {'NvimTree', 'vista', 'dbui', 'packer'}
 
-local colors = require('color')
+local colors = require("colors")
+colors.bg = "#00000000"
 
 local mode_color = {
     n = colors.cyan,
@@ -112,7 +113,7 @@ gls.left[7] = {
     DiagnosticError = {
         provider = 'DiagnosticError',
         icon = '  ',
-        highlight = {colors.red, colors.bg0}
+        highlight = {colors.red, colors.bg}
     }
 }
 
@@ -120,7 +121,7 @@ gls.left[8] = {
     DiagnosticWarn = {
         provider = 'DiagnosticWarn',
         icon = '   ',
-        highlight = {colors.yellow, colors.bg0}
+        highlight = {colors.yellow, colors.bg}
     }
 }
 
@@ -128,7 +129,7 @@ gls.left[9] = {
     DiagnosticHint = {
         provider = 'DiagnosticHint',
         icon = '   ',
-        highlight = {colors.cyan, colors.bg0}
+        highlight = {colors.cyan, colors.bg}
     }
 }
 
@@ -136,7 +137,7 @@ gls.left[10] = {
     DiagnosticInfo = {
         provider = 'DiagnosticInfo',
         icon = '  ',
-        highlight = {colors.blue, colors.bg0}
+        highlight = {colors.blue, colors.bg}
     }
 }
 
