@@ -8,8 +8,7 @@
     url = https://github.com/andOrlando/rubato.git
     branch = master
 
-[submodule "gtk"]
-    path = .xprison/res/gtk
-    url = https://github.com/phocus/gtk.git
+[submodule "farbig"]
+    path = wezterm/.config/wezterm/farbig
+    url = https://github.com/Nooo37/farbig.git
     branch = master
-

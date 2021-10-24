@@ -1,11 +1,24 @@
 local wezterm = require("wezterm");
-local c = require("color")
+local farbig = require("farbig")
+local colors = farbig.get({"amarena"})
+
+local c = {
+    fg = colors.base05,
+    bg = colors.base00,
+    black = colors.base01,
+    red = colors.base08,
+    green = colors.base0B,
+    yellow = colors.base0A,
+    blue = colors.base0D,
+    magenta = colors.base09,
+    cyan = colors.base0C,
+    white = colors.base04,
+    gray = colors.base03,
+}
 
 local cpd = "CurrentPaneDomain"
 local spawn_tab = wezterm.action{SpawnTab=cpd}
 local close_tab = wezterm.action{CloseCurrentTab={confirm=true}}
-local move_tab_left = wezterm.action{MoveTabRelative=-1}
-local move_tab_right = wezterm.action{MoveTabRelative=1}
 local prev_tab = wezterm.action{ActivateTabRelative=-1}
 local next_tab = wezterm.action{ActivateTabRelative=1}
 local scroll_up = wezterm.action{ScrollByLine=-1}
@@ -43,15 +56,17 @@ local my_keys = {
     { "v",         "CTRL|SHIFT", paste },
     { "Insert",    "SHIFT",      paste },
     -- font size
-    { "+",         "CTRL",       "IncreaseFontSize" },
-    { "-",         "CTRL",       "DecreaseFontSize" },
+    { "+",         "CTRL|SHIFT",     "IncreaseFontSize" },
+    { "-",         "CTRL|SHIFT",     "DecreaseFontSize" },
     -- copymode
-    { "x",         "CTRL",       "ActivateCopyMode" },
+    { "x",         "CTRL",           "ActivateCopyMode" },
+    -- reload config
+    { "r",         "CTRL|SHIFT",     "ReloadConfiguration" },
 }
 
 local keys = {}
 for _, my_key in ipairs(my_keys) do
-    table.insert(keys, { 
+    table.insert(keys, {
         key = my_key[1],
         mods = my_key[2],
         action = my_key[3]
@@ -69,14 +84,18 @@ end
 
 return {
     -- fonts
-    font = wezterm.font("JetBrains Mono"),
+    font = wezterm.font("JetBrainsMono Nerd Font"),
     font_size = 9.0,
     line_height = 1.0,
     -- gui
     enable_tab_bar = true,
     hide_tab_bar_if_only_one_tab = true,
     enable_scroll_bar = false,
-    inactive_pane_hsb = { hue = 1.0, saturation = 1.0, brightness = 1.0 },
+    inactive_pane_hsb = {
+        hue = 1.0,
+        saturation = 1.0,
+        brightness = 1.0
+    },
     -- other
     enable_wayland = true,
     scrollback_lines = 3500,
@@ -89,10 +108,10 @@ return {
 
     -- padding
     window_padding = {
-        left = 12,
-        right = 12,
-        top = 8,
-        bottom = 8,
+        left = 14,
+        right = 14,
+        top = 14,
+        bottom = 14,
     },
 
     -- colors
@@ -104,9 +123,26 @@ return {
         cursor_border = c.cyan,
         scrollbar_thumb = c.blue,
         split = c.blue,
-        ansi =    {c.black, c.red,  c.green,  c.yellow,  c.blue,  c.magenta,  c.cyan,  c.white},
-        brights = {c.gray,  c.redB, c.greenB, c.yellowB, c.blueB, c.magentaB, c.cyanB, c.whiteB},
-
+        ansi = {
+            c.black,
+            c.red,
+            c.green,
+            c.yellow,
+            c.blue,
+            c.magenta,
+            c.cyan,
+            c.white
+        },
+        brights = {
+            c.gray,
+            c.red,
+            c.green,
+            c.yellow,
+            c.blue,
+            c.magenta,
+            c.cyan,
+            c.white
+        },
         tab_bar = {
             background = c.black,
             active_tab = {
@@ -122,8 +158,8 @@ return {
                 fg_color = c.fg,
             },
             inactive_tab_hover = {
-                bg_color = c.bg,
-                fg_color = c.fg,
+                bg_color = c.black,
+                fg_color = c.green,
                 italic = true,
             },
             new_tab = {
