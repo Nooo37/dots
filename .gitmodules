@@ -19,7 +19,7 @@
     branch = master
 
 [submodule "farbig_awesome"]
-    path = nvim/.config/nvim/lua/farbig
+    path = awesome/.config/awesome/lua/farbig
     url = https://github.com/Nooo37/farbig.git
     branch = master
 
