@@ -1,15 +1,11 @@
 add_newline = false
 
 format = '''
-($hostname)($directory)($git_branch)($python)($status)($character)
+($hostname)($directory)($git_branch)($python)($status)[>](bold red) 
 '''
 
 [line_break]
 disabled = true
-
-[character]
-success_symbol = "[>](bold red)"
-error_symbol = "[✗](bold red)"
 
 [username]
 disabled = false
@@ -32,12 +28,14 @@ style = "bold blue"
 
 [status]
 style = "red"
-symbol = "💥"
-format = '[$symbol$status]($style) '
+symbol = " "
+format = '[$status]($style) '
 disabled = false
 
 [git_branch]
-symbol = "🌱 "
+style = "purple"
+format = "[$symbol$branch]($style) "
+symbol = " "
 
 [git_status]
 ahead = "⇡🏎💨${count}"

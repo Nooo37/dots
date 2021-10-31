@@ -8,6 +8,7 @@ local dpi = xresources.apply_dpi
 local xrdb = xresources.get_current_theme()
 
 local helpers = require("helpers") -- only for notification appearance
+local farbig = require("module.farbig")
 
 local home_path = os.getenv("HOME")
 local config_path = home_path .. "/.config/awesome/"
@@ -16,14 +17,20 @@ local config_path = home_path .. "/.config/awesome/"
 local theme = dofile("/usr/share/awesome/themes/default/theme.lua")
 
 local handle = io.popen("cat /sys/class/dmi/id/chassis_type")
+
 theme.is_on_pc = tonumber(handle:read("*a")) == 3 -- 3 is for desktop PCs
 
+local function read_colorscheme()
+    local io = require("io")
+    local os = require("os")
+    local f = io.open(os.getenv("HOME") .. "/.colorscheme", "rb")
+    local colorscheme = f:read("a*")
+    f:close()
+    colorscheme = colorscheme:gsub("%s+", "")
+    return colorscheme
+end
 
-theme.terminal = "wezterm"
-theme.browser  = "Firefox"
-theme.editor   = "emacsclient --create-frame"
 theme.weather_city = "Regensburg"
-
 theme.config_path = config_path
 theme.wallpaper = home_path .."/pics/wallpapers/night-blue.png"
 
@@ -46,30 +53,33 @@ theme.awesome_icon = theme_assets.awesome_icon(
 theme.icon_theme = nil
 
 theme.font          = "sans 8"
+theme.colorscheme   = read_colorscheme() or "gruvbox-dark-hard"
+local colors = farbig.get(theme.colorscheme)
+
 
 -- colors
-theme.xfg                    = xrdb.foreground or "#FFFFFF"
-theme.xbg                    = xrdb.background or "#1A2026"
-theme.xbgdark                = xrdb.bgdark  or "#aa1010"---"#14181d"
-theme.xbglight               = xrdb.bglight or "#526170"
-theme.xcolor0                = xrdb.color0  or "#242D35"
-theme.xcolor8                = xrdb.color8  or "#526170"
-theme.xcolor1                = xrdb.color1  or "#FB6396"
-theme.xcolor9                = xrdb.color9  or "#F92D72"
-theme.xcolor2                = xrdb.color2  or "#94CF95"
-theme.xcolor10               = xrdb.color10 or "#6CCB6E"
-theme.xcolor3                = xrdb.color3  or "#F692B2"
-theme.xcolor11               = xrdb.color11 or "#F26190"
-theme.xcolor4                = xrdb.color4  or "#6EC1D6"
-theme.xcolor12               = xrdb.color12 or "#4CB9D6"
-theme.xcolor5                = xrdb.color5  or "#CD84C8"
-theme.xcolor13               = xrdb.color13 or "#C269BC"
-theme.xcolor6                = xrdb.color6  or "#7FE4D2"
-theme.xcolor14               = xrdb.color14 or "#58D6BF"
-theme.xcolor7                = xrdb.color7  or "#CFCFCF"
-theme.xcolor15               = xrdb.color15 or "#F4F5F2"
+theme.xfg                    = colors.base05 or xrdb.foreground or "#FFFFFF"
+theme.xbg                    = colors.base00 or xrdb.background or "#1A2026"
+-- theme.xbgdark                = colors.base00 or xrdb.bgdark  or "#aa1010"---"#14181d"
+-- theme.xbglight               = colors.base00 or xrdb.bglight or "#526170"
+theme.xcolor0                = colors.base01 or xrdb.color0  or "#242D35"
+theme.xcolor8                = colors.base03 or xrdb.color8  or "#526170"
+theme.xcolor1                = colors.base08 or xrdb.color1  or "#FB6396"
+theme.xcolor9                = colors.base08 or xrdb.color9  or "#F92D72"
+theme.xcolor2                = colors.base09 or xrdb.color2  or "#94CF95"
+theme.xcolor10               = colors.base09 or xrdb.color10 or "#6CCB6E"
+theme.xcolor3                = colors.base0A or xrdb.color3  or "#F692B2"
+theme.xcolor11               = colors.base0A or xrdb.color11 or "#F26190"
+theme.xcolor4                = colors.base0B or xrdb.color4  or "#6EC1D6"
+theme.xcolor12               = colors.base0B or xrdb.color12 or "#4CB9D6"
+theme.xcolor5                = colors.base0C or xrdb.color5  or "#CD84C8"
+theme.xcolor13               = colors.base0C or xrdb.color13 or "#C269BC"
+theme.xcolor6                = colors.base0E or xrdb.color6  or "#7FE4D2"
+theme.xcolor14               = colors.base0E or xrdb.color14 or "#58D6BF"
+theme.xcolor7                = colors.base05 or xrdb.color7  or "#CFCFCF"
+theme.xcolor15               = colors.base05 or xrdb.color15 or "#F4F5F2"
 
-theme.xbg2                   = "#00000044"
+theme.xbg2                   = colors.base01 --"#00000044"
 
 theme.bg_normal              = theme.xbg
 theme.bg_focus               = theme.xcolor0
@@ -195,15 +205,19 @@ theme.mstab_bar_padding = 0
 theme.mstab_bar_ontop = true
 theme.flash_focus_start_opacity = 0.8
 theme.flash_focus_step = 0.05
+theme.tabbar_bg_focus_inactive = "#ff0000"
+theme.tabbar_fg_focus_inactive = "#000000"
+theme.tabbar_bg_normal_inactive = "#00ff00"
+theme.tabbar_fg_normal_inactive = "#0000ff"
 theme.tabbar_bg_normal = theme.xbg2
 theme.tabbar_fg_normal = theme.xfg
 theme.tabbar_bg_focus = theme.xbg
 theme.tabbar_fg_focus = theme.xcolor4
-theme.tabbar_style = "boxes"
+theme.tabbar_style = "default"
 theme.tabbed_spawn_in_tab = true
 theme.tabbar_disable = true
 theme.tabbar_font = "JetBrains Mono Nerd Font 10"
-theme.tabbar_position = "top"
+theme.tabbar_position = "bottom"
 theme.tabbar_AA_radius = 10
 
 theme.tag_preview_widget_border_radius = theme.border_radius
@@ -217,14 +231,34 @@ theme.tag_preview_widget_border_color = theme.xcolor0
 theme.tag_preview_widget_border_width = 4
 theme.tag_preview_widget_margin = 2
 
-
 -- task preview widget
-theme.task_preview_widget_border_radius = theme.border_radius -- Border radius of the widget (With AA)
-theme.task_preview_widget_bg = theme.xbg2 -- The bg color of the widget
-theme.task_preview_widget_fg = theme.xbg -- The bg color of the widget
-theme.task_preview_widget_border_color = theme.xbg -- The border color of the widget
-theme.task_preview_widget_border_width = 3 -- The border width of the widget
-theme.task_preview_widget_margin = 20 -- The margin of the widget
+--theme.task_preview_widget_border_radius = theme.border_radius -- Border radius of the widget (With AA)
+--theme.task_preview_widget_bg = theme.xbg2 -- The bg color of the widget
+--theme.task_preview_widget_fg = theme.xbg -- The bg color of the widget
+--theme.task_preview_widget_border_color = theme.xbg -- The border color of the widget
+--theme.task_preview_widget_border_width = 3 -- The border width of the widget
+--theme.task_preview_widget_margin = 20 -- The margin of the widget
+
+-- window switcher
+theme.window_switcher_widget_bg = theme.xbg2 -- The bg color of the widget
+theme.window_switcher_widget_border_width = 6 -- The border width of the widget
+theme.window_switcher_widget_border_radius = 10 -- The border radius of the widget
+theme.window_switcher_widget_border_color = theme.xbg -- The border color of the widget
+theme.window_switcher_clients_spacing = 15 -- The space between each client item
+theme.window_switcher_client_icon_horizontal_spacing = 5 -- The space between client icon and text
+theme.window_switcher_client_width = 150 -- The width of one client widget
+theme.window_switcher_client_height = 250 -- The height of one client widget
+theme.window_switcher_client_margins = 20 -- The margin between the content and the border of the widget
+theme.window_switcher_thumbnail_margins = 10 -- The margin between one client thumbnail and the rest of the widget
+theme.thumbnail_scale = false -- If set to true, the thumbnails fit policy will be set to "fit" instead of "auto"
+theme.window_switcher_name_margins = 10 -- The margin of one clients title to the rest of the widget
+theme.window_switcher_name_valign = "center" -- How to vertically align one clients title
+theme.window_switcher_name_forced_width = 200 -- The width of one title
+theme.window_switcher_name_font = "Sans 11" -- The font of all titles
+theme.window_switcher_name_normal_color = theme.xfg -- The color of one title if the client is unfocused
+theme.window_switcher_name_focus_color = theme.xcolor1 -- The color of one title if the client is focused
+theme.window_switcher_icon_valign = "center" -- How to vertially align the one icon
+theme.window_switcher_icon_width = 40 -- Thw width of one icon
 
 -- other
 -- naughty.config.shape = helpers.rrect(5)
@@ -234,29 +268,34 @@ theme.awesome_icon = theme_assets.awesome_icon(
     theme.menu_height, theme.xbg, theme.xfg
 )
 
-awesome.connect_signal("chcolor", function()
+awesome.connect_signal("chcolor", function(colorscheme)
     local beautiful = require("beautiful")
-    local xrdb = xresources.get_current_theme()
-    beautiful.xfg      = xrdb.foreground or "#FFFFFF"
-    beautiful.xbg      = xrdb.background or "#1A2026"
-    beautiful.xbgdark  = xrdb.bgdark  or "#aa1010"---"#14181d"
-    beautiful.xbglight = xrdb.bglight or "#526170"
-    beautiful.xcolor0  = xrdb.color0  or "#242D35"
-    beautiful.xcolor8  = xrdb.color8  or "#526170"
-    beautiful.xcolor1  = xrdb.color1  or "#FB6396"
-    beautiful.xcolor9  = xrdb.color9  or "#F92D72"
-    beautiful.xcolor2  = xrdb.color2  or "#94CF95"
-    beautiful.xcolor10 = xrdb.color10 or "#6CCB6E"
-    beautiful.xcolor3  = xrdb.color3  or "#F692B2"
-    beautiful.xcolor11 = xrdb.color11 or "#F26190"
-    beautiful.xcolor4  = xrdb.color4  or "#6EC1D6"
-    beautiful.xcolor12 = xrdb.color12 or "#4CB9D6"
-    beautiful.xcolor5  = xrdb.color5  or "#CD84C8"
-    beautiful.xcolor13 = xrdb.color13 or "#C269BC"
-    beautiful.xcolor6  = xrdb.color6  or "#7FE4D2"
-    beautiful.xcolor14 = xrdb.color14 or "#58D6BF"
-    beautiful.xcolor7  = xrdb.color7  or "#CFCFCF"
-    beautiful.xcolor15 = xrdb.color15 or "#F4F5F2"
+    if colorscheme then
+        beautiful.colorscheme = colorscheme
+    else
+        beautiful.colorscheme = read_colorscheme() or "amarenal"
+        awesome.emit_signal("chcolor", beautiful.colorscheme)
+    end
+    local new_colors = farbig.get(beautiful.colorscheme)
+    beautiful.xfg      = new_colors.base05 or xrdb.foreground or "#FFFFFF"
+    beautiful.xbg      = new_colors.base00 or xrdb.background or "#1A2026"
+    beautiful.xbg2     = new_colors.base01 or xrdb.bglight or "#526170"
+    beautiful.xcolor0  = new_colors.base01 or xrdb.color0  or "#242D35"
+    beautiful.xcolor8  = new_colors.base03 or xrdb.color8  or "#526170"
+    beautiful.xcolor1  = new_colors.base08 or xrdb.color1  or "#FB6396"
+    beautiful.xcolor9  = new_colors.base08 or xrdb.color9  or "#F92D72"
+    beautiful.xcolor2  = new_colors.base09 or xrdb.color2  or "#94CF95"
+    beautiful.xcolor10 = new_colors.base09 or xrdb.color10 or "#6CCB6E"
+    beautiful.xcolor3  = new_colors.base0A or xrdb.color3  or "#F692B2"
+    beautiful.xcolor11 = new_colors.base0A or xrdb.color11 or "#F26190"
+    beautiful.xcolor4  = new_colors.base0B or xrdb.color4  or "#6EC1D6"
+    beautiful.xcolor12 = new_colors.base0B or xrdb.color12 or "#4CB9D6"
+    beautiful.xcolor5  = new_colors.base0C or xrdb.color5  or "#CD84C8"
+    beautiful.xcolor13 = new_colors.base0C or xrdb.color13 or "#C269BC"
+    beautiful.xcolor6  = new_colors.base0E or xrdb.color6  or "#7FE4D2"
+    beautiful.xcolor14 = new_colors.base0E or xrdb.color14 or "#58D6BF"
+    beautiful.xcolor7  = new_colors.base05 or xrdb.color7  or "#CFCFCF"
+    beautiful.xcolor15 = new_colors.base05 or xrdb.color15 or "#F4F5F2"
 end)
 
 return theme

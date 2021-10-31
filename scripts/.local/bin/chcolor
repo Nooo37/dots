@@ -1,0 +1,25 @@
+#!/bin/sh
+
+COLORSCHEME=$1
+echo "$COLORSCHEME" > ~/.colorscheme
+
+# AWESOMEWM
+awesome-client "awesome.emit_signal('chcolor')"
+
+# WEZTERM
+for pid in $(xdotool search --class "spad")  $(xdotool search --class "org.wezfurlong.wezterm"); do
+    # C-R is my keybind to reload the config
+    xdotool key --window $pid --clearmodifiers "Control_L+Shift_L+r"
+done
+
+# NVIM
+nvim_remote_cmd() {
+    nvr --nostart --remote-send "$1" &>/dev/null
+}
+nvim_remote_cmd ":Restart<cr>"
+nvim_remote_cmd ":echo 'New Colorscheme: $COLORSCHEME'<cr>"
+
+# GTK
+
+# TODO
+

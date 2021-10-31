@@ -7,36 +7,9 @@ local beautiful = require("beautiful")
 local bling = require("module.bling")
 local rubato = require("module.rubato")
 local naughty = require("naughty")
+-- bling.module.persistent()
 
 -- require("module.bling.widget.app_launcher")
-
--- awesome.connect_signal("bling::playerctl::position",
--- function(interval_sec, length_sec, player_name)
---     naughty.notify {text=tostring(interval_sec).." "..tostring(length_sec)}
--- end)
-
-local scratch_y = rubato.timed {
-    pos = awful.screen.focused().geometry.height + 10,
-    rate = 144,
-    easing = rubato.quadratic,
-    intro = 0.1,
-    duration = 0.3,
-    awestore_compat = true
-}
-
-local scrat = bling.module.scratchpad {
-    command = "alacritty --class=scratchterm",
-    rule = {instance = "scratchterm"},
-    sticky = true,
-    autoclose = false,
-    floating = true,
-    geometry = {x=820, y=0, height=520, width=920},
-    reapply = true,
-    dont_focus_before_close = false,
-    rubato = { y = scratch_y }
-}
-
-awesome.connect_signal("test", function() scrat:toggle() end)
 
 -- bling.module.window_swallowing.start()   -- activates window swallowing
 
@@ -50,7 +23,7 @@ bling.signal.playerctl.enable()
 local margin_edge = 10
 
 bling.widget.tag_preview.enable {
-    show_client_content = false,
+    show_client_content = true,
     x = beautiful.statusbar_width + margin_edge,
     y = beautiful.useless_gap / 2,
     scale = 0.2,
@@ -70,22 +43,37 @@ bling.widget.task_preview.enable {
 -- WALLPAPER
 
 -- don't really need the module for that but whatever
-bling.module.wallpaper.setup {
-   wallpaper = { beautiful.wallpaper }
-}
+-- bling.module.wallpaper.setup {
+   -- wallpaper = { beautiful.wallpaper }
+-- }
 
--- awful.screen.connect_for_each_screen(function(s)
---     bling.module.tiled_wallpaper("", s, {
---         fg = beautiful.xcolor0,
---         bg = beautiful.xbg,
---         offset_y = 25,
---         offset_x = 25,
---         font = "JetBrainsMono NF",
---         font_size = 30,
---         padding = 100,
---         zickzack = true
---     })
--- end)
+
+awful.screen.connect_for_each_screen(function(s)
+    bling.module.tiled_wallpaper("", s, {
+        fg = beautiful.xcolor0,
+        bg = beautiful.xbg,
+        offset_y = 25,
+        offset_x = 25,
+        font = "JetBrainsMono NF",
+        font_size = 30,
+        padding = 100,
+        zickzack = true
+    })
+end)
+awesome.connect_signal("chcolor", function()
+    awful.screen.connect_for_each_screen(function(s)
+        bling.module.tiled_wallpaper("", s, {
+            fg = beautiful.xcolor0,
+            bg = beautiful.xbg,
+            offset_y = 25,
+            offset_x = 25,
+            font = "JetBrainsMono NF",
+            font_size = 30,
+            padding = 100,
+            zickzack = true
+        })
+    end)
+end)
 --
 -- local rubato = require("rubato")
 -- local anim_y = rubato.timed {
@@ -113,7 +101,7 @@ bling.module.wallpaper.setup {
 local term_scratch = bling.module.scratchpad:new { command = "wezterm start --class spad",
                                       rule = { instance = "spad" },
                                       sticky=false, autoclose=false, floating=false,
-                                      dont_focus_before_close = true
+                                      dont_focus_before_close = false
       --                                geometry={x=360, y=90, height=900, width=1200},
 }
 awesome.connect_signal("toggle::scratchpad", function() term_scratch:toggle() end)
@@ -137,7 +125,7 @@ local chat_anim = {
         awestore_compat = true
     }
 }
-local disc_scratch = bling.module.scratchpad:new{ command = "discord", --"~/code/dots/scripts/disc",
+local disc_scratch = bling.module.scratchpad:new{ command = "flatpak run com.discordapp.Discord",
                                       rule = { instance = "discord" },
                                       sticky=false,
                                       autoclose=false,
@@ -199,5 +187,3 @@ end)
         -- }
 -- end
 
-
-return require("module.bling")

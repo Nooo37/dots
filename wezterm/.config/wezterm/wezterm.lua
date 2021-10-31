@@ -1,6 +1,11 @@
 local wezterm = require("wezterm");
 local farbig = require("farbig")
-local colors = farbig.get({"amarena"})
+
+local f = io.open(os.getenv("HOME") .. "/.colorscheme", "rb")
+local scheme = f:read("a*")
+f:close()
+scheme = scheme:gsub("%s+", "")
+local colors = farbig.get(scheme)
 
 local c = {
     fg = colors.base05,

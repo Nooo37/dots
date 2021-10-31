@@ -6,18 +6,18 @@ local gears = require("gears")
 local wibox = require("wibox")
 local naughty = require("naughty")
 local beautiful = require("beautiful")
-local awesome = awesome
+local awesome, screen = awesome, screen
 
 require("awful.autofocus")
 
 beautiful.init(require("theme")) -- intialize the theme
 require("bar")
--- require("titlebar")
+require("center")
 require("rules")
 require("popup_layout")
 require("popup_volume")
 require("signal") { "volume", "temp", "cpu", "disk", "ram", "weather" } -- "mpd", "newsboat"
-require("bling") -- my bling configs (ie scratchpads, previews etc)
+require("bling-config") -- my bling configs (ie scratchpads, previews etc)
 if awesome.version ~= "v4.3" then require("notif") end -- everything except for that require is 4.3 compatible
 
 if beautiful.is_on_pc then -- on desktop
@@ -31,6 +31,9 @@ local bling = require("module.bling")
 awful.util.tagnames = {"1", "2"} -- declare tag names
 awful.layout.layouts = {
     awful.layout.suit.tile,
+    awful.layout.suit.spiral,
+    bling.layout.horizontal,
+    bling.layout.vertical,
     bling.layout.mstab,
     -- bling.layout.deck,
     bling.layout.equalarea,

@@ -1,6 +1,7 @@
 local vim = vim
 local execute = vim.api.nvim_command
 local fn = vim.fn
+local msc = require("msc")
 
 -- bootstrap packer
 local install_path = fn.stdpath('data') .. '/site/pack/packer/opt/packer.nvim'
@@ -19,10 +20,11 @@ return require('packer').startup(function(use)
 
     -- colorscheme
     use {
-        "norcalli/nvim-base16.lua",
-        config = function()
-        end
+        "norcalli/nvim-base16.lua"
     }
+
+    -- hot reloaind the nvim config
+    use 'famiu/nvim-reload'
 
     -- epic telescope navigation
     use {
@@ -33,27 +35,33 @@ return require('packer').startup(function(use)
     -- epic treesitter colors
     use {
         'nvim-treesitter/nvim-treesitter',
-        config = require("msc").treesitter,
+        config = msc.treesitter,
         run = ':TSUpdate'
     }
     -- Nvim Built in LSP configs
     use {
         "neovim/nvim-lspconfig",
-        config = function()
-            require("plugins.lsp")
-        end
     }
 
     -- Nvim LSP extensions and completion
     use "nvim-lua/lsp_extensions.nvim"
     use "nvim-lua/completion-nvim"
-    use "onsails/lspkind-nvim"
+    use {
+        "onsails/lspkind-nvim",
+        config = msc.lspkind
+    }
 
     -- auto cloasing parens
-    use "windwp/nvim-autopairs"
+    use {
+        "windwp/nvim-autopairs",
+        config = require("nvim-autopairs").setup
+    }
 
     -- commenting out
-    use "terrortylor/nvim-comment"
+    use {
+        "terrortylor/nvim-comment",
+        config = require('nvim_comment').setup
+    }
 
     -- hopping to lines/words
     use {
@@ -79,7 +87,7 @@ return require('packer').startup(function(use)
     use {
         "lukas-reineke/indent-blankline.nvim",
         event = "BufRead",
-        setup = require("msc").blankline,
+        setup = msc.blankline,
     }
 
     -- tabbar

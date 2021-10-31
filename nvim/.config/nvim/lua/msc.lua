@@ -2,22 +2,24 @@ local vim = vim
 local M = {}
 
 -- Some setups
-require('nvim-autopairs').setup()
-require('nvim_comment').setup()
+--require('nvim-autopairs').setup()
+--require('nvim_comment').setup()
 
-local base16 = require("base16")
-local colors = require("colors")
-local theme_array = {
-	colors.base00, colors.base01, colors.base02, colors.base03,
-	colors.base04, colors.base05, colors.base06, colors.base07,
-	colors.base08, colors.base09, colors.base0A, colors.base0B,
-	colors.base0C, colors.base0D, colors.base0E, colors.base0F,
-}
-for idx, v in ipairs(theme_array) do -- remove all #
-    theme_array[idx] = v:sub(2)
+M.colors = function()
+    local base16 = require("base16")
+    local colors = require("colors")
+    local theme_array = {
+    	colors.base00, colors.base01, colors.base02, colors.base03,
+    	colors.base04, colors.base05, colors.base06, colors.base07,
+    	colors.base08, colors.base09, colors.base0A, colors.base0B,
+    	colors.base0C, colors.base0D, colors.base0E, colors.base0F,
+    }
+    for idx, v in ipairs(theme_array) do -- remove all #
+        theme_array[idx] = v:sub(2)
+    end
+    local theme = base16.theme_from_array(theme_array)
+    base16(theme, true)
 end
-local theme = base16.theme_from_array(theme_array)
-base16(theme, true)
 
 -- Indent highlights
 M.blankline = function()
@@ -32,41 +34,45 @@ M.blankline = function()
 end
 
 -- Treesitter
-require('nvim-treesitter.configs').setup {
-    ensure_installed = {
-        "javascript", "html", "java", "c", "cpp", "bash", "rust", "lua"
-    },
-    highlight = {enable = true, use_languagetree = true},
-}
+M.treesitter = function()
+    require('nvim-treesitter.configs').setup {
+        ensure_installed = {
+            "javascript", "html", "java", "c", "cpp", "bash", "rust", "lua"
+        },
+        highlight = {enable = true, use_languagetree = true},
+    }
+end
 
--- LSP kind (makes lsp completion tool nicer)
-require('lspkind').init {
-    with_text = true,
-
-    preset = 'codicons',
-
-    symbol_map = {
-      Text = '',
-      Method = 'ƒ',
-      Function = '',
-      Constructor = '',
-      Variable = '',
-      Class = '',
-      Interface = 'ﰮ',
-      Module = '',
-      Property = '',
-      Unit = '',
-      Value = '',
-      Enum = '了',
-      Keyword = '',
-      Snippet = '﬌',
-      Color = '',
-      File = '',
-      Folder = '',
-      EnumMember = '',
-      Constant = '',
-      Struct = ''
-    },
-}
+M.lspkind = function()
+    -- LSP kind (makes lsp completion tool nicer)
+    require('lspkind').init {
+        with_text = true,
+    
+        preset = 'codicons',
+    
+        symbol_map = {
+          Text = '',
+          Method = 'ƒ',
+          Function = '',
+          Constructor = '',
+          Variable = '',
+          Class = '',
+          Interface = 'ﰮ',
+          Module = '',
+          Property = '',
+          Unit = '',
+          Value = '',
+          Enum = '了',
+          Keyword = '',
+          Snippet = '﬌',
+          Color = '',
+          File = '',
+          Folder = '',
+          EnumMember = '',
+          Constant = '',
+          Struct = ''
+        },
+    }
+end
 
 return M

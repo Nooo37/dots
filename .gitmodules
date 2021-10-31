@@ -8,12 +8,18 @@
     url = https://github.com/andOrlando/rubato.git
     branch = master
 
-[submodule "farbig"]
+[submodule "farbig_wezterm"]
     path = wezterm/.config/wezterm/farbig
     url = https://github.com/Nooo37/farbig.git
     branch = master
 
-[submodule "farbig"]
+[submodule "farbig_nvim"]
     path = nvim/.config/nvim/lua/farbig
     url = https://github.com/Nooo37/farbig.git
     branch = master
+
+[submodule "farbig_awesome"]
+    path = nvim/.config/nvim/lua/farbig
+    url = https://github.com/Nooo37/farbig.git
+    branch = master
+

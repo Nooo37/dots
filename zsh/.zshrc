@@ -31,14 +31,14 @@ alias mv='mv -i'
 alias cp='cp -i'
 alias ls='exa --color=always --group-directories-first --icons'
 alias tp='trash-put'
-alias vim='nvim'
+alias vim='NVIM_LISTEN_ADDRESS=/tmp/nvimsocket nvim'
 alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias ra='ranger --choosedir=$HOME/.config/rangerdir.txt; LASTDIR=`cat $HOME/.config/rangerdir.txt`; cd "$LASTDIR"'
 alias em="emacs -nw"
 
-alias v='nvim'
+alias v='NVIM_LISTEN_ADDRESS=/tmp/nvimsocket nvim'
 alias t='todo.sh'
 
 # color man pages
@@ -66,8 +66,8 @@ bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 
 # env vars
-export EDITOR="nvim"
-export VISUAL="nvim"
+export EDITOR="NVIM_LISTEN_ADDRESS=/tmp/nvimsocket nvim"
+export VISUAL="NVIM_LISTEN_ADDRESS=/tmp/nvimsocket nvim"
 
 # directory as window title
 precmd() {
@@ -86,9 +86,6 @@ bindkey '^R' fzf-history
 
 # ~/.local/bin is where I keep scripts but it isn't in PATH by default on some distros
 export PATH="$HOME/.local/bin:$PATH"
-
-# start in home dir
-cd $HOME
 
 # use z and starship
 eval "$(lua /usr/share/z.lua/z.lua --init bash)"
