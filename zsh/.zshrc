@@ -36,7 +36,7 @@ alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias ra='ranger --choosedir=$HOME/.config/rangerdir.txt; LASTDIR=`cat $HOME/.config/rangerdir.txt`; cd "$LASTDIR"'
-alias em="emacs -nw"
+alias u='cd /run/media/$USER/glitnir/uni'
 
 alias v='NVIM_LISTEN_ADDRESS=/tmp/nvimsocket nvim'
 alias t='todo.sh'

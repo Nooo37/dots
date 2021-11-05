@@ -61,8 +61,8 @@ local my_keys = {
     { "v",         "CTRL|SHIFT", paste },
     { "Insert",    "SHIFT",      paste },
     -- font size
-    { "+",         "CTRL|SHIFT",     "IncreaseFontSize" },
-    { "-",         "CTRL|SHIFT",     "DecreaseFontSize" },
+    { "m",         "CTRL|SHIFT",     "IncreaseFontSize" },
+    { "n",         "CTRL|SHIFT",     "DecreaseFontSize" },
     -- copymode
     { "x",         "CTRL",           "ActivateCopyMode" },
     -- reload config
