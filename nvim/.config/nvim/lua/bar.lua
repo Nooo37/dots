@@ -5,7 +5,7 @@ local condition = require('galaxyline.condition')
 gl.short_line_list = {'NvimTree', 'vista', 'dbui', 'packer'}
 
 local colors = require("colors")
-colors.bg = "#00000000"
+--colors.bg = "#00000000"
 
 local mode_color = {
     n = colors.cyan,
@@ -52,8 +52,8 @@ gls.left[1] = {
             return '  ⬤ '
         end,
         separator = '  ',
-        separator_highlight = {'NONE', colors.bg},
-        -- highlight = {colors.bg1, colors.red, 'bold'}
+        separator_highlight = {colors.bg, colors.bg},
+        highlight = {colors.fg, colors.bg, 'bold'}
     }
 }
 
@@ -62,6 +62,7 @@ gls.left[2] = {
         provider = 'FileIcon',
         condition = buffer_not_empty,
         separator = ' ',
+        separator_highlight = {colors.bg, colors.bg},
         highlight = {
             require('galaxyline.provider_fileinfo').get_file_icon_color,
             colors.bg
@@ -74,6 +75,7 @@ gls.left[3] = {
         provider = {'FileName'},
         condition = buffer_not_empty,
         separator = '  ',
+        separator_highlight = {colors.bg, colors.bg},
         highlight = {colors.fg, colors.bg, 'bold'}
     }
 }
@@ -84,6 +86,7 @@ gls.left[4] = {
             return "⦁"
         end,
         separator = '  ',
+        separator_highlight = {colors.bg, colors.bg},
         highlight = {colors.green, colors.bg}
     }
 }
@@ -154,6 +157,7 @@ gls.right[2] = {
     RainbowBlue = {
         provider = function() return '⦁' end,
         separator = ' ',
+        separator_highlight = {'NONE', colors.bg},
         highlight = {colors.green, colors.bg}
     }
 }
@@ -171,6 +175,7 @@ gls.right[4] = {
     RainbowBlue = {
         provider = function() return '⦁' end,
         separator = ' ',
+        separator_highlight = {'NONE', colors.bg},
         highlight = {colors.green, colors.bg}
     }
 }
@@ -179,6 +184,7 @@ gls.right[5] = {
     GitBranch = {
         provider = 'GitBranch',
         separator = '  ',
+        separator_highlight = {'NONE', colors.bg},
         condition = require('galaxyline.provider_vcs').check_git_workspace,
         highlight = {colors.gray, colors.bg, 'bold'}
     }

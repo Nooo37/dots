@@ -51,18 +51,6 @@ return require('packer').startup(function(use)
         config = msc.lspkind
     }
 
-    -- auto cloasing parens
-    use {
-        "windwp/nvim-autopairs",
-        config = require("nvim-autopairs").setup
-    }
-
-    -- commenting out
-    use {
-        "terrortylor/nvim-comment",
-        config = require('nvim_comment').setup
-    }
-
     -- hopping to lines/words
     use {
         "phaazon/hop.nvim",
@@ -82,14 +70,6 @@ return require('packer').startup(function(use)
     use "digitaltoad/vim-pug"
 
     -- VISUALS
-
-    -- indent highlights
-    use {
-        "lukas-reineke/indent-blankline.nvim",
-        event = "BufRead",
-        setup = msc.blankline,
-    }
-
     -- tabbar
     --use {
     --    'akinsho/nvim-bufferline.lua',

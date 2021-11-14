@@ -46,7 +46,4 @@ cmd [[let &t_ZH = "\e[3m"]]
 cmd [[let &t_ZR = "\e[23m"]]
 cmd [[highlight Comment gui=italic]]
 
--- Format lua on save
-cmd [[autocmd FileType lua nnoremap <buffer> <c-p> :call LuaFormat()<cr>]]
-cmd [[autocmd BufWrite *.lua call LuaFormat()]]
 vim.o.background = "dark"

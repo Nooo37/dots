@@ -11,7 +11,7 @@ local naughty = require("naughty")
 
 -- require("module.bling.widget.app_launcher")
 
--- bling.module.window_swallowing.start()   -- activates window swallowing
+bling.module.window_swallowing.start()   -- activates window swallowing
 
 bling.widget.window_switcher.enable {}
 
@@ -135,7 +135,13 @@ local disc_scratch = bling.module.scratchpad:new{ command = "flatpak run com.dis
                                       rubato = chat_anim
                                       -- awestore={x=anim_x, y=anim_y},
 }
-awesome.connect_signal("toggle::discord", function() disc_scratch:toggle() end)
+awesome.connect_signal("toggle::discord", function()
+    if beautiful.discord then
+        disc_scratch:toggle()
+    else
+        naughty.notify {title = "lol no"}
+    end
+end)
 
 local music_anim = {
     y = rubato.timed {

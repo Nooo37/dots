@@ -6,7 +6,7 @@ local wibox = require("wibox")
 local naughty = require("naughty")
 local beautiful = require("beautiful")
 local dpi   = require("beautiful").xresources.apply_dpi
-local awesome, client, mouse = awesome, client, mouse
+local awesome, client, mouse, tag = awesome, client, mouse, tag
 
 local helpers = require("helpers")
 
@@ -71,6 +71,39 @@ local systray_box = format_entry(icon_box)
 systray_box.visible = false
 awesome.connect_signal("toggle::systray", function() systray_box.visible = not systray_box.visible end)
 ---}}}
+
+--{{{ custom dumb taglist
+local tagwids = {}
+tagwids[1] = wibox.widget {
+    wibox.widget.textbox("_"),
+    bg = beautiful.xcolor1,
+    shape = gears.shape.circle,
+    forced_width = 10,
+    widget = wibox.container.background
+}
+tagwids[2] = wibox.widget {
+    wibox.widget.textbox("_"),
+    bg = beautiful.xcolor2,
+    shape = gears.shape.circle,
+    forced_width = 10,
+    widget = wibox.container.background
+}
+local mytaglist = {
+    tagwids[1],
+    helpers.vertical_pad(10),
+    tagwids[2],
+    layout = wibox.layout.fixed.vertical
+}
+tag.connect_signal("property::selected", function(t)
+    tagwids[t.index].bg = t.selected and beautiful.xcolor2 or beautiful.xcolor8
+end)
+awesome.connect_signal("chcolor", function()
+    local tags = awful.screen.focused().tags
+    for idx, w in ipairs(tagwids) do
+        w.bg = tags[idx].selected and beautiful.xcolor2 or beautiful.xcolor8
+    end
+end)
+--}}}
 
 --{{{ Clock
 local hourtextbox = wibox.widget.textclock("%H")
@@ -491,6 +524,7 @@ awful.screen.connect_for_each_screen(function(s)
        width = statusbar_width,
        opacity = 1,
        visible = true,
+       ontop = false,
        type = "wibar",
    }
 
@@ -505,7 +539,8 @@ awful.screen.connect_for_each_screen(function(s)
                layout = wibox.layout.fixed.vertical,
                helpers.vertical_pad(6),
                format_entry(dash_button, 0),
-               -- format_entry(s.mytaglist),
+               format_entry(mytaglist, 8),
+               helpers.vertical_pad(6),
                -- add_tag_box,
                -- s.mytasklist,
            },

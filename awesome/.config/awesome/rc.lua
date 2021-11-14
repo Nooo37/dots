@@ -8,11 +8,12 @@ local naughty = require("naughty")
 local beautiful = require("beautiful")
 local awesome, screen = awesome, screen
 
+local helpers = require("helpers")
 require("awful.autofocus")
 
 beautiful.init(require("theme")) -- intialize the theme
 require("bar")
-require("center")
+--require("glome.topbar")
 require("rules")
 require("popup_layout")
 require("popup_volume")
@@ -32,7 +33,6 @@ awful.util.tagnames = {"1", "2"} -- declare tag names
 awful.layout.layouts = {
     awful.layout.suit.tile,
     awful.layout.suit.spiral,
-    bling.layout.horizontal,
     bling.layout.vertical,
     bling.layout.mstab,
     -- bling.layout.deck,
@@ -46,6 +46,38 @@ awful.screen.connect_for_each_screen(function(s)
     awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
 end)
 
+-- center wibox
+
+local center_width = 400
+local center_height = 500
+local centerbox = wibox {
+    height = center_height,
+    width = center_width,
+    x = 20 + beautiful.statusbar_width,
+    y = 20,
+    visible = false,
+    ontop = true,
+    shape = helpers.rrect(20),
+    bg = beautiful.xbg2,
+}
+
+awesome.connect_signal("toggle::dash", function()
+    centerbox.visible = not centerbox.visible
+end)
+
+awesome.connect_signal("chcolor", function()
+    centerbox.bg = beautiful.xbg2
+end)
+
+local center
+center = require("center")
+centerbox:setup(center)
+
+awesome.connect_signal("update::center", function()
+    package.loaded["center"] = nil
+    center = require("center")
+    centerbox:setup(center)
+end)
 -- call autostart script
 awful.spawn.with_shell("$HOME/code/dots/scripts/autostart")
 
